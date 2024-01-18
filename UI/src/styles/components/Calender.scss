@@ -1,0 +1,60 @@
+.calender-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    width: 100%;
+    border: 2px solid hsl(0, 0%, 20%);
+    p {
+        font-family: monospace;
+        font-size: 1.5rem;
+    }
+}
+
+.calender-days {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    
+    p {
+        font-size: 1rem;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+}
+
+.calender-day {
+    height: 1.8rem;
+    width: 1.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0.4rem;
+    border-radius: 50%;
+    background-color: hsl(0, 0%, 20%);
+    transition: all 0.1s;
+    cursor: pointer;
+}
+
+.calender-day:hover {
+    filter: brightness(150%)
+}
+
+.calender-day:active {
+    transform: scale(0.92);
+}
+
+
+
+.prev {
+    color: gold;
+}
+
+.today {
+    background-color: gold;
+}
+
+.next {
+    color: red;
+}

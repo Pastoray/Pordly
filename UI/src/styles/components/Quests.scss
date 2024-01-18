@@ -1,0 +1,12 @@
+.quests-container {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+    border: 2px solid hsl(0, 0%, 20%);
+
+    p {
+        font-family: monospace;
+        font-size: 1.5rem;
+    }
+}
