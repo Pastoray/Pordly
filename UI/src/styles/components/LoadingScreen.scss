@@ -1,0 +1,12 @@
+@function randomColor() {
+    @return hsl(random(360), 100%, 60%)
+}
+
+.game-starting {
+    @for $i from 1 through 11 {
+        $color: randomColor();
+        span:nth-child(#{$i}) {
+            color: $color;
+        }
+    }
+}

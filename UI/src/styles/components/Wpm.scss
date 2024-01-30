@@ -1,0 +1,17 @@
+
+.wpm-container {
+    height: 100%;
+    width: 10.7rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0rem 1rem;
+    border-radius: 8px;
+    color: white;
+    background-color: hsl(0, 0%, 20%);
+    p {
+        font-family: monospace;
+        font-size: 1.75rem;
+        font-weight: 500;
+    }
+}

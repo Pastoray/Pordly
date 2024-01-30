@@ -15,7 +15,7 @@ function Welcome() {
                         <ul>
                             <p>🏆 Leaderboards</p>
                             <p>🏹 1vs1</p>
-                            <p>🎓 Practice Levels</p>
+                            <p>📜 Quests</p>
                             <p>🥇 Tournements</p>
                             <p>🎉 And more...</p>
                         </ul>
@@ -24,19 +24,19 @@ function Welcome() {
                     <section id='welcome-page-section-2'>
                         <div className='welcome-page-credentials'>
                             <p id='welcome-page-title'>Credentials</p>
-                            <p>👤 <strong>Username:</strong> [Your Username]</p>
-                            <p>🏆 <strong>Title:</strong> [Your Title]</p>
-                            <p>🔥 <strong>Streak:</strong> [Your Current Streak]</p>
-                            <p>💰 <strong>Coins:</strong> [Your Coin Balance]</p>
-                            <p>❤️ <strong>Lives:</strong> [Your Remaining Lives]</p>
+                            <p>👤 <strong>Username :</strong> [Your Username]</p>
+                            <p>🏆 <strong>Title :</strong> [Your Title]</p>
+                            <p>🔥 <strong>Streak :</strong> [Your Current Streak]</p>
+                            <p>💎 <strong>Gems :</strong> [Your Coin Balance]</p>
+                            <p>❤️ <strong>Lives :</strong> [Your Remaining Lives]</p>
                         </div>
                     </section>
                     <section id='welcome-page-section-3'>
                         <p id='welcome-page-title'>Challenges</p>
                         <div className='welcome-page-cards-container'>
-                            <Card title={'Daily Missions'} doneCount={7} totalCount={7}/>
-                            <Card title={'Quests'} doneCount={12} totalCount={49}/>
-                            <Card title={'Achivements'} doneCount={55} totalCount={254}/>
+                            <Card title={'Daily Missions'} doneCount={0} totalCount={3}/>
+                            <Card title={'Quests'} doneCount={0} totalCount={50}/>
+                            <Card title={'Achivements'} doneCount={0} totalCount={15}/>
                         </div>
                     </section>
                 </main>

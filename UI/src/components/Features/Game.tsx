@@ -1,118 +1,81 @@
+import Wpm from './Wpm';
 import Timer from './Times';
-import fetchParagraph from '../../data/fetchParagraph';
-import { useEffect, useState } from 'react';
+import { GameOver, restart, handleInput, initData, updateParagraph } from '../../utils/Index';
+import { useEffect, useRef, useState } from 'react';
+import { ParagraphData, GameProps } from '../../types/Index';
+import LoadingScreen from '../UI/LoadingScreen';
 import '../../styles/components/Game.scss'
+import Accuracy from './Accuracy';
 
-type ParagraphData = {
-    paragraphs: string[],
-    curr: string,
-    words: string[],
-    classes: string[],
-    paragraphIdx: number
-}
-
-type GameProps = {
-    timer: boolean,
-    time: number
-}
-
-function Game({ timer, time }: GameProps) {
+function Game({ missionType, mission, sentences, timer, reqTime, reqWpm, reqAccuracy }: GameProps) {
     const [input, setInput] = useState('');
     const [paragraphData, setParagraphData] = useState<ParagraphData | null>(null);
+    const [accuracy, setAccuracy] = useState(0);
+    const [gameFinished, setGameFinished] = useState(false);
+    const [timePassed, setTimePassed] = useState(0.016);
+    const [maxTime, setMaxTime] = useState(reqTime ? reqTime : 0);
+    const [correctWords, setCorrectWords] = useState(0);
+    const [wpm, setWpm] = useState(0);
     const [wordIdx, setWordIdx] = useState(0);
     const [loading, setLoading] = useState(true);
     const [gameOver, setGameOver] = useState(false);
     const [cooldown, setCooldown] = useState(Date.now());
-    const [bonus, setBonus] = useState(0); 
+    const [bonus, setBonus] = useState(0);
+    const [luckyIdx, setLuckyIdx] = useState(-1);
+
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
     useEffect(() => {
-        async function fetchData() {
-            const data = await fetchParagraph(10, 10);
-            const array = data[0].split('. ');
-            array.pop();
-            setParagraphData({paragraphs: array,
-                             curr: array[0],
-                             words: array[0].split(' '),
-                             classes: Array.from({ length: array[0].split(' ').length }, () => ''),
-                             paragraphIdx: 1} as ParagraphData);
-            setLoading(false);
-        }
-        fetchData()
+        initData(sentences, setParagraphData, setLuckyIdx, setLoading);
     }, [])
 
     useEffect(() => {
-        async function updateParagraph() {
-            if (paragraphData !== null && wordIdx >= paragraphData!.words.length) {
-                const inputElement = document.getElementById('input') as HTMLInputElement;
-                inputElement!.readOnly = true;
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                inputElement!.readOnly = false;
-                setWordIdx(0);
-                setParagraphData((prev) => ({ ...prev!,
-                                                curr: prev!.paragraphs[prev!.paragraphIdx + 1],
-                                                words: prev!.paragraphs[prev!.paragraphIdx + 1].split(' '),
-                                                classes: Array.from({ length: prev!.paragraphs[prev!.paragraphIdx + 1].split(' ').length }, () => ''),
-                                                paragraphIdx: prev!.paragraphIdx + 1
-                                            } as ParagraphData))
-            }
-        }
-        updateParagraph()
+        updateParagraph(paragraphData, setParagraphData, wordIdx, setWordIdx, setLuckyIdx, setGameFinished, inputRef);
     }, [wordIdx])
-
-    function addClass(input: String, word: String) {
-        if (input === word) {
-            setBonus(5);
-            paragraphData!.classes[wordIdx] = 'correct'
-        } else {
-            setBonus(0);
-            paragraphData!.classes[wordIdx] = 'wrong'
+    
+    useEffect(() => {
+        inputRef.current!.focus()
+    }, [loading])
+    useEffect(() => {
+        if (timer && maxTime == 0) {
+            GameOver(setGameOver, setInput, inputRef)
+            return;
         }
-    }
-
-    function handleInput(event: React.ChangeEvent<HTMLInputElement>) {
-        if (event.target.value.endsWith(' ')) {
-            if (Date.now() - cooldown > 50) {
-                setCooldown(Date.now())
-                addClass(input, paragraphData!.words[wordIdx]);
-                setInput('');
-                setWordIdx((idx) => idx + 1);
+        if (gameOver || gameFinished || loading) return;
+        const intervalId = setInterval(() => {
+            setTimePassed((t) => t + 0.016);
+            updateWPM();
+            if (timer) {
+                setMaxTime((t) => t - 1);
             }
-        } else {
-            setInput(event.target.value);
+        }, 1000)
+        return () => {
+            clearInterval(intervalId)
         }
+    }, [timePassed, maxTime, loading])
+    function updateWPM() {
+        setWpm(correctWords / timePassed);
     }
 
-    function GameOver() {
-        const inputElement = document.getElementById('input') as HTMLInputElement;
-        inputElement!.readOnly = true;
-        setGameOver(true);
-        setInput('');
+    useEffect(() => {
+        setMaxTime((t) => t + bonus)
+    }, [bonus])
 
+    function SetMissionAsDone(missionType: string) {
+        const v = missionType
+        return v;
     }
 
-    function restart() {
-        const inputElement = document.getElementById('input') as HTMLInputElement;
-        inputElement!.readOnly = false;
-        setLoading(true);
-
-        setBonus(0);
-        setWordIdx(100000);
-
-        setParagraphData((prevData) => ({ ...prevData!, paragraphIdx: -1 }));
-        noLongerLoading()
-    }
-
-    async function noLongerLoading() {
-        setTimeout(() => {
-            setLoading(false);
-            setGameOver(false);
-        }, 1000);
-    }
     return(
         <div className='game-container'>
             <div className='game'>
                 <div id='game-timer-container'>
+                    <div id='game-stats-container'>
+                        <Accuracy accuracy={accuracy}/>
+                        <Wpm wpm={wpm}/>
+                    </div>
                     {timer ?
-                    <Timer time={time} bonus={bonus} loading= {loading} gameOver={GameOver}/>
+                    <Timer time={maxTime}/>
                     :
                     null
                     }
@@ -120,41 +83,57 @@ function Game({ timer, time }: GameProps) {
                 <div className='game-paragraph'>
                     <div className='game-words'>
                         {loading ?
-                        <div className='game-starting'>
-                         <span>S</span>
-                         <span>t</span>
-                         <span>a</span>
-                         <span>r</span>
-                         <span>t</span>
-                         <span>i</span>
-                         <span>n</span>
-                         <span>g</span>
-                         <span>.</span>
-                         <span>.</span>
-                         <span>.</span>
-                        </div>
+                        <LoadingScreen/>
                         :
-                        !gameOver ?
-                          paragraphData!.words.map((word, idx) => (
-                            idx === wordIdx ? <div key={`div 1 ${idx}`}>
-                                                <span key={idx} id={idx.toString()} className={`current-word ${paragraphData!.classes[idx]}`}>{word}</span>
-                                                <span key={`span 1 ${idx}`}>{"\u00A0"}</span>
-                                            </div> 
-                                            : 
-                                            <div key={`div 2 ${idx}`}>
-                                                <span key={idx} id={idx.toString()} className={`${paragraphData!.classes[idx]}`}>{word}</span>
-                                                <span key={`span 2 ${idx}`}>{"\u00A0"}</span>
-                                            </div>))
-                        :
-                            <div className='gameover-container'>
-                                <p>GAME OVER</p>
-                                <button onClick={restart}>Restart</button>
-                            </div>
+                        !gameFinished ?
+                            !gameOver ?
+                                paragraphData!.words.map((word, idx) => (
+                                    idx === wordIdx ? <div key={`div 1 ${idx}`}>
+                                                        <span key={idx} id={idx.toString()} className={`current-word ${paragraphData!.classes[idx]} ${idx === luckyIdx ? 'game-rare-word' : ''}`}>{word}</span>
+                                                        <span key={`span 1 ${idx}`}>{"\u00A0"}</span>
+                                                    </div> 
+                                                        : 
+                                                    <div key={`div 2 ${idx}`}>
+                                                        <span key={idx} id={idx.toString()} className={`${paragraphData!.classes[idx]} ${idx === luckyIdx ? 'game-rare-word' : ''}`}>{word}</span>
+                                                        <span key={`span 2 ${idx}`}>{"\u00A0"}</span>
+                                                    </div>))
+                            :
+                                <div className='mission-finished-container'>
+                                    <p id='mission' className='mission-failed'>MISSION FAILED</p>
+                                    <div>
+                                        <p>Total Accuracy: <span className={accuracy >= reqAccuracy ? `mission-succeeded` : `mission-failed`}>{accuracy.toFixed(2)}%</span></p>
+                                        <p>Words per minute: <span className={wpm >= reqWpm ? `mission-succeeded` : `mission-failed`}>{wpm.toFixed(2)}</span></p>
+                                        { timer ? <p>Time left: <span className={maxTime > 0 ? `mission-succeeded` : `mission-failed`}>{maxTime}s</span></p> : null }
+                                    </div>
+                                    <button onClick={() => {
+                                        restart(setLoading, setBonus, setWordIdx, setParagraphData, setGameOver, setAccuracy, setGameFinished, inputRef)
+                                        setTimePassed(0.016);
+                                        setCorrectWords(0);
+                                        setMaxTime(reqTime ? reqTime : 0);
+                                        inputRef.current!.focus();
+                                    }}>Restart</button>
+                                </div>
+                        :   
+                            <div className='mission-finished-container'>
+                                <p id='mission' className={(accuracy >= reqAccuracy && wpm >= reqWpm && (maxTime? maxTime > 0 : true)) ? 'mission-succeeded' : 'mission-failed'}>MISSION {(accuracy >= reqAccuracy && wpm >= reqWpm && maxTime >= 0) ? 'SUCCESSFUL' : 'FAILED'}</p>
+                                <div>
+                                    <p>Total Accuracy: <span className={accuracy >= reqAccuracy ? `mission-succeeded` : `mission-failed`}>{accuracy.toFixed(2)}% {accuracy >= reqAccuracy ? <span> {`> ${reqAccuracy}`}</span> : <span>{`< ${reqAccuracy}`}</span>}%</span></p>
+                                    <p>Words per minute: <span className={wpm >= reqWpm ? `mission-succeeded` : `mission-failed`}>{wpm.toFixed(2)} {wpm >= reqWpm ? <span> {`> ${reqWpm}`}</span> : <span>{`< ${reqWpm}`}</span>}</span></p>
+                                    { timer ? <p>Time left: <span className={maxTime > 0 ? `mission-succeeded` : `mission-failed`}>{maxTime}s</span></p> : null }
+                                </div>
+                                <button onClick={() => {
+                                    restart(setLoading, setBonus, setWordIdx, setParagraphData, setGameOver, setAccuracy, setGameFinished, inputRef);
+                                    setTimePassed(0.016);
+                                    setCorrectWords(0);
+                                    setMaxTime(reqTime ? reqTime : 0);
+                                    inputRef.current!.focus();
+                                    }}>Replay</button>
+                            </div>  
                         }
                     </div>
                 </div>
                 <div className='game-input'>
-                    <input id='input' value={input} onChange={handleInput}/>
+                    <input id='input' ref={inputRef} value={input} onChange={(event) => handleInput(event, paragraphData, input, setInput, wordIdx, setWordIdx, cooldown, setCooldown, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords)}/>
                 </div>
             </div>
         </div>

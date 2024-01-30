@@ -1,17 +1,16 @@
-import { useState } from 'react';
 import '../../styles/components/Toolbar.scss'
+import { useUser } from '../../hooks/useUser';
 function Toolbar() {
-    const [level, setLevel] = useState(1);
+    const User = useUser()
 
     return(
         <div className='toolbar-container'>
             <div className='toolbar-left-side'>
-                <img/>pfp
-                <div>
-                    <p>Username</p>
+                <p id='toolbar-level'>({1})</p>
+                <div className='toolbar-user'>
+                    <p>{User!.info.username}</p>
                     <p style={{ fontSize: "0.75rem" }}>King</p>
                 </div>
-                <p style={{ paddingLeft: "4rem" }}>Level {level}</p>
             </div>
             <div className='toolbar-right-side'>
                 <div>

@@ -1,53 +1,21 @@
-import { MutableRefObject, useEffect, useState } from 'react';
+import { TimerProps } from '../../types/Index';
+import { useEffect, useState } from 'react';
 import '../../styles/components/Timer.scss'
 
-type TimerProps = {
-    time: number,
-    bonus: number,
-    loading: boolean,
-    gameOver: () => void
-}
-
-function Timer({ time = 360, bonus = 0, loading = true, gameOver }: TimerProps) {
-    const [isRunning, setIsRunning] = useState(false);
-    const [timerValue, setTimerValue] = useState(5);
+function Timer({ time }: TimerProps) {
     const [formatedTime, setFormatedTime] = useState(`${Math.floor(time / 60).toString().padStart(2, '0')}
-                                                     :${(time % 60).toString().padStart(2, '0')}`) 
-
-    useEffect(() => {
-        if (!loading) {
-            setTimerValue(5);
-            setIsRunning(true);
-        } else {
-            setIsRunning(false)
-        }
-    }, [loading])                                
-    useEffect(() => {
-        if (isRunning && timerValue > 0) {
-            const intervalId = setInterval(() => {
-                setTimerValue((time) => time - 1)
-            }, 1000);
-            return () => {
-                clearInterval(intervalId);
-            }
-        } else if (timerValue == 0) {
-            gameOver()
-        }
-    }, [isRunning, timerValue])
+                                                     :${(time % 60).toString().padStart(2, '0')}`)                              
     
     useEffect(() => {
-        const minutes = (Math.floor(timerValue / 60)).toString().padStart(2, '0')
-        const seconds = (timerValue % 60).toString().padStart(2, '0')
+        const minutes = (Math.floor(time / 60)).toString().padStart(2, '0')
+        const seconds = (time % 60).toString().padStart(2, '0')
         const formattedTime = `${minutes}:${seconds}`
         setFormatedTime(formattedTime);
-    }, [timerValue]);
+    }, [time]);
 
-    useEffect(() => {
-        setTimerValue((time) => time + bonus)
-    }, [bonus])
     return(
         <>  
-            <div className='timer-container' onClick={() => setIsRunning(!isRunning)}>
+            <div className='timer-container'>
                 <p id='timer'>{formatedTime}</p>
             </div>
         </>

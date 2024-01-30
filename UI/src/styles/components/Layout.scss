@@ -31,7 +31,7 @@ p {
     align-items: center;
 }
 
-.layout-bar-levels {
+.layout-bar-quests {
     height: 100%;
     width: 50%;
     position: sticky;
@@ -41,7 +41,7 @@ p {
     align-items: center;
 }
 
-.layout-levels {
+.layout-quests {
     height: 100%;
     display: flex;
     background-color: hsl(0, 0%, 50%);
@@ -57,16 +57,28 @@ p {
     align-items: center;
 }
 
-.level {
+.quest {
     width: 80%;
     height: 4rem;
+    display: flex;
+    justify-content: space-between;
     border: 2px solid black;
     display: flex;
     padding: 0px 1rem;
     align-items: center;
-    font-size: 1.5rem;
     background-color: hsl(0, 0%, 80%);
     border-radius: 4px;
     margin: 1rem 0rem;
     cursor: pointer;
+}
+
+.quest-number {
+    color: black;
+    font-size: 1.5rem;    
+}
+
+.quest-reward {
+    color: hsl(195, 100%, 50%);
+    text-shadow: 0px 0px 2px hsl(195, 100%, 50%);
+    font-size: 1.5rem; 
 }

@@ -1,27 +1,24 @@
-import { useEffect } from "react";
-import loadLevels from "../../utils/loadLevels";
+import { useEffect, useRef } from "react";
+import { loadMissions } from "../../utils/Index";
 import '../../styles/components/Layout.scss'
 
 function Layout() {
+    const missionsContainer = useRef<HTMLDivElement | null>(null)
     useEffect(() => {
-        loadLevels()
+        loadMissions(missionsContainer)
     }, [])
-
+        
     return(
         <div className="layout-container">
             <div className="layout-bar">
                 <div className="layout-bar-data">
-                    <p>Difficulty</p>
-                    <p>Paragraphs</p>
-                    <p>Sentences</p>
+                
                 </div>
-                <div className="layout-bar-levels">
-                    <p>Title levels</p>
-                    <p>Select random</p>
+                <div className="layout-bar-quests">
                 </div>
             </div>
-            <div className="layout-levels">
-                <div id='level-section'className="level-section">
+            <div className="layout-quests">
+                <div ref={missionsContainer} id='level-section' className="level-section">
                 </div>
             </div>
         </div>
