@@ -7,7 +7,7 @@ auth_bp = Blueprint("auth_bp", __name__)
 jwt = JWTManager()
 
 @auth_bp.route("/createAccount", methods=["POST"])
-def createAccount():
+def create_account():
     data = request.get_json()
 
     if not data:
@@ -39,14 +39,12 @@ def createAccount():
         return jsonify({"success": False, "error": {"emailError": "Email already exists"}}), 400
 
     user = Users(username, email, password)
-    db.session.add(user)
-    db.session.commit()
 
     return jsonify({"success": True, "message": "Account Created successfully"}), 201
 
 
 @auth_bp.route("/loadAccount", methods=["POST"])
-def loadAccount():
+def load_account():
     data = request.get_json()
 
     if not data:
@@ -78,7 +76,7 @@ def loadAccount():
             }}), 401
 
     expires = timedelta(days=30)
-    accessToken = create_access_token(identity=user._id, expires_delta=expires)
+    accessToken = create_access_token(identity=user._user_id, expires_delta=expires)
 
     response = make_response(jsonify({"success": True, "accessToken": accessToken, "message": "Logged in successfully"}), 200)
 
@@ -91,17 +89,17 @@ def loadAccount():
 
 
 
-@auth_bp.route('/verifyToken', methods=["GET"])
+@auth_bp.route('/validateToken', methods=["GET"])
 @jwt_required()
-def verifyToken():
-    current_user = get_jwt_identity()
+def validate_token():
+    user_id = get_jwt_identity()
 
-    user = Users.query.filter_by(_id=current_user).first()
-    return jsonify({"success": (current_user != None), "id": current_user, "username": user.username}), 200
+    user = Users.query.filter_by(_user_id=user_id).first()
+    return jsonify({"success": (user_id != None), "id": user_id, "username": user.username}), 200
 
 
 @auth_bp.route('/all', methods=["GET"])
-def showAll():
+def show_all():
     try:
         all_users = Users.query.all()
         users_list = [{"username": user.username, "email": user.email, "password": user.password} for user in all_users]
@@ -113,7 +111,7 @@ def showAll():
 
 
 @auth_bp.route('/clear', methods=["GET"])
-def clearAll():
+def clear_all():
     try:
         db.session.query(Users).delete()
         db.session.commit()
