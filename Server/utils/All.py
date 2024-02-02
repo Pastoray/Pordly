@@ -10,7 +10,14 @@ def all_users():
         entries_list = []
 
         for entry in all_entries:
-            entries_list.append(entry.properties())
+            entries_list.append(
+                {
+                    "user_id": entry._user_id,
+                    "username": entry.username,
+                    "email": entry.email,
+                    "hashed_password": entry.hashed_password
+                }
+            )
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
@@ -24,7 +31,18 @@ def all_stats():
         entries_list = []
 
         for entry in all_entries:
-            entries_list.append(entry.properties())
+            entries_list.append(
+                {
+                    "stats_id": entry._stats_id,
+                    "user_id": entry._user_id,
+                    "xp": entry.xp,
+                    "level": entry.level,
+                    "title": entry.title,
+                    "streak": entry.streak,
+                    "gems": entry.gems,
+                    "lives": entry.lives
+                }
+            )
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
@@ -38,7 +56,15 @@ def all_user_daily_quests():
         entries_list = []
 
         for entry in all_entries:
-            entries_list.append(entry.properties())
+            entries_list.append(
+                {
+                    "user_daily_quests_id": entry._userdailyquests_id,
+                    "user_id": entry._user_id,
+                    "daily_quest_id": entry._dailyquest_id,
+                    "isComplete": entry.isComplete,
+                    "date": entry.date
+                }
+            )
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
@@ -52,7 +78,14 @@ def all_levels():
         entries_list = []
 
         for entry in all_entries:
-            entries_list.append(entry.properties())
+            entries_list.append(
+                    {
+                        "level_id": entry._level_id,
+                        "level": entry.level,
+                        "xp_required": entry.xp_required,
+                        "color": entry.color
+                    }
+            )
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
@@ -66,7 +99,14 @@ def all_titles():
         entries_list = []
 
         for entry in all_entries:
-            entries_list.append(entry.properties())
+            entries_list.append(
+                {
+                    "title_id": entry._title_id,
+                    "title": entry.title,
+                    "level_required": entry.level_required,
+                    "color": entry.color
+                }
+            )
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
@@ -80,7 +120,20 @@ def all_daily_quests():
         entries_list = []
 
         for entry in all_entries:
-            entries_list.append(entry.properties())
+            entries_list.append(
+                {
+                    "daily_quest_id": entry._dailyquest_id,
+                    "title": entry.title,
+                    "accuracy_req": entry.accuracy_req,
+                    "wpm_req": entry.accuracy_req,
+                    "time_req": entry.accuracy_req,
+                    "difficulty": entry.difficulty,
+                    "date": entry.date,
+                    "gems": entry.gems,
+                    "xp": entry.xp,
+                    "lives": entry.lives
+                }
+            )
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:

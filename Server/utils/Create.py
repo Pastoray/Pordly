@@ -4,43 +4,6 @@ from datetime import date
 
 create_bp = Blueprint("create", __name__)
 
-@create_bp.route("/users", methods=["POST"])
-def create_account():
-    data = request.get_json()
-
-    if not data:
-        return jsonify({"success": False, "error": {
-                "usernameError": "Invalid Data",
-                "emailError": "Invalid Data",
-                "passwordError": "Invalid Data",
-            }
-        }), 400
-    
-    username = data.get("username")
-    email = data.get("email")
-    password = data.get("password")
-
-    if not (password and email and username):
-        return jsonify({"success": False, "error": {
-            "usernameError": "Missing username" if not username else "",                                   
-            "emailError": "Missing email" if not email else "",
-            "passwordError": "Missing password" if not password else ""
-            }
-        }), 400
-    
-    usernameExists = Users.query.filter_by(username=username).first()
-    emailExists = Users.query.filter_by(email=email).first()
-    
-    if usernameExists:
-        return jsonify({"success": False, "error": {"usernameError": "Username already exists"}}), 400
-    elif emailExists:
-        return jsonify({"success": False, "error": {"emailError": "Email already exists"}}), 400
-
-    user = Users(username, email, password)
-    user_id = user._user_id
-    create_stats(user_id)
-    return jsonify({"success": True, "message": "Account Created successfully"}), 201
-
 def create_stats(user_id):
     row = Titles.query.filter(Titles.level_required<=1).first()
     title = row.title
@@ -109,15 +72,41 @@ def create_daily():
     data = request.get_json()
     quests = []
     for entry in data:
-        quest_difficulty = entry.get("quest_difficulty")
-        quest_date = date.today()
-        quest_reward = entry.get("quest_reward")
+        title = entry.get("title")
+        requirements = entry.get("requirements")
+        difficulty = entry.get("difficulty")
+        quest_date = entry.get("date")
+        reward = entry.get("reward")
 
-        DailyQuests(quest_difficulty, quest_date, quest_reward)
+        date_object = quest_date.split("-")
+
+        quest_date = date(int(date_object[0]), int(date_object[1]), int(date_object[2]))
+
+        DailyQuests(
+            title,
+            requirements.get("accuracy_req"),
+            requirements.get("wpm_req"),
+            requirements.get("time_req"),
+            difficulty,
+            quest_date,
+            reward.get("xp"),
+            reward.get("gems"),
+            reward.get("lives")
+            )
         quests.append({"daily_quest_created": {
-                "difficulty": quest_difficulty,
-                "date": date.today(),
-                "reward": quest_reward
+                "title": title,
+                "requirements": {
+                    "accuracy_req": requirements.get("accuracy_req"),
+                    "wpm_req": requirements.get("wpm_req"),
+                    "time_req": requirements.get("time_req"),
+                },
+                "difficulty": difficulty,
+                "date": quest_date,
+                "reward": {
+                    "xp": reward.get("xp"),
+                    "gems": reward.get("gems"),
+                    "lives": reward.get("lives")
+                }
             }
         })
     return jsonify(quests), 201

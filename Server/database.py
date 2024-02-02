@@ -16,48 +16,7 @@ class Levels(db.Model):
 
         db.session.add(self)
         db.session.commit()
-    
-    def get_properties(self):
-        return {
-            "level_id": self._level_id,
-            "level": self.level,
-            "xp_required": self.xp_required,
-            "color": self.color
-        }
 
-class DailyQuests(db.Model):
-    _dailyquest_id = db.Column(db.Integer, nullable=False, primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
-    description = db.Column(db.String(128), nullable=False)
-    difficulty = db.Column(db.String(32), nullable=False)
-    date = db.Column(db.Date, nullable=False, default=date.today())
-    gems = db.Column(db.Integer, nullable=False)
-    xp = db.Column(db.Integer, nullable=False)
-    lives = db.Column(db.Integer, nullable=False)
-    def __init__(self, title, description, difficulty, date, gems, xp, lives):
-        self.title = title
-        self.description = description
-        self.difficulty = difficulty
-        self.date = date
-        self.gems = gems
-        self.xp = xp
-        self.lives = lives
-
-        db.session.add(self)
-        db.session.commit()
-
-    def properties(self):
-        return {
-            "daily_quest_id": self._dailyquest_id,
-            "title": self.title,
-            "description": self.description,
-            "difficulty": self.difficulty,
-            "date": self.date,
-            "gems": self.gems,
-            "xp": self.xp,
-            "lives": self.lives
-        }
-    
 class Titles(db.Model):
     _title_id = db.Column(db.Integer, nullable=False, primary_key=True)
     title = db.Column(db.String(64), nullable=False)
@@ -71,13 +30,49 @@ class Titles(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def propreties(self):
-        return {
-            "title_id": self._title_id,
-            "title": self.title,
-            "level_required": self.level_required,
-            "color": self.color
-        }
+class Achievements(db.Model):
+    _achievement_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    title = db.Column(db.String(64), nullable=False)
+    description = db.Column(db.String(128), nullable=False)
+    difficulty = db.Column(db.String(32), nullable=False)
+    xp = db.Column(db.Integer, nullable=False)
+    gems = db.Column(db.Integer, nullable=False)
+    lives = db.Column(db.Integer, nullable=False)
+    def __init__(self, title, difficulty, xp, gems, lives):
+        self.title = title
+        self.difficulty = difficulty
+        self.xp = xp
+        self.gems = gems
+        self.lives = lives
+
+        db.session.add(self)
+        db.session.commit()
+
+class DailyQuests(db.Model):
+    _dailyquest_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    title = db.Column(db.String(64), nullable=False)
+    accuracy_req = db.Column(db.Integer, nullable=False)
+    wpm_req = db.Column(db.Integer, nullable=False)
+    time_req = db.Column(db.Integer, nullable=False)
+    difficulty = db.Column(db.String(32), nullable=False)
+    date = db.Column(db.Date, nullable=False, default=date.today())
+    xp = db.Column(db.Integer, nullable=False)
+    gems = db.Column(db.Integer, nullable=False)
+    lives = db.Column(db.Integer, nullable=False)
+    def __init__(self, title, accuracy_req, wpm_req, time_req, difficulty, date, xp, gems, lives):
+        self.title = title
+        self.accuracy_req = accuracy_req 
+        self.wpm_req = wpm_req 
+        self.time_req = time_req 
+        self.difficulty = difficulty
+        self.date = date
+        self.xp = xp
+        self.gems = gems
+        self.lives = lives
+
+        db.session.add(self)
+        db.session.commit()
+    
 
 class Users(db.Model):
     _user_id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -95,14 +90,6 @@ class Users(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.hashed_password, password)
-    
-    def properties(self):
-        return {
-            "user_id": self._user_id,
-            "username": self.username,
-            "email": self.email,
-            "hashed_password": self.hashed_password
-        }
     
 class Stats(db.Model):
     _stats_id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -125,18 +112,6 @@ class Stats(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def properties(self):
-        return {
-            "stats_id": self._stats_id,
-            "user_id": self._user_id,
-            "xp": self.xp,
-            "level": self.level,
-            "title": self.title,
-            "streak": self.streak,
-            "gems": self.gems,
-            "lives": self.lives
-        }
-
 class UserDailyQuests(db.Model):
     _userdailyquests_id = db.Column(db.Integer, nullable=False, primary_key=True)
     _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id), nullable=False)
@@ -151,12 +126,4 @@ class UserDailyQuests(db.Model):
 
         db.session.add(self)
         db.session.commit()
-
-    def properties(self):
-        return {
-            "user_daily_quests_id": self._userdailyquests_id,
-            "user_id": self._user_id,
-            "daily_quest_id": self._dailyquest_id,
-            "isComplete": self.isComplete,
-            "date": self.date
-        }
+        

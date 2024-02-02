@@ -2,11 +2,49 @@ from flask import Blueprint, request, jsonify, make_response
 from database import Users
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from datetime import timedelta
+from utils.Create import create_stats
 
 auth_bp = Blueprint("auth_bp", __name__)
 jwt = JWTManager()
 
-@auth_bp.route("/loadAccount", methods=["POST"])
+@auth_bp.route("/create_user", methods=["POST"])
+def create_account():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"success": False, "error": {
+                "usernameError": "Invalid Data",
+                "emailError": "Invalid Data",
+                "passwordError": "Invalid Data",
+            }
+        }), 400
+    
+    username = data.get("username")
+    email = data.get("email")
+    password = data.get("password")
+
+    if not (password and email and username):
+        return jsonify({"success": False, "error": {
+            "usernameError": "Missing username" if not username else "",                                   
+            "emailError": "Missing email" if not email else "",
+            "passwordError": "Missing password" if not password else ""
+            }
+        }), 400
+    
+    usernameExists = Users.query.filter_by(username=username).first()
+    emailExists = Users.query.filter_by(email=email).first()
+    
+    if usernameExists:
+        return jsonify({"success": False, "error": {"usernameError": "Username already exists"}}), 400
+    elif emailExists:
+        return jsonify({"success": False, "error": {"emailError": "Email already exists"}}), 400
+
+    user = Users(username, email, password)
+    user_id = user._user_id
+    create_stats(user_id)
+    return jsonify({"success": True, "message": "Account Created successfully"}), 201
+
+@auth_bp.route("/load_user", methods=["POST"])
 def load_account():
     data = request.get_json()
 
@@ -68,7 +106,7 @@ def load_account():
 
 
 
-@auth_bp.route('/validateToken', methods=["GET"])
+@auth_bp.route('/validate_token', methods=["GET"])
 @jwt_required()
 def validate_token():
     user_id = get_jwt_identity()

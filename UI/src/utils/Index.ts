@@ -139,7 +139,7 @@ export async function checkForAccount(event: React.MouseEvent<HTMLInputElement>,
             promptError(null, emailErrorRef, passwordErrorRef, {"emailError": "Invalid email"})
             return
         }
-        const data = await fetch('http://127.0.0.1:8080/auth/loadAccount', {
+        const data = await fetch('http://127.0.0.1:8080/auth/load_user', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -173,7 +173,7 @@ export function validateEmail(email: string) {
 }
 
 export async function validateToken(cookieValue: string) {
-    const data = await fetch("http://127.0.0.1:8080/auth/validateToken", {
+    const data = await fetch("http://127.0.0.1:8080/auth/validate_token", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -206,7 +206,7 @@ export async function createAccount(event: React.MouseEvent<HTMLInputElement>, e
         return
     }
     
-    const data = await fetch('http://127.0.0.1:8080/create/user', {
+    const data = await fetch('http://127.0.0.1:8080/auth/create_user', {
         method: "POST",
         headers: {
             "Content-type": "application/json"

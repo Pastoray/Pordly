@@ -14,8 +14,8 @@ def check_daily_quest():
     quest = UserDailyQuests.query.filter_by(_user_id=user_id, _quest_id=quest_id).first()
     if not quest.isComplete:
         quest.isComplete = True
-        lives = quest.lives 
-        gems = quest.gems 
+        lives = quest.lives
+        gems = quest.gems
         xp = quest.xp
         
         db.session.commit()
