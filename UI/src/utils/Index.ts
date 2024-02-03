@@ -185,17 +185,37 @@ export async function validateToken(cookieValue: string) {
     
 }
 
-export async function getUser(cookieName: string) {
+export async function getUser() {
     const cookies = document.cookie.split(";")
     for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
-        if (cookie.startsWith(cookieName + '=')) {
-            const cookieValue = cookie.substring(cookieName.length + 1);
+        if (cookie.startsWith("accessToken" + '=')) {
+            const cookieValue = cookie.substring("accessToken".length + 1);
             const user = await validateToken(cookieValue);
+            console.log(user)
             return user
         }
     }
     return null;
+}
+
+export async function getUserId() {
+    const user = await getUser();
+    const user_id = user.info.id
+    console.log(user_id)
+    return user_id
+}
+
+export async function getDailyQuests() {
+    const user_id = await getUserId()
+    const data = await fetch("http://127.0.0.1:8080/all/", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+    const response = await data.json()
+    return response
 }
 
 export async function createAccount(event: React.MouseEvent<HTMLInputElement>, emailErrorRef: Ref<HTMLParagraphElement | null>, passwordErrorRef: Ref<HTMLParagraphElement | null>, usernameErrorRef: Ref<HTMLParagraphElement | null>, username: string, email: string, password: string) {

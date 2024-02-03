@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Toolbar from '../components/UI/Toolbar';
 import '../styles/pages/DailyQuests.scss'
 
-function DailyQuest() {
+function DailyQuests() {
     const [status, setStatus] = useState(false);
     return(
         <>  
@@ -45,4 +45,4 @@ function DailyQuest() {
     );
 }
 
-export default DailyQuest;
+export default DailyQuests;

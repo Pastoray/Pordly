@@ -100,7 +100,7 @@ class Stats(db.Model):
     streak = db.Column(db.Integer, nullable=False)
     gems = db.Column(db.Integer, nullable=False)
     lives = db.Column(db.Integer, nullable=False)
-    def __init__(self, user_id, xp, level, title, streak, gems, lives, last_update):
+    def __init__(self, user_id, xp, level, title, streak, gems, lives):
         self._user_id = user_id
         self.xp = xp
         self.level = level
@@ -116,13 +116,11 @@ class UserDailyQuests(db.Model):
     _userdailyquests_id = db.Column(db.Integer, nullable=False, primary_key=True)
     _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id), nullable=False)
     _dailyquest_id = db.Column(db.Integer, db.ForeignKey(DailyQuests._dailyquest_id), nullable=False)
-    date = db.Column(db.Date, db.ForeignKey(DailyQuests.date))
     isComplete = db.Column(db.Boolean, nullable=False)
-    def __init__(self, user_id, quest_id, isComplete, date):
-        self.user_id = user_id
-        self.quest_id = quest_id
+    def __init__(self, user_id, quest_id, isComplete):
+        self._user_id = user_id
+        self._dailyquest_id = quest_id
         self.isComplete = isComplete
-        self.date = date
 
         db.session.add(self)
         db.session.commit()

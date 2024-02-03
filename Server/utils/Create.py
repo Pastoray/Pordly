@@ -10,27 +10,36 @@ def create_stats(user_id):
     Stats(user_id, 0, 1, title, 0, 100, 5)
 
 @create_bp.route("/user_daily_quests", methods=["POST"])
-def create_user_daily_quests():
-    data = request.get_json()
+def create_user_daily_quests(user_id=None):
 
-    user_id = data.get("user_id")
-
+    if not user_id:
+        data = request.get_json()
+        user_id = data.get("user_id")
+    
     entries = DailyQuests.query.filter_by(date=date.today())
     quests = []
     for entry in entries:
         quests.append({
             "title": entry.title,
-            "description": entry.description,
+            "requirements": {
+                "accuracy": entry.accuracy_req,
+                "wpm": entry.wpm_req,
+                "time": entry.time_req,
+            },
             "difficulty": entry.difficulty,
             "date": entry.date,
-            "reward": entry.reward,
+            "rewards": {
+                "xp": entry.xp,
+                "gems": entry.gems,
+                "lives": entry.lives
+            }
         })
-        quest_id = entry.id
-        quest_in_table = UserDailyQuests.query.filter_by(quest_id=quest_id).first()
+        quest_id = entry._dailyquest_id
+        quest_in_table = UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest_id).first()
         if not quest_in_table:
-            UserDailyQuests(user_id, quest_id, False, None)
-    return jsonify(quests)
-
+            UserDailyQuests(user_id, quest_id, False)
+    return quests
+    
 @create_bp.route("/levels", methods=["POST"])
 def create_level():
     data = request.get_json()

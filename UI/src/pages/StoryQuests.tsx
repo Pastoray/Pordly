@@ -2,7 +2,7 @@ import Toolbar from '../components/UI/Toolbar';
 import Layout from '../components/UI/Layout';
 import '../styles/pages/Quests.scss'
 
-function Quests() {
+function StoryQuests() {
     return(
         <div className='levels-container'>
             <div>
@@ -19,4 +19,4 @@ function Quests() {
     );
 }
 
-export default Quests;
+export default StoryQuests;

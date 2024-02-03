@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify, make_response
-from database import Users
+from database import *
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from datetime import timedelta
-from utils.Create import create_stats
+from utils.Create import create_stats, create_user_daily_quests
 
 auth_bp = Blueprint("auth_bp", __name__)
 jwt = JWTManager()
@@ -111,9 +111,62 @@ def load_account():
 def validate_token():
     user_id = get_jwt_identity()
     user = Users.query.filter_by(_user_id=user_id).first()
-    
+
+    user_stats = Stats.query.filter_by(_user_id=user_id).first()
+    user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).first()
+    user_title = Titles.query.filter(Titles.level_required<=user_level.level).first()
+
+    daily_quests =  create_user_daily_quests(user_id)
+    total_quests = []
+    for i in range(len(daily_quests)):
+        total_quests.append(
+            {
+                f"daily_quest_{i + 1}": {
+                    "date": daily_quests[i].get("date"),
+                    "difficulty": daily_quests[i].get("difficulty"),
+                    "requirements": {
+                        "accuracy": daily_quests[i].get("requirements").get("accuracy"),
+                        "time": daily_quests[i].get("requirements").get("time"),
+                        "wpm": daily_quests[i].get("requirements").get("wpm")
+                    },
+                }
+            }
+        )
     return jsonify({
         "success": (user_id != None),
-        "id": user_id,
-        "username": user.username
+        "info": {
+            "id": user_id,
+            "username": user.username
+        },
+        "stats": {              
+            "stats_id": user_stats._stats_id,
+            "user_id": user_stats._user_id,
+            "xp": user_stats.xp,
+            "streak": user_stats.streak,
+            "gems": user_stats.gems,
+            "lives": user_stats.lives,
+            "level": {
+                "level_id": user_level._level_id,
+                "level": user_level.level,
+                "xp_required": user_level.xp_required,
+                "color": user_level.color
+            },
+            "title": {
+                "title_id": user_title._title_id,
+                "title": user_title.title,
+                "level_required": user_title.level_required,
+                "color": user_title.color
+            }
+        },
+        "quests": {
+            "quests": {
+
+            },
+
+            "daily_quests": total_quests,
+
+            "achivements": {
+                
+            }
+        }
     }), 200

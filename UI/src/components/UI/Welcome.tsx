@@ -1,7 +1,10 @@
 import Card from './Card';
 import '../../styles/components/Welcome.scss'
+import { useContext } from 'react';
+import { UserContext } from '../../context/UserContext';
 
 function Welcome() {
+    const User = useContext(UserContext);
     return(
         <>
             <div className='welcome-page-main'>
@@ -24,11 +27,11 @@ function Welcome() {
                     <section id='welcome-page-section-2'>
                         <div className='welcome-page-credentials'>
                             <p id='welcome-page-title'>Credentials</p>
-                            <p>👤 <strong>Username :</strong> [Your Username]</p>
-                            <p>🏆 <strong>Title :</strong> [Your Title]</p>
-                            <p>🔥 <strong>Streak :</strong> [Your Current Streak]</p>
-                            <p>💎 <strong>Gems :</strong> [Your Coin Balance]</p>
-                            <p>❤️ <strong>Lives :</strong> [Your Remaining Lives]</p>
+                            <p>👤 <strong>Username : </strong>{User?.info.username}</p>
+                            <p>🏆 <strong>Title : </strong>{User?.stats.title.title}</p>
+                            <p>🔥 <strong>Streak : </strong>{User?.stats.streak}</p>
+                            <p>💎 <strong>Gems : </strong>{User?.stats.gems}</p>
+                            <p>❤️ <strong>Lives : </strong>{User?.stats.lives}</p>
                         </div>
                     </section>
                     <section id='welcome-page-section-3'>

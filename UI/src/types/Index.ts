@@ -13,7 +13,7 @@ export type ParagraphData = {
 export type User = {
     info: Info,
     stats: Stats,
-    missions: Missions
+    quests: Quests
 }
 
 export type Info = {
@@ -22,24 +22,52 @@ export type Info = {
 }
 
 export type Stats = {
-    level: number,
-    title: string,
+    level: Level,
+    title: Title,
     streak: number,
     gems: number,
     lives: number
 }
 
-export type Missions = {
-    dailyMissions: boolean[],
-    storyMissions: boolean[],
-    quests: boolean[],
-    achievements: boolean[]
+export type Quests = {
+    dailyQuests: DailyQuests[],
+    storyQuests: StoryQuests[],
+    achievements: Achievements[]
 }
 
-export type Requirements = {
-    wpm: number,
+
+export type DailyQuests = {
+    date: Date,
+    difficulty: number,
+    requirements: QuestRequirements
+}
+
+export type QuestRequirements = {
     accuracy: number,
+    wpm: number,
     time: number
+}
+
+export type StoryQuests = {
+
+}
+
+export type Achievements = {
+
+}
+
+export type Level = {
+    level_id: number,
+    level: number,
+    xp_required: number
+    color: string,
+}
+
+export type Title = {
+    title_id: number
+    title: string,
+    level_required: number,
+    color: string,
 }
 
 export type GameProps = {
@@ -74,3 +102,9 @@ export type LoginError = {
     emailError?: string,
     passwordError?: string
 }
+
+export type ContextProviderProps = {
+  children: React.ReactNode
+}
+
+
