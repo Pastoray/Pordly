@@ -1,11 +1,10 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from database import *
 
 all_bp = Blueprint("all", __name__)
 
 @all_bp.route('/users', methods=["GET", "POST"])
 def all_users():
-    # MAKE IT SUPPORT CERTAIN CRITERIA FOR POST REQUESTS
     try:
         all_entries = Users.query.all()
         entries_list = []
@@ -19,14 +18,13 @@ def all_users():
                     "hashed_password": entry.hashed_password
                 }
             )
-
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
-    
+
 @all_bp.route('/stats', methods=["GET", "POST"])
-def all_stats():
+def all_user_stats():
     try:
         all_entries = Stats.query.all()
         entries_list = []
@@ -44,12 +42,11 @@ def all_stats():
                     "lives": entry.lives
                 }
             )
-
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
-    
+        
 @all_bp.route('/user_daily_quests', methods=["GET", "POST"])
 def all_user_daily_quests():
     try:

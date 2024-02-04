@@ -1,16 +1,16 @@
 
 
-async function fetchParagraph(sentences: number) {
-    if (sentences >= 40) {
-        sentences = 40
-    } else if (sentences <= 10) {
-        sentences = 10
-    }
+async function fetchParagraph(paras: number) {
     
-    const data = await fetch(`https://baconipsum.com/api/?type=all-meat&sentences=${sentences}`);
+    /*const data = await fetch(`https://baconipsum.com/api/?type=all-meat&sentences=${sentences}`);
     const array = await data.json();
     const result = array[0].split('. ');
-    result.pop()
+    result.pop()*/
+    
+    const data = await fetch(`https://baconipsum.com/api/?type=all-meat&paras=${paras}`);
+    const array = await data.json();
+    const result = array
+    console.log(array)
     return result;
 }
 

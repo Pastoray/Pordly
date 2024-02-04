@@ -208,13 +208,17 @@ export async function getUserId() {
 
 export async function getDailyQuests() {
     const user_id = await getUserId()
-    const data = await fetch("http://127.0.0.1:8080/all/", {
-        method: "GET",
+    const data = await fetch("http://127.0.0.1:8080/daily_quests/fetch", {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
-        }
+        },
+        body: JSON.stringify({
+            user_id
+        })
     })
     const response = await data.json()
+    console.log(response)
     return response
 }
 

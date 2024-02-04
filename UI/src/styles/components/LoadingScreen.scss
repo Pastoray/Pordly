@@ -3,6 +3,9 @@
 }
 
 .game-starting {
+    span {
+        font-size: 2rem;
+    }
     @for $i from 1 through 11 {
         $color: randomColor();
         span:nth-child(#{$i}) {

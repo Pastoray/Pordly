@@ -11,7 +11,6 @@ def create_stats(user_id):
 
 @create_bp.route("/user_daily_quests", methods=["POST"])
 def create_user_daily_quests(user_id=None):
-
     if not user_id:
         data = request.get_json()
         user_id = data.get("user_id")

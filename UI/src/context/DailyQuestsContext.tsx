@@ -2,11 +2,12 @@ import { createContext, useEffect, useState } from "react";
 import { DailyQuests, ContextProviderProps } from "../types/Index";
 import { getDailyQuests } from "../utils/Index";
 
+
 export const DailyQuestsContext = createContext<DailyQuests | undefined>(undefined);
 
-function UserContextProvider({ children }: ContextProviderProps) {
+function DailyQuestsContextProvider({ children }: ContextProviderProps) {
   const [dailyQuests, setDailyQuests] = useState();
-
+  
   useEffect(() => {
     async function fetchDailyQuests() {
       try {
@@ -27,4 +28,4 @@ function UserContextProvider({ children }: ContextProviderProps) {
   );
 };
 
-export default UserContextProvider;
+export default DailyQuestsContextProvider;

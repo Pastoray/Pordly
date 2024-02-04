@@ -3,11 +3,10 @@ import '../../styles/components/LoadingScreen.scss'
 function LoadingScreen() {
     return(
         <div className='game-starting'>
-            <span>S</span>
-            <span>t</span>
+            <span>L</span>
+            <span>o</span>
             <span>a</span>
-            <span>r</span>
-            <span>t</span>
+            <span>d</span>
             <span>i</span>
             <span>n</span>
             <span>g</span>

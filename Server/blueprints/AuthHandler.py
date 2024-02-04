@@ -104,8 +104,6 @@ def load_account():
 
     return response
 
-
-
 @auth_bp.route('/validate_token', methods=["GET"])
 @jwt_required()
 def validate_token():
@@ -116,7 +114,7 @@ def validate_token():
     user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).first()
     user_title = Titles.query.filter(Titles.level_required<=user_level.level).first()
 
-    daily_quests =  create_user_daily_quests(user_id)
+    daily_quests = create_user_daily_quests(user_id)
     total_quests = []
     for i in range(len(daily_quests)):
         total_quests.append(
@@ -163,7 +161,9 @@ def validate_token():
 
             },
 
-            "daily_quests": total_quests,
+            "daily_quests": {
+
+            },
 
             "achivements": {
                 

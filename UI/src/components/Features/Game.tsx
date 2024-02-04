@@ -1,19 +1,24 @@
 import Wpm from './Wpm';
 import Timer from './Times';
 import { GameOver, restart, handleInput, initData, updateParagraph } from '../../utils/Index';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ParagraphData, GameProps } from '../../types/Index';
 import LoadingScreen from '../UI/LoadingScreen';
 import '../../styles/components/Game.scss'
 import Accuracy from './Accuracy';
+import { DailyQuestsContext } from '../../context/DailyQuestsContext';
 
-function Game({ missionType, mission, sentences, timer, reqTime, reqWpm, reqAccuracy }: GameProps) {
+function Game({ quest_type, quest_id }: GameProps) {
+    const daily_quests = useContext(DailyQuestsContext)
+    const quest = daily_quests!.filter((quest) => quest_id === quest.daily_quest_id)[0];
+    const paras = 50;
+
     const [input, setInput] = useState('');
     const [paragraphData, setParagraphData] = useState<ParagraphData | null>(null);
     const [accuracy, setAccuracy] = useState(0);
     const [gameFinished, setGameFinished] = useState(false);
     const [timePassed, setTimePassed] = useState(0.016);
-    const [maxTime, setMaxTime] = useState(reqTime ? reqTime : 0);
+    const [time, setTime] = useState(quest.requirements.time);
     const [correctWords, setCorrectWords] = useState(0);
     const [wpm, setWpm] = useState(0);
     const [wordIdx, setWordIdx] = useState(0);
@@ -26,7 +31,7 @@ function Game({ missionType, mission, sentences, timer, reqTime, reqWpm, reqAccu
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        initData(sentences, setParagraphData, setLuckyIdx, setLoading);
+        initData(paras, setParagraphData, setLuckyIdx, setLoading);
     }, [])
 
     useEffect(() => {
@@ -37,7 +42,7 @@ function Game({ missionType, mission, sentences, timer, reqTime, reqWpm, reqAccu
         inputRef.current!.focus()
     }, [loading])
     useEffect(() => {
-        if (timer && maxTime == 0) {
+        if (time == 0) {
             GameOver(setGameOver, setInput, inputRef)
             return;
         }
@@ -45,20 +50,18 @@ function Game({ missionType, mission, sentences, timer, reqTime, reqWpm, reqAccu
         const intervalId = setInterval(() => {
             setTimePassed((t) => t + 0.016);
             updateWPM();
-            if (timer) {
-                setMaxTime((t) => t - 1);
-            }
+            setTime((t) => t - 1);
         }, 1000)
         return () => {
             clearInterval(intervalId)
         }
-    }, [timePassed, maxTime, loading])
+    }, [timePassed, time, loading])
     function updateWPM() {
         setWpm(correctWords / timePassed);
     }
 
     useEffect(() => {
-        setMaxTime((t) => t + bonus)
+        setTime((t) => t + bonus)
     }, [bonus])
 
     function SetMissionAsDone(missionType: string) {
@@ -74,11 +77,7 @@ function Game({ missionType, mission, sentences, timer, reqTime, reqWpm, reqAccu
                         <Accuracy accuracy={accuracy}/>
                         <Wpm wpm={wpm}/>
                     </div>
-                    {timer ?
-                    <Timer time={maxTime}/>
-                    :
-                    null
-                    }
+                    <Timer time={time}/>
                 </div>
                 <div className='game-paragraph'>
                     <div className='game-words'>
@@ -101,31 +100,31 @@ function Game({ missionType, mission, sentences, timer, reqTime, reqWpm, reqAccu
                                 <div className='mission-finished-container'>
                                     <p id='mission' className='mission-failed'>MISSION FAILED</p>
                                     <div>
-                                        <p>Total Accuracy: <span className={accuracy >= reqAccuracy ? `mission-succeeded` : `mission-failed`}>{accuracy.toFixed(2)}%</span></p>
-                                        <p>Words per minute: <span className={wpm >= reqWpm ? `mission-succeeded` : `mission-failed`}>{wpm.toFixed(2)}</span></p>
-                                        { timer ? <p>Time left: <span className={maxTime > 0 ? `mission-succeeded` : `mission-failed`}>{maxTime}s</span></p> : null }
+                                        <p>Total Accuracy: <span className={accuracy >= quest.requirements.accuracy ? `mission-succeeded` : `mission-failed`}>{accuracy.toFixed(2)}%</span></p>
+                                        <p>Words per minute: <span className={wpm >= quest.requirements.wpm ? `mission-succeeded` : `mission-failed`}>{wpm.toFixed(2)}</span></p>
+                                        <p>Time left: <span className={time > 0 ? `mission-succeeded` : `mission-failed`}>{time}s</span></p>
                                     </div>
                                     <button onClick={() => {
                                         restart(setLoading, setBonus, setWordIdx, setParagraphData, setGameOver, setAccuracy, setGameFinished, inputRef)
                                         setTimePassed(0.016);
                                         setCorrectWords(0);
-                                        setMaxTime(reqTime ? reqTime : 0);
+                                        setTime(quest.requirements.time);
                                         inputRef.current!.focus();
                                     }}>Restart</button>
                                 </div>
                         :   
                             <div className='mission-finished-container'>
-                                <p id='mission' className={(accuracy >= reqAccuracy && wpm >= reqWpm && (maxTime? maxTime > 0 : true)) ? 'mission-succeeded' : 'mission-failed'}>MISSION {(accuracy >= reqAccuracy && wpm >= reqWpm && maxTime >= 0) ? 'SUCCESSFUL' : 'FAILED'}</p>
+                                <p id='mission' className={(accuracy >= quest.requirements.accuracy && wpm >= quest.requirements.wpm && (time? time > 0 : true)) ? 'mission-succeeded' : 'mission-failed'}>MISSION {(accuracy >= quest.requirements.accuracy && wpm >= quest.requirements.wpm && time >= 0) ? 'SUCCESSFUL' : 'FAILED'}</p>
                                 <div>
-                                    <p>Total Accuracy: <span className={accuracy >= reqAccuracy ? `mission-succeeded` : `mission-failed`}>{accuracy.toFixed(2)}% {accuracy >= reqAccuracy ? <span> {`> ${reqAccuracy}`}</span> : <span>{`< ${reqAccuracy}`}</span>}%</span></p>
-                                    <p>Words per minute: <span className={wpm >= reqWpm ? `mission-succeeded` : `mission-failed`}>{wpm.toFixed(2)} {wpm >= reqWpm ? <span> {`> ${reqWpm}`}</span> : <span>{`< ${reqWpm}`}</span>}</span></p>
-                                    { timer ? <p>Time left: <span className={maxTime > 0 ? `mission-succeeded` : `mission-failed`}>{maxTime}s</span></p> : null }
+                                    <p>Total Accuracy: <span className={accuracy >= quest.requirements.accuracy ? `mission-succeeded` : `mission-failed`}>{accuracy.toFixed(2)}% {accuracy >= quest.requirements.accuracy ? <span> {`> ${quest.requirements.accuracy}`}</span> : <span>{`< ${quest.requirements.accuracy}`}</span>}%</span></p>
+                                    <p>Words per minute: <span className={wpm >= quest.requirements.wpm ? `mission-succeeded` : `mission-failed`}>{wpm.toFixed(2)} {wpm >= quest.requirements.wpm ? <span> {`> ${quest.requirements.wpm}`}</span> : <span>{`< ${quest.requirements.wpm}`}</span>}</span></p>
+                                    <p>Time left: <span className={time > 0 ? `mission-succeeded` : `mission-failed`}>{time}s</span></p>
                                 </div>
                                 <button onClick={() => {
                                     restart(setLoading, setBonus, setWordIdx, setParagraphData, setGameOver, setAccuracy, setGameFinished, inputRef);
                                     setTimePassed(0.016);
                                     setCorrectWords(0);
-                                    setMaxTime(reqTime ? reqTime : 0);
+                                    setTime(quest.requirements.time);
                                     inputRef.current!.focus();
                                     }}>Replay</button>
                             </div>  

@@ -1,48 +1,50 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import Toolbar from '../components/UI/Toolbar';
 import '../styles/pages/DailyQuests.scss'
+import { DailyQuestsContext } from '../context/DailyQuestsContext';
+import { DailyQuests as cock } from '../types/Index';
+import LoadingScreen from '../components/UI/LoadingScreen';
 
 function DailyQuests() {
-    const [status, setStatus] = useState(false);
+    const DailyQuests: cock | undefined = useContext(DailyQuestsContext);
+    
     return(
         <>  
             <header>
                 <Toolbar/>
             </header>
-            <main className='daily-mission-menu'>
-                <div className='daily-mission' onClick={() => window.location.href = '/dailyquests/1'}>
-                    <p id='daily-mission-title'>Daily Mission 1</p>
-                    <p>Finish the mission in less then 2:00 minutes with at least 20% accuracy and 10 WPM</p>
-                    <p id='daily-mission-easy'>Easy</p>
-                    {status ? 
-                    <p id='daily-mission-complete'>Complete</p>
-                    :
-                    <p id='daily-mission-gems'>10💎</p>
-                    }
-                </div>
-                <div className='daily-mission' onClick={() => window.location.href = '/dailyquests/2'}>
-                    <p id='daily-mission-title'>Daily mission 2</p>
-                    <p>Finish the mission in less then 1:15 minutes with at least 40% accuracy and 15 WPM</p>
-                    <p id='daily-mission-medium'>Medium</p>
-                    {status ? 
-                    <p id='daily-mission-complete'>Complete</p>
-                    :
-                    <p id='daily-mission-gems'>25💎</p>
-                    }
-                </div>
-                <div className='daily-mission' onClick={() => window.location.href = '/dailyquests/3'}>
-                    <p id='daily-mission-title'>Daily mission 3</p>
-                    <p>Finish the mission in less then 0:30 seconds with at least 60% accuracy and 20 WPM</p>
-                    <p id='daily-mission-hard'>Hard</p>
-                    {status ? 
-                    <p id='daily-mission-complete'>Complete</p>
-                    :
-                    <p id='daily-mission-gems'>40💎</p>
-                    }
-                </div>
+            <main className='daily-quest-menu'>
+                {DailyQuests ? 
+                    DailyQuests.map((quest) => (
+                        <div className='daily-quest' onClick={() => window.location.href = `daily-quests/${quest.daily_quest_id}`}>
+                            <p className={`daily-quest-title daily-quest-${quest.difficulty.toLocaleLowerCase()}`}>{quest.title}</p>
+                            <p style={{padding: "0rem 0rem 0.25rem", color: "gold", textShadow: "0px 0px 2px gold"}}>Requirements:</p>
+                            <div>
+                                <p className='daily-quest-requirements'>{quest.requirements.accuracy}% Accuracy</p>
+                                <p className='daily-quest-requirements'>{quest.requirements.wpm} WPM</p>
+                                <p className='daily-quest-requirements'>{quest.requirements.time} Seconds</p>
+                            </div>
+                            <p className={`daily-quest-${quest.difficulty.toLocaleLowerCase()}`}>{quest.difficulty}</p>
+                            {quest.isComplete ? 
+                                <p className='daily-quest-complete'>Complete</p>
+                                :
+                                <div className='daily-quest-reward-container'>
+                                    <p className='daily-quest-xp'>{quest.reward.xp}🌟</p>
+                                    <p className='daily-quest-gems'>{quest.reward.gems}💎</p>
+                                    {quest.reward.lives == 0 ?
+                                        null
+                                        :
+                                        <p className='daily-quest-lives'>{quest.reward.lives}❤️</p>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    ))
+                :
+                <LoadingScreen/>
+                }
             </main>
         </>
     );
 }
-
 export default DailyQuests;
