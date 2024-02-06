@@ -20,7 +20,7 @@ function App() {
               <Route index element={<Home/>}/>
               <Route path='/home' element={<Home/>}/>
               <Route path='/daily-quests' element={<DailyQuests/>}/>
-              <Route path='/quests' element={<StoryQuests/>}/>
+              <Route path='/story-quests' element={<StoryQuests/>}/>
               <Route path='/:quest_type/:quest_id' element={<LoadQuest/>}/>
               <Route path='/sign-up' element={<Signup/>}/>
               <Route path='/log-in' element={<Login/>}/>

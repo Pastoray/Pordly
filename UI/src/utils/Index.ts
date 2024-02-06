@@ -1,18 +1,16 @@
 import fetchParagraph from "../data/fetchParagraph";
-import { State, Ref, ParagraphData, LoginError } from "../types/Index";
-
+import { State, Ref, ParagraphData, LoginError, QuestType } from "../types/Index";
 
 let Words = 0;
 
-export function GameOver(setGameOver: State<boolean>, setInput: State<string>, inputRef: Ref<HTMLInputElement | null>) {
+export function setGameOver(setGameFinished: State<boolean>, setInput: State<string>, inputRef: Ref<HTMLInputElement | null>) {
     inputRef.current!.readOnly = true;
-    setGameOver(true);
+    setGameFinished(true);
     setInput('');
 }
 
-export function restart(setLoading: State<boolean>, setBonus: State<number>, setWordIdx: State<number>, setParagraphData: State<ParagraphData | null>, setGameOver: State<boolean>, setAccuracy: State<number>, setGameFinished: State<boolean>, inputRef: Ref<HTMLInputElement | null>) {
+export function restart(setLoading: State<boolean>, setBonus: State<number>, setWordIdx: State<number>, setParagraphData: State<ParagraphData | null>, setAccuracy: State<number>, setGameFinished: State<boolean>, inputRef: Ref<HTMLInputElement | null>) {
     inputRef.current!.readOnly = false;
-    setGameFinished(false);
     setLoading(true);
 
     setBonus(0);
@@ -20,19 +18,23 @@ export function restart(setLoading: State<boolean>, setBonus: State<number>, set
 
     setAccuracy(0);
     setParagraphData((prevData) => ({ ...prevData!, paragraphIdx: -1 }));
-    loadingEnded(setLoading, setGameOver)
+    loadingEnded(setLoading, setGameFinished)
 }
 
-export function handleInput(event: React.ChangeEvent<HTMLInputElement>, paragraphData: ParagraphData | null, input: string, setInput: State<string>, wordIdx: number, setWordIdx: State<number>, cooldown: number, setCooldown: State<number>, luckyIdx: number, setLuckyIdx: State<number>, setBonus: State<number>, setAccuracy: State<number>, setCorrectWords: State<number>) {
-    if (event.target.value.endsWith(' ')) {
+export function handleInput(event: React.KeyboardEvent<HTMLInputElement>, paragraphData: ParagraphData | null, input: string, setInput: State<string>, wordIdx: number, setWordIdx: State<number>, cooldown: number, setCooldown: State<number>, luckyIdx: number, setLuckyIdx: State<number>, setBonus: State<number>, setAccuracy: State<number>, setCorrectWords: State<number>) {
+    if (event.key == 'Enter' || event.key == ' ') {
         if (Date.now() - cooldown > 50) {
             setCooldown(Date.now())
             checkWord(input, paragraphData!.words[wordIdx], paragraphData, wordIdx, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords);
             setInput('');
             setWordIdx((idx) => idx + 1);
         }
-    } else {
-        setInput(event.target.value);
+    }
+}
+
+export function handleChange(event: React.ChangeEvent<HTMLInputElement>, setInput: State<string>) {
+    if (!event.target.value.endsWith(" ")) {
+        setInput(event.target.value)
     }
 }
 
@@ -44,7 +46,7 @@ export async function initData(sentences: number, setParagraphData: State<Paragr
     setParagraphData({paragraphs: data,
                         words: data[0].split(' '),
                         classes: Array.from({ length: data[0].split(' ').length }, () => ''),
-                        paragraphIdx: 1} as ParagraphData);
+                        paragraphIdx: 0} as ParagraphData);
 
     setLuckyIdx(Math.floor(Math.random() * data[0].split(' ').length) - 1)
     setLoading(false);
@@ -52,13 +54,13 @@ export async function initData(sentences: number, setParagraphData: State<Paragr
 
 export async function updateParagraph(paragraphData: ParagraphData | null, setParagraphData: State<ParagraphData | null>, wordIdx: number, setWordIdx: State<number>, setLuckyIdx: State<number>, setGameFinished: State<boolean>, inputRef: Ref<HTMLInputElement | null>) {
     if (paragraphData !== null && wordIdx >= paragraphData!.words.length) {
-        if (paragraphData.paragraphIdx === paragraphData.paragraphs.length - 1) {
+        if (paragraphData.paragraphIdx >= paragraphData.paragraphs.length - 1) {
             inputRef.current!.readOnly = true;
             setGameFinished(true);
             return;
         }
         inputRef.current!.readOnly = true;
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
         inputRef.current!.readOnly = false;
         setLuckyIdx(Math.floor(Math.random() * paragraphData!.paragraphs[paragraphData!.paragraphIdx + 1].split(' ').length))
         setWordIdx(0);
@@ -70,10 +72,10 @@ export async function updateParagraph(paragraphData: ParagraphData | null, setPa
     }
 }
 
-async function loadingEnded(setLoading: State<boolean>, setGameOver: State<boolean>) {
+async function loadingEnded(setLoading: State<boolean>, setGameFinished: State<boolean>) {
     setTimeout(() => {
         setLoading(false);
-        setGameOver(false);
+        setGameFinished(false);
     }, 1000);
 }
 
@@ -98,29 +100,30 @@ function checkWord(input: String, word: String, paragraphData: ParagraphData | n
     }
 }
 
-export function loadMissions(Container: Ref<HTMLDivElement | null>) {
+export function loadQuests(Container: Ref<HTMLDivElement | null>) {
     for (let i = 1; i <= 50; i++) {
-        const MissionContainer = document.createElement('div');
+        const QuestContainer = document.createElement('div');
 
-        const MissionNumber = document.createElement('p');
-        const MissionReward = document.createElement('p');
+        const QuestNumber = document.createElement('p');
+        const QuestReward = document.createElement('p');
 
-        MissionNumber.className = 'quest-number';
-        MissionNumber.textContent = `Quest ${i}`;
+        QuestNumber.className = 'quest-number';
+        QuestNumber.textContent = `Quest ${i}`;
         
-        MissionReward.className = 'quest-reward';
-        MissionReward.textContent = `${i * 5}💎`;
+        QuestReward.className = 'quest-reward';
+        QuestReward.textContent = `${i * 5}💎`;
         
-        MissionContainer.className = 'quest'
+        QuestContainer.className = 'quest'
         
-        MissionContainer.appendChild(MissionNumber)
-        MissionContainer.appendChild(MissionReward)
+        QuestContainer.appendChild(QuestNumber)
+        QuestContainer.appendChild(QuestReward)
 
 
-        MissionContainer.addEventListener('click', () => {
-            window.location.href = `/quests/${i}`;
+        QuestContainer.addEventListener('click', () => {
+            window.location.href = `/story-quests/${i}`;
         })
-        Container.current!.appendChild(MissionContainer);
+
+        Container.current!.appendChild(QuestContainer);
     }
 }
 
@@ -139,7 +142,7 @@ export async function checkForAccount(event: React.MouseEvent<HTMLInputElement>,
             promptError(null, emailErrorRef, passwordErrorRef, {"emailError": "Invalid email"})
             return
         }
-        const data = await fetch('http://127.0.0.1:8080/auth/load_user', {
+        const data = await fetch('http://127.0.0.1:8080/auth/load-user', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -173,7 +176,7 @@ export function validateEmail(email: string) {
 }
 
 export async function validateToken(cookieValue: string) {
-    const data = await fetch("http://127.0.0.1:8080/auth/validate_token", {
+    const data = await fetch("http://127.0.0.1:8080/auth/validate-token", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -208,7 +211,7 @@ export async function getUserId() {
 
 export async function getDailyQuests() {
     const user_id = await getUserId()
-    const data = await fetch("http://127.0.0.1:8080/daily_quests/fetch", {
+    const data = await fetch("http://127.0.0.1:8080/daily-quests/fetch", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -230,7 +233,7 @@ export async function createAccount(event: React.MouseEvent<HTMLInputElement>, e
         return
     }
     
-    const data = await fetch('http://127.0.0.1:8080/auth/create_user', {
+    const data = await fetch('http://127.0.0.1:8080/auth/create-user', {
         method: "POST",
         headers: {
             "Content-type": "application/json"
@@ -244,4 +247,37 @@ export async function createAccount(event: React.MouseEvent<HTMLInputElement>, e
     } else {
         promptError(usernameErrorRef, emailErrorRef, passwordErrorRef, response.error)
     }
+}
+
+export async function check_quest(quest_id: number, quest_type: QuestType | undefined) {
+    const user_id = await getUserId();
+    const data = await fetch(`http://127.0.0.1:8080/${quest_type}/check`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+            quest_id
+        })
+    })
+    const response = await data.json()
+    return response
+}
+
+export async function decrement_lives() {
+    const user_id = await getUserId();
+    const data = await fetch(`http://127.0.0.1:8080/stats/lives`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+            "lives": -1
+        })
+    })
+    const response = await data.json()
+    return response
+
 }

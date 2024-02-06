@@ -32,7 +32,7 @@ app.register_blueprint(all_bp, url_prefix="/all")
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(achivements_bp, url_prefix="/achievements")
 app.register_blueprint(stats_bp, url_prefix="/stats")
-app.register_blueprint(dailyquest_bp, url_prefix="/daily_quests")
+app.register_blueprint(dailyquest_bp, url_prefix="/daily-quests")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

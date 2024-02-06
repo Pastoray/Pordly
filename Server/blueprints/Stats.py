@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from database import *
 from sqlalchemy.orm.exc import NoResultFound
-from datetime import date
+from datetime import date, timedelta
 
 stats_bp = Blueprint("stats", __name__)
 
@@ -19,12 +19,7 @@ def test():
 		return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 	return jsonify({"user_created": True, "user_id": user_id})
 
-@stats_bp.route("/gems", methods=["POST"])
 def update_gems(user_id, gems):
-	data = request.get_json()
-	user_id = data.get("user_id")
-	gems = data.get("gems")
-
 	try:
 		user_stats = Stats.query.filter_by(_user_id=user_id).first()
 		user_stats.gems += gems
@@ -38,7 +33,7 @@ def update_gems(user_id, gems):
 	return {"user_gems": user_stats.gems}
 
 @stats_bp.route("/lives", methods=["POST"])
-def update_lives(user_id, lives):
+def update_lives():
 	data = request.get_json()
 	user_id = data.get("user_id")
 	lives = data.get("lives")
@@ -55,12 +50,7 @@ def update_lives(user_id, lives):
 		return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 	return {"user_lives": user_stats.lives}
 
-@stats_bp.route("/xp", methods=["POST"])
 def update_xp(user_id, xp):
-	data = request.get_json()
-	user_id = data.get("user_id")
-	xp = data.get("xp")
-
 	try:
 		user = Stats.query.filter_by(_user_id=user_id).first()
 		user.xp += xp
@@ -90,33 +80,44 @@ def update_xp(user_id, xp):
 	
 	return jsonify({"user_level": user.level, "user_titles": {f"{i + 1}": v for i, v in enumerate(titles)}})
 
-@stats_bp.route("/streak", methods=["POST"])
-def update_streak(user_id):
-	data = request.get_json()
-	user_id = data.get("user_id")
+def reset_daily_lives(user_id):
+	user_stats = Stats.query.filter_by(user_id=user_id).first()
+	lives = max(user_stats.lives, 5)
 
-	streak = 0
-	all_quests_completed_yesterday = False
-	yesterday_quests = UserDailyQuests.query.filter_by(_user_id=user_id, date=date.today() - 1)
-	if yesterday_quests:
-		all_quests_completed_yesterday = all(quest.isComplete for quest in yesterday_quests)
-	else:
-		all_quests_completed_yesterday = True
-	  
-	if all_quests_completed_yesterday:
-		yesterday_streak = Stats.query.filter_by(_user_id=user_id).streak
-		streak = yesterday_streak
-	
-	today_quests = UserDailyQuests.query.filter_by(_user_id=user_id, date=date.today())
-	all_quests_completed_today = all(quest.isComplete for quest in today_quests)
-
-	if all_quests_completed_today:
-		streak += 1
-
-	user_stats = Stats.query.filter_by(_user_id=user_id).first()
-	user_stats.streak = streak
-	
+	user_stats.lives = lives
 	db.session.commit()
+
+def update_streak(user_id):
+	user_stats = Stats.query.filter_by(_user_id=user_id).first()
+	all_quests_today = DailyQuests.query.filter_by(date=date.today())
+
+	today_quests = []
+	
+	for quest in all_quests_today:
+		today_quests.append(UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest._dailyquest_id).first())
+
+	all_quests_today_completed = all(quest.isComplete for quest in today_quests)
+
+	if all_quests_today_completed:
+		user_stats.streak += 1
+
+	db.session.commit()
+
+def get_streak(user_id):
+	user_stats = Stats.query.filter_by(_user_id=user_id).first()
+	all_quests_yesterday = DailyQuests.query.filter_by(date=date.today() - timedelta(days=1))
+
+	yesterday_quests = []
+
+	for quest in all_quests_yesterday:
+		yesterday_quests.append(UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest._dailyquest_id).first())
+	all_quests_yesterday_completed = all(quest.isComplete for quest in yesterday_quests)
+
+	if not all_quests_yesterday_completed:
+		user_stats.streak = 0
+		db.session.commit()
+		update_streak(user_id)
+
 
 @stats_bp.route("/user", methods=["POST"])
 def show_user_stats():
@@ -136,3 +137,4 @@ def show_user_stats():
 	
 	except Exception as e:
 		return jsonify({"error": f"Error: {str(e)}"}), 500
+	

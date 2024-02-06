@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from database import *
 from datetime import date
+from blueprints.Stats import reset_daily_lives
 
 create_bp = Blueprint("create", __name__)
 
@@ -9,38 +10,8 @@ def create_stats(user_id):
     title = row.title
     Stats(user_id, 0, 1, title, 0, 100, 5)
 
-@create_bp.route("/user_daily_quests", methods=["POST"])
-def create_user_daily_quests(user_id=None):
-    if not user_id:
-        data = request.get_json()
-        user_id = data.get("user_id")
-    
-    entries = DailyQuests.query.filter_by(date=date.today())
-    quests = []
-    for entry in entries:
-        quests.append({
-            "title": entry.title,
-            "requirements": {
-                "accuracy": entry.accuracy_req,
-                "wpm": entry.wpm_req,
-                "time": entry.time_req,
-            },
-            "difficulty": entry.difficulty,
-            "date": entry.date,
-            "rewards": {
-                "xp": entry.xp,
-                "gems": entry.gems,
-                "lives": entry.lives
-            }
-        })
-        quest_id = entry._dailyquest_id
-        quest_in_table = UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest_id).first()
-        if not quest_in_table:
-            UserDailyQuests(user_id, quest_id, False)
-    return quests
-    
 @create_bp.route("/levels", methods=["POST"])
-def create_level():
+def create_levels():
     data = request.get_json()
     levels = []
     for entry in data:
@@ -58,7 +29,7 @@ def create_level():
     return jsonify(levels), 201
 
 @create_bp.route("/titles", methods=["POST"])
-def create_title():
+def create_titles():
     data = request.get_json()
     titles = []
     for entry in data:
@@ -75,8 +46,8 @@ def create_title():
         })
     return jsonify(titles), 201
 
-@create_bp.route("/daily_quests", methods=["POST"])
-def create_daily():
+@create_bp.route("/daily-quests", methods=["POST"])
+def create_daily_quests():
     data = request.get_json()
     quests = []
     for entry in data:
@@ -101,7 +72,8 @@ def create_daily():
             reward.get("gems"),
             reward.get("lives")
             )
-        quests.append({"daily_quest_created": {
+        quests.append({
+            "daily_quest_created": {
                 "title": title,
                 "requirements": {
                     "accuracy_req": requirements.get("accuracy_req"),
@@ -119,4 +91,94 @@ def create_daily():
         })
     return jsonify(quests), 201
 
+@create_bp.route("/user-daily-quests", methods=["POST"])
+def create_user_daily_quests(user_id=None):
+    if not user_id:
+        data = request.get_json()
+        user_id = data.get("user_id")
+    
+    lives_reset = False
+    entries = DailyQuests.query.filter_by(date=date.today())
+    quests = []
+
+    for entry in entries:
+        quests.append({
+            "title": entry.title,
+            "requirements": {
+                "accuracy": entry.accuracy_req,
+                "wpm": entry.wpm_req,
+                "time": entry.time_req,
+            },
+            "difficulty": entry.difficulty,
+            "date": entry.date,
+            "rewards": {
+                "xp": entry.xp,
+                "gems": entry.gems,
+                "lives": entry.lives
+            }
+        })
+        quest_id = entry._dailyquest_id
+        quest_in_table = UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest_id).first()
+        if not quest_in_table:
+            UserDailyQuests(user_id, quest_id, False)
+            lives_reset = True
+            
+    if lives_reset:
+        reset_daily_lives(user_id)
+
+    return quests
+
+@create_bp.route("/story-quests", methods=["POST"])
+def create_user_story_quests():
+    data = request.get_json()
+    quests = []
+    for entry in data:
+        title = entry.get("title")
+        requirements = entry.get("requirements")
+        difficulty = entry.get("difficulty")
+        reward = entry.get("reward")
+
+        StoryQuests(
+            title,
+            requirements.get("accuracy_req"),
+            requirements.get("wpm_req"),
+            requirements.get("time_req"),
+            difficulty,
+            reward.get("xp"),
+            reward.get("gems"),
+            reward.get("lives")
+            )
+        quests.append({
+            "story_quest_created": {
+                "title": title,
+                "requirements": {
+                    "accuracy_req": requirements.get("accuracy_req"),
+                    "wpm_req": requirements.get("wpm_req"),
+                    "time_req": requirements.get("time_req"),
+                },
+                "difficulty": difficulty,
+                "reward": {
+                    "xp": reward.get("xp"),
+                    "gems": reward.get("gems"),
+                    "lives": reward.get("lives")
+                }
+            }
+        })
+    return jsonify(quests), 201
+
+def create_user_daily_quests(user_id):
+    entries = StoryQuests.query.all()
+    quests = []
+
+    for entry in entries:
+        quests.append({
+            "_storyquest_id": entry._storyquest_id,
+            "_user_id": entry._user_id,
+            "isComplete": entry.isComplete,
+            "completionDate": entry.completionDate,
+        })
+        quest_id = entry._dailyquest_id
+        UserStoryQuests(user_id, quest_id, False, None)
+
+    return quests
     

@@ -3,11 +3,12 @@ from database import *
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from datetime import timedelta
 from utils.Create import create_stats, create_user_daily_quests
+from blueprints.Stats import get_streak
 
 auth_bp = Blueprint("auth_bp", __name__)
 jwt = JWTManager()
 
-@auth_bp.route("/create_user", methods=["POST"])
+@auth_bp.route("/create-user", methods=["POST"])
 def create_account():
     data = request.get_json()
 
@@ -44,7 +45,7 @@ def create_account():
     create_stats(user_id)
     return jsonify({"success": True, "message": "Account Created successfully"}), 201
 
-@auth_bp.route("/load_user", methods=["POST"])
+@auth_bp.route("/load-user", methods=["POST"])
 def load_account():
     data = request.get_json()
 
@@ -104,15 +105,17 @@ def load_account():
 
     return response
 
-@auth_bp.route('/validate_token', methods=["GET"])
+@auth_bp.route('/validate-token', methods=["GET"])
 @jwt_required()
 def validate_token():
     user_id = get_jwt_identity()
     user = Users.query.filter_by(_user_id=user_id).first()
 
     user_stats = Stats.query.filter_by(_user_id=user_id).first()
-    user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).first()
-    user_title = Titles.query.filter(Titles.level_required<=user_level.level).first()
+    user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).order_by(Levels.xp_required.desc()).first()
+    user_title = Titles.query.filter(Titles.level_required<=user_level.level).order_by(Titles.level_required.desc()).first()
+    
+    get_streak(user_id)
 
     daily_quests = create_user_daily_quests(user_id)
     total_quests = []

@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from database import *
+
 clear_bp = Blueprint("clear", __name__)
 
 @clear_bp.route("/users")
@@ -17,17 +18,6 @@ def clear_users():
 def clear_stats():
     try:
         db.session.query(Stats).delete()
-        db.session.commit()
-        return jsonify({"message": "All records deleted successfully"}), 200
-    
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": f"Error: {str(e)}"}), 500
-
-@clear_bp.route("/user_daily_quests")
-def clear_user_daily_quests():
-    try:
-        db.session.query(UserDailyQuests).delete()
         db.session.commit()
         return jsonify({"message": "All records deleted successfully"}), 200
     
@@ -57,7 +47,7 @@ def clear_titles():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
-@clear_bp.route("/daily_quests")
+@clear_bp.route("/daily-quests")
 def clear_daily_quests():
     try:
         db.session.query(DailyQuests).delete()
@@ -68,9 +58,42 @@ def clear_daily_quests():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
 
+@clear_bp.route("/user-daily-quests")
+def clear_user_daily_quests():
+    try:
+        db.session.query(UserDailyQuests).delete()
+        db.session.commit()
+        return jsonify({"message": "All records deleted successfully"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500
+
+@clear_bp.route("/story-quests")
+def clear_story_quests():
+    try:
+        db.session.query(StoryQuests).delete()
+        db.session.commit()
+        return jsonify({"message": "All records deleted successfully"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500
+    
+@clear_bp.route("/user-story-quests")
+def clear_user_story_quests():
+    try:
+        db.session.query(UserStoryQuests).delete()
+        db.session.commit()
+        return jsonify({"message": "All records deleted successfully"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500
+    
 @clear_bp.route("/all")
 def clear_all():
-    models = [Levels, DailyQuests, Titles, Users, Stats, UserDailyQuests]
+    models = [Levels, DailyQuests, StoryQuests, Titles, Users, Stats, UserDailyQuests, UserStoryQuests]
     try:
         for model in models:
             db.session.query(model).delete()

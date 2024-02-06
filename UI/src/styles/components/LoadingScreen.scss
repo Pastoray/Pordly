@@ -4,6 +4,7 @@
 
 .game-starting {
     span {
+        font-family: monospace;
         font-size: 2rem;
     }
     @for $i from 1 through 11 {

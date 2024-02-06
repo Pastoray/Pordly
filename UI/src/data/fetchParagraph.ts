@@ -2,15 +2,12 @@
 
 async function fetchParagraph(paras: number) {
     
-    /*const data = await fetch(`https://baconipsum.com/api/?type=all-meat&sentences=${sentences}`);
-    const array = await data.json();
-    const result = array[0].split('. ');
-    result.pop()*/
-    
     const data = await fetch(`https://baconipsum.com/api/?type=all-meat&paras=${paras}`);
     const array = await data.json();
-    const result = array
-    console.log(array)
+    const result: string[] = [];
+    for (let i = 0; i < array.length; i++) {
+        result.push(array[i].replace(/\. /g, ""));
+    }
     return result;
 }
 

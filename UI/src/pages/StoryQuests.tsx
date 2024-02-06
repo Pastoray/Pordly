@@ -8,10 +8,6 @@ function StoryQuests() {
             <div>
                 <Toolbar/>
             </div>
-            <div className='difficulties'>
-                <div className='levels-difficulties'>
-                </div>
-            </div>
             <div className='layout'>
                 <Layout/>
             </div>

@@ -11,19 +11,27 @@ def check_daily_quest():
     user_id = data.get("user_id")
     quest_id = data.get("quest_id")
     
-    quest = UserDailyQuests.query.filter_by(_user_id=user_id, _quest_id=quest_id).first()
-    if not quest.isComplete:
-        quest.isComplete = True
-        lives = quest.lives
-        gems = quest.gems
-        xp = quest.xp
+    user_daily_quest = UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest_id).first()
+    v = user_daily_quest.isComplete
+    daily_quest = DailyQuests.query.filter_by(_dailyquest_id=quest_id).first()
+    if not user_daily_quest.isComplete:
+        lives = daily_quest.lives
+        gems = daily_quest.gems
+        xp = daily_quest.xp
         
+        user_daily_quest.isComplete = True
         db.session.commit()
-
-        update_lives(user_id, lives)
-        update_gems(user_id, gems)
-        update_xp(user_id, xp)
+        
+        if lives > 0:
+            update_lives(user_id, lives)
+        if gems > 0:
+            update_gems(user_id, gems)
+        if xp > 0:
+            update_xp(user_id, xp) 
         update_streak(user_id)
+        
+
+    return jsonify({"success": True, "questcomplete": v})
 
 @dailyquest_bp.route("/fetch", methods=["POST"])
 def get_user_daily_quests():
@@ -56,4 +64,17 @@ def get_user_daily_quests():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
+
+@dailyquest_bp.route("/reset", methods=["POST"])
+def reset_quests():
+    data = request.get_json()
+    user_id = data.get("user_id")
+
+    daily_quests = DailyQuests.query.filter_by(date=date.today())
+    for quest in daily_quests:
+        user_daily_quest = UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest._dailyquest_id).first()
+        user_daily_quest.isComplete = False
+    db.session.commit()
+    return jsonify({"success": True})
+
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 from database import *
 
 all_bp = Blueprint("all", __name__)
@@ -47,26 +47,7 @@ def all_user_stats():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
         
-@all_bp.route('/user_daily_quests', methods=["GET", "POST"])
-def all_user_daily_quests():
-    try:
-        all_entries = UserDailyQuests.query.all()
-        entries_list = []
 
-        for entry in all_entries:
-            entries_list.append(
-                {
-                    "user_daily_quests_id": entry._userdailyquests_id,
-                    "user_id": entry._user_id,
-                    "daily_quest_id": entry._dailyquest_id,
-                    "isComplete": entry.isComplete,
-                }
-            )
-
-        return jsonify({"entries": entries_list}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": f"Error: {str(e)}"}), 500
     
 @all_bp.route('/levels', methods=["GET", "POST"])
 def all_levels():
@@ -110,7 +91,7 @@ def all_titles():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
-@all_bp.route('/daily_quests', methods=["GET", "POST"])
+@all_bp.route('/daily-quests', methods=["GET", "POST"])
 def all_daily_quests():
     try:
         all_entries = DailyQuests.query.all()
@@ -136,3 +117,72 @@ def all_daily_quests():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
+    
+@all_bp.route('/user-daily-quests', methods=["GET", "POST"])
+def all_user_daily_quests():
+    try:
+        all_entries = UserDailyQuests.query.all()
+        entries_list = []
+
+        for entry in all_entries:
+            entries_list.append(
+                {
+                    "user_daily_quests_id": entry._userdailyquests_id,
+                    "user_id": entry._user_id,
+                    "daily_quest_id": entry._dailyquest_id,
+                    "isComplete": entry.isComplete,
+                }
+            )
+
+        return jsonify({"entries": entries_list}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500 
+      
+@all_bp.route('/story-quests', methods=["GET", "POST"])
+def all_story_quests():
+    try:
+        all_entries = StoryQuests.query.all()
+        entries_list = []
+
+        for entry in all_entries:
+            entries_list.append(
+                {
+                    "story_quest_id": entry._storyquest_id,
+                    "title": entry.title,
+                    "accuracy_req": entry.accuracy_req,
+                    "wpm_req": entry.accuracy_req,
+                    "time_req": entry.accuracy_req,
+                    "difficulty": entry.difficulty,
+                    "gems": entry.gems,
+                    "xp": entry.xp,
+                    "lives": entry.lives
+                }
+            )
+
+        return jsonify({"entries": entries_list}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500
+    
+@all_bp.route('/user-story-quests', methods=["GET", "POST"])
+def all_user_story_quests():
+    try:
+        all_entries = UserStoryQuests.query.all()
+        entries_list = []
+
+        for entry in all_entries:
+            entries_list.append(
+                {
+                    "user_story_quests_id": entry._userstoryquests_id,
+                    "user_id": entry._user_id,
+                    "story_quest_id": entry._storyquest_id,
+                    "isComplete": entry.isComplete,
+                    "completionDate": entry.completionDate,
+                }
+            )
+
+        return jsonify({"entries": entries_list}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500 

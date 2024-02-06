@@ -54,6 +54,13 @@ export type QuestRequirements = {
     time: number
 }
 
+export type GameOverProps = {
+    accuracy: number,
+    wpm: number,
+    time: number,
+    reset: Function
+}
+
 export type QuestRewards = {
     xp: number
     gems: number
