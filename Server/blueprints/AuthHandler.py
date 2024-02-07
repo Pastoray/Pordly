@@ -115,10 +115,10 @@ def validate_token():
     user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).order_by(Levels.xp_required.desc()).first()
     user_title = Titles.query.filter(Titles.level_required<=user_level.level).order_by(Titles.level_required.desc()).first()
     
-    get_streak(user_id)
-
     daily_quests = create_user_daily_quests(user_id)
     total_quests = []
+    get_streak(user_id)
+    print(daily_quests)
     for i in range(len(daily_quests)):
         total_quests.append(
             {
@@ -173,3 +173,70 @@ def validate_token():
             }
         }
     }), 200
+
+@auth_bp.route("/change-email", methods=["POST"])
+def change_email():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    email = data.get("email")
+    password = data.get("password")
+    new_email = data.get("new_email")
+
+    user = Users.query.filter_by(_user_id=user_id, email=email).first()
+
+    if user:
+        hashed_password = generate_password_hash(password)
+        
+        if check_password_hash(user.hashed_password, hashed_password):
+            user.email = new_email
+            db.session.commit()
+            return jsonify({"message": "Email updated successfully"}), 200
+        else:
+            return jsonify({"error": "Invalid password"}), 401
+    else:
+        return jsonify({"error": "Invalid email"}), 404
+    
+@auth_bp.route("/change-password", methods=["POST"])
+def change_password():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    email = data.get("email")
+    password = data.get("password")
+    new_password = data.get("new_password")
+
+    user = Users.query.filter_by(_user_id=user_id, email=email).first()
+
+    if user:
+        hashed_password = generate_password_hash(password)
+        
+        if check_password_hash(user.hashed_password, hashed_password):
+            new_password = generate_password_hash(new_password)
+            user.password = new_password
+            db.session.commit()
+            return jsonify({"message": "Password updated successfully"}), 200
+        else:
+            return jsonify({"error": "Invalid password"}), 401
+    else:
+        return jsonify({"error": "Invalid email"}), 404
+
+@auth_bp.route("/delete", methods=["DELETE"])
+def delete_account():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    email = data.get("email")
+    password = data.get("password")
+
+    user = Users.query.filter_by(_user_id=user_id, email=email).first()
+
+    if user:
+        hashed_password = generate_password_hash(password)
+        
+        if check_password_hash(user.hashed_password, hashed_password):
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({"message": "Account deleted successfully"}), 200
+        else:
+            return jsonify({"error": "Invalid password"}), 401
+    else:
+        return jsonify({"error": "Invalid email"}), 404
+

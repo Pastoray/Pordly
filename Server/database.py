@@ -35,63 +35,47 @@ class Achievements(db.Model):
     title = db.Column(db.String(64), nullable=False)
     description = db.Column(db.String(128), nullable=False)
     difficulty = db.Column(db.String(32), nullable=False)
-    xp = db.Column(db.Integer, nullable=False)
-    gems = db.Column(db.Integer, nullable=False)
-    lives = db.Column(db.Integer, nullable=False)
-    def __init__(self, title, difficulty, xp, gems, lives):
+    rewards = db.column_property(db.Column(db.JSON))
+    def __init__(self, title, description, difficulty, rewards, condition):
         self.title = title
+        self.description = description
         self.difficulty = difficulty
-        self.xp = xp
-        self.gems = gems
-        self.lives = lives
+        self.rewards = rewards
+        self.condition = condition
 
         db.session.add(self)
         db.session.commit()
 
 class StoryQuests(db.Model):
-    _storyquest_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    _story_quest_id = db.Column(db.Integer, nullable=False, primary_key=True)
     title = db.Column(db.String(64), nullable=False)
-    accuracy_req = db.Column(db.Integer, nullable=False)
-    wpm_req = db.Column(db.Integer, nullable=False)
-    time_req = db.Column(db.Integer, nullable=False)
+    requirements = db.column_property(db.Column(db.JSON))
+    paras = db.Column(db.Integer, nullable=False)
     difficulty = db.Column(db.String(32), nullable=False)
-    xp = db.Column(db.Integer, nullable=False)
-    gems = db.Column(db.Integer, nullable=False)
-    lives = db.Column(db.Integer, nullable=False)
-    def __init__(self, title, accuracy_req, wpm_req, time_req, difficulty, xp, gems, lives):
+    rewards = db.column_property(db.Column(db.JSON))
+    def __init__(self, title, requirements, paras, difficulty, rewards):
         self.title = title
-        self.accuracy_req = accuracy_req 
-        self.wpm_req = wpm_req 
-        self.time_req = time_req 
+        self.paras = paras
         self.difficulty = difficulty
-        self.xp = xp
-        self.gems = gems
-        self.lives = lives
 
         db.session.add(self)
         db.session.commit()
 
 class DailyQuests(db.Model):
-    _dailyquest_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    _daily_quest_id = db.Column(db.Integer, nullable=False, primary_key=True)
     title = db.Column(db.String(64), nullable=False)
-    accuracy_req = db.Column(db.Integer, nullable=False)
-    wpm_req = db.Column(db.Integer, nullable=False)
-    time_req = db.Column(db.Integer, nullable=False)
+    requirements = db.column_property(db.Column(db.JSON))
+    paras = db.Column(db.Integer, nullable=False)
     difficulty = db.Column(db.String(32), nullable=False)
     date = db.Column(db.Date, nullable=False, default=date.today())
-    xp = db.Column(db.Integer, nullable=False)
-    gems = db.Column(db.Integer, nullable=False)
-    lives = db.Column(db.Integer, nullable=False)
-    def __init__(self, title, accuracy_req, wpm_req, time_req, difficulty, date, xp, gems, lives):
+    rewards = db.column_property(db.Column(db.JSON))
+    def __init__(self, title, requirements, paras, difficulty, date, rewards):
         self.title = title
-        self.accuracy_req = accuracy_req 
-        self.wpm_req = wpm_req 
-        self.time_req = time_req 
+        self.requirements = requirements
+        self.paras = paras
         self.difficulty = difficulty
         self.date = date
-        self.xp = xp
-        self.gems = gems
-        self.lives = lives
+        self.rewards = rewards
 
         db.session.add(self)
         db.session.commit()
@@ -135,9 +119,9 @@ class Stats(db.Model):
         db.session.commit()
 
 class UserDailyQuests(db.Model):
-    _userdailyquests_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    _user_daily_quests_id = db.Column(db.Integer, nullable=False, primary_key=True)
     _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id), nullable=False)
-    _dailyquest_id = db.Column(db.Integer, db.ForeignKey(DailyQuests._dailyquest_id), nullable=False)
+    _daily_quest_id = db.Column(db.Integer, db.ForeignKey(DailyQuests._daily_quest_id), nullable=False)
     isComplete = db.Column(db.Boolean, nullable=False)
     def __init__(self, user_id, quest_id, isComplete):
         self._user_id = user_id
@@ -148,16 +132,16 @@ class UserDailyQuests(db.Model):
         db.session.commit()
 
 class UserStoryQuests(db.Model):
-    _userstoryquests_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    _user_story_quests_id = db.Column(db.Integer, nullable=False, primary_key=True)
     _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id), nullable=False)
-    _storyquest_id = db.Column(db.Integer, db.ForeignKey(StoryQuests._storyquest_id), nullable=False)
+    _story_quest_id = db.Column(db.Integer, db.ForeignKey(StoryQuests._story_quest_id), nullable=False)
     isComplete = db.Column(db.Boolean, nullable=False)
-    completionDate =  db.Column(db.Date)
-    def __init__(self, user_id, quest_id, isComplete, completionDate):
+    completion_date =  db.Column(db.Date)
+    def __init__(self, user_id, quest_id, isComplete, completion_date):
         self._storyquest_id = quest_id
         self._user_id = user_id
         self.isComplete = isComplete
-        self.completionDate = completionDate
+        self.completion_date = completion_date
 
         db.session.add(self)
         db.session.commit()

@@ -1,19 +1,18 @@
 from flask import Flask
 from database import db
 
-from blueprints.AuthHandler import auth_bp
+from blueprints.AuthHandler import jwt, auth_bp
 from blueprints.Achivements import achivements_bp
 from blueprints.Stats import stats_bp
-from blueprints.DailyQuests import dailyquest_bp
+from blueprints.DailyQuests import daily_quests_bp
+from blueprints.StoryQuests import story_quests_bp
 
 from utils.Create import create_bp
 from utils.All import all_bp
 from utils.Clear import clear_bp
 
 from dotenv import load_dotenv
-from blueprints.AuthHandler import jwt
 from flask_cors import CORS
-
 import os
 
 app = Flask(__name__)
@@ -32,7 +31,8 @@ app.register_blueprint(all_bp, url_prefix="/all")
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(achivements_bp, url_prefix="/achievements")
 app.register_blueprint(stats_bp, url_prefix="/stats")
-app.register_blueprint(dailyquest_bp, url_prefix="/daily-quests")
+app.register_blueprint(daily_quests_bp, url_prefix="/daily-quests")
+app.register_blueprint(story_quests_bp, url_prefix="/story-quests")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -49,4 +49,4 @@ with app.app_context():
     #db.drop_all()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)#, ssl_context='adhoc')
+    app.run(host="0.0.0.0", port=8080, debug=True)

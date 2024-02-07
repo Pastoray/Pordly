@@ -9,6 +9,10 @@ $prefix: 'welcome-page';
     color: white;
     background-color: hsl(0, 0%, 15%);
     border: 2px solid hsl(0, 0%, 20%);
+    p {
+        font-family: monospace;
+        font-size: 1.25rem;
+    }
 }
 
 ##{$prefix}-title {

@@ -14,7 +14,7 @@ function Card({ title, doneCount, totalCount }: CardProps) {
             const progress = (doneCount / totalCount) * 100;
             setProgressPercentage(progress);
         }, 2000);
-    }, [])
+    }, [doneCount])
     return(
         <>
             <div className='card-container'>

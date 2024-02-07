@@ -1,10 +1,27 @@
 import Card from './Card';
 import '../../styles/components/Welcome.scss'
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context/UserContext';
+import { DailyQuestsContext } from '../../context/DailyQuestsContext';
+import { DailyQuests, User } from '../../types/Index';
 
 function Welcome() {
-    const User = useContext(UserContext);
+    const user = useContext<User | undefined>(UserContext);
+    const daily_quests = useContext<DailyQuests | undefined>(DailyQuestsContext);
+    const [dailyQuestsFinished, setDailyQuestsFinished] = useState(0)
+
+    useEffect(() => {
+        if (daily_quests) {
+            let count = 0
+            for (const quest of daily_quests) {
+                if (quest.isComplete) {
+                    count += 1
+                }
+            }
+            setDailyQuestsFinished(count);
+        }
+    }, [daily_quests])
+
     return(
         <>
             <div className='welcome-page-main'>
@@ -27,18 +44,18 @@ function Welcome() {
                     <section id='welcome-page-section-2'>
                         <div className='welcome-page-credentials'>
                             <p id='welcome-page-title'>Credentials</p>
-                            <p>👤 <strong>Username : </strong>{User?.info.username}</p>
-                            <p>🏆 <strong>Title : </strong>{User?.stats.title.title}</p>
-                            <p>🔥 <strong>Streak : </strong>{User?.stats.streak}</p>
-                            <p>💎 <strong>Gems : </strong>{User?.stats.gems}</p>
-                            <p>❤️ <strong>Lives : </strong>{User?.stats.lives}</p>
+                            <p>👤 <strong>Username : </strong>{user?.info.username}</p>
+                            <p>🏆 <strong>Title : </strong>{user?.stats.title.title}</p>
+                            <p>🔥 <strong>Streak : </strong>{user?.stats.streak}</p>
+                            <p>💎 <strong>Gems : </strong>{user?.stats.gems}</p>
+                            <p>❤️ <strong>Lives : </strong>{user?.stats.lives}</p>
                         </div>
                     </section>
                     <section id='welcome-page-section-3'>
                         <p id='welcome-page-title'>Challenges</p>
                         <div className='welcome-page-cards-container'>
-                            <Card title={'Daily Missions'} doneCount={0} totalCount={3}/>
-                            <Card title={'Quests'} doneCount={0} totalCount={50}/>
+                            <Card title={'Daily Quests'} doneCount={dailyQuestsFinished} totalCount={3}/>
+                            <Card title={'Story Quests'} doneCount={0} totalCount={50}/>
                             <Card title={'Achivements'} doneCount={0} totalCount={15}/>
                         </div>
                     </section>

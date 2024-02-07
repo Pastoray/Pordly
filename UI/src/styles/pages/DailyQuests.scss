@@ -7,6 +7,9 @@ $prefix: 'daily-quest';
     justify-content: space-around;
     align-items: center;
     background-color: hsl(0, 0%, 15%);
+    p {
+        font-family: monospace;
+    }
 }
 
 
@@ -47,11 +50,7 @@ $prefix: 'daily-quest';
     font-weight: bold;
     color: hsl(120, 100%, 50%);
     text-shadow: 0px 0px 10px hsl(120, 100%, 50%);
-}
-
-.#{$prefix}-incomplete {
-    color: hsl(39, 100%, 47%);
-    text-shadow: 0px 0px 2px hsl(39, 100%, 47%);
+    font-size: 1.2rem;
 }
 
 .#{$prefix}-xp {
@@ -72,16 +71,19 @@ $prefix: 'daily-quest';
 .#{$prefix}-easy {
     color: hsl(120, 100%, 40%);
     text-shadow: 0px 0px 2px hsl(120, 100%, 40%);
+    font-size: 1.2rem;
 }
 
 .#{$prefix}-medium {
     color: hsl(39, 100%, 47%);
     text-shadow: 0px 0px 2px hsl(39, 100%, 47%);
+    font-size: 1.2rem;
 }
 
 .#{$prefix}-hard {
     color: hsl(0, 100%, 50%);
     text-shadow: 0px 0px 2px hsl(0, 100%, 50%);
+    font-size: 1.2rem;
 }
 
 .#{$prefix}-reward-container {
@@ -89,10 +91,12 @@ $prefix: 'daily-quest';
     width: 75%;
     display: flex;
     justify-content: space-around;
+    font-size: 1.25rem;
 }
 
 .#{$prefix}-requirements {
     text-shadow: 0px 0px 2px white;
+    font-size: 1.2rem;
 }
 
 

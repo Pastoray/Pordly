@@ -81,7 +81,7 @@ def update_xp(user_id, xp):
 	return jsonify({"user_level": user.level, "user_titles": {f"{i + 1}": v for i, v in enumerate(titles)}})
 
 def reset_daily_lives(user_id):
-	user_stats = Stats.query.filter_by(user_id=user_id).first()
+	user_stats = Stats.query.filter_by(_user_id=user_id).first()
 	lives = max(user_stats.lives, 5)
 
 	user_stats.lives = lives
@@ -90,14 +90,15 @@ def reset_daily_lives(user_id):
 def update_streak(user_id):
 	user_stats = Stats.query.filter_by(_user_id=user_id).first()
 	all_quests_today = DailyQuests.query.filter_by(date=date.today())
+	all_quests_today_completed = False
 
 	today_quests = []
 	
 	for quest in all_quests_today:
 		today_quests.append(UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest._dailyquest_id).first())
-
-	all_quests_today_completed = all(quest.isComplete for quest in today_quests)
-
+	
+	if today_quests:
+		all_quests_today_completed = all(quest.isComplete for quest in today_quests)
 	if all_quests_today_completed:
 		user_stats.streak += 1
 
@@ -106,13 +107,15 @@ def update_streak(user_id):
 def get_streak(user_id):
 	user_stats = Stats.query.filter_by(_user_id=user_id).first()
 	all_quests_yesterday = DailyQuests.query.filter_by(date=date.today() - timedelta(days=1))
+	all_quests_yesterday_completed = False
 
 	yesterday_quests = []
 
 	for quest in all_quests_yesterday:
 		yesterday_quests.append(UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest._dailyquest_id).first())
-	all_quests_yesterday_completed = all(quest.isComplete for quest in yesterday_quests)
 
+	if yesterday_quests:
+		all_quests_yesterday_completed = all(quest.isComplete for quest in yesterday_quests)
 	if not all_quests_yesterday_completed:
 		user_stats.streak = 0
 		db.session.commit()

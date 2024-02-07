@@ -100,16 +100,12 @@ def all_daily_quests():
         for entry in all_entries:
             entries_list.append(
                 {
-                    "daily_quest_id": entry._dailyquest_id,
+                    "daily_quest_id": entry._daily_quest_id,
                     "title": entry.title,
-                    "accuracy_req": entry.accuracy_req,
-                    "wpm_req": entry.accuracy_req,
-                    "time_req": entry.accuracy_req,
-                    "difficulty": entry.difficulty,
+                    "requirements": entry.requirements,
                     "date": entry.date,
-                    "gems": entry.gems,
-                    "xp": entry.xp,
-                    "lives": entry.lives
+                    "difficulty": entry.difficulty,
+                    "rewards": entry.rewards
                 }
             )
 
@@ -127,9 +123,9 @@ def all_user_daily_quests():
         for entry in all_entries:
             entries_list.append(
                 {
-                    "user_daily_quests_id": entry._userdailyquests_id,
+                    "user_daily_quests_id": entry._user_daily_quests_id,
                     "user_id": entry._user_id,
-                    "daily_quest_id": entry._dailyquest_id,
+                    "daily_quest_id": entry._daily_quest_id,
                     "isComplete": entry.isComplete,
                 }
             )
@@ -148,15 +144,12 @@ def all_story_quests():
         for entry in all_entries:
             entries_list.append(
                 {
-                    "story_quest_id": entry._storyquest_id,
+                    "story_quest_id": entry._story_quest_id,
                     "title": entry.title,
-                    "accuracy_req": entry.accuracy_req,
-                    "wpm_req": entry.accuracy_req,
-                    "time_req": entry.accuracy_req,
+                    "requirements": entry.requirements,
+                    "paragraphs": entry.paras,
                     "difficulty": entry.difficulty,
-                    "gems": entry.gems,
-                    "xp": entry.xp,
-                    "lives": entry.lives
+                    "rewards": entry.rewards
                 }
             )
 
@@ -174,11 +167,11 @@ def all_user_story_quests():
         for entry in all_entries:
             entries_list.append(
                 {
-                    "user_story_quests_id": entry._userstoryquests_id,
+                    "user_story_quests_id": entry._user_story_quests_id,
                     "user_id": entry._user_id,
-                    "story_quest_id": entry._storyquest_id,
+                    "story_quest_id": entry._story_quest_id,
                     "isComplete": entry.isComplete,
-                    "completionDate": entry.completionDate,
+                    "completion_date": entry.completion_date,
                 }
             )
 
