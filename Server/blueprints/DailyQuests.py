@@ -11,13 +11,13 @@ def check_daily_quest():
     user_id = data.get("user_id")
     quest_id = data.get("quest_id")
     
-    user_daily_quest = UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest_id).first()
-    daily_quest = DailyQuests.query.filter_by(_dailyquest_id=quest_id).first()
+    user_daily_quest = UserDailyQuests.query.filter_by(_user_id=user_id, _daily_quest_id=quest_id).first()
+    daily_quest = DailyQuests.query.filter_by(_daily_quest_id=quest_id).first()
     if not user_daily_quest.isComplete:
         rewards = daily_quest.rewards
-        lives = rewards.lives
-        gems = rewards.gems
-        xp = rewards.xp
+        lives = rewards.get("lives")
+        gems = rewards.get("gems")
+        xp = rewards.get("xp")
         
         user_daily_quest.isComplete = True
         db.session.commit()
@@ -42,22 +42,14 @@ def get_user_daily_quests():
     try:
         daily_quests = DailyQuests.query.filter_by(date=date.today())
         for daily_quest in daily_quests:
-            user_daily_quest = UserDailyQuests.query.filter_by(_dailyquest_id=daily_quest._dailyquest_id, _user_id=user_id).first()
+            user_daily_quest = UserDailyQuests.query.filter_by(_daily_quest_id=daily_quest._daily_quest_id, _user_id=user_id).first()
             quests.append({
-                "daily_quest_id": daily_quest._dailyquest_id,
+                "daily_quest_id": daily_quest._daily_quest_id,
                 "title": daily_quest.title,
                 "date": daily_quest.date,
-                "requirements": {
-                    "accuracy": daily_quest.accuracy_req,
-                    "wpm": daily_quest.wpm_req,
-                    "time": daily_quest.time_req
-                },
+                "requirements": daily_quest.requirements,
                 "difficulty": daily_quest.difficulty,
-                "reward": {
-                    "gems": daily_quest.gems,
-                    "xp": daily_quest.xp,
-                    "lives": daily_quest.lives
-                },
+                "reward": daily_quest.rewards,
                 "isComplete": user_daily_quest.isComplete
             })
         return jsonify(quests)

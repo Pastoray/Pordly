@@ -3,7 +3,7 @@ from database import *
 
 all_bp = Blueprint("all", __name__)
 
-@all_bp.route('/users', methods=["GET", "POST"])
+@all_bp.route('/users', methods=["POST", "GET"])
 def all_users():
     try:
         all_entries = Users.query.all()
@@ -23,7 +23,7 @@ def all_users():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
 
-@all_bp.route('/stats', methods=["GET", "POST"])
+@all_bp.route('/stats', methods=["POST", "GET"])
 def all_user_stats():
     try:
         all_entries = Stats.query.all()
@@ -49,7 +49,7 @@ def all_user_stats():
         
 
     
-@all_bp.route('/levels', methods=["GET", "POST"])
+@all_bp.route('/levels', methods=["POST", "GET"])
 def all_levels():
     try:
         all_entries = Levels.query.all()
@@ -70,7 +70,7 @@ def all_levels():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
-@all_bp.route('/titles', methods=["GET", "POST"])
+@all_bp.route('/titles', methods=["POST", "GET"])
 def all_titles():
     try:
         all_entries = Titles.query.all()
@@ -91,7 +91,7 @@ def all_titles():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
-@all_bp.route('/daily-quests', methods=["GET", "POST"])
+@all_bp.route('/daily-quests', methods=["POST", "GET"])
 def all_daily_quests():
     try:
         all_entries = DailyQuests.query.all()
@@ -114,7 +114,7 @@ def all_daily_quests():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
-@all_bp.route('/user-daily-quests', methods=["GET", "POST"])
+@all_bp.route('/user-daily-quests', methods=["POST", "GET"])
 def all_user_daily_quests():
     try:
         all_entries = UserDailyQuests.query.all()
@@ -135,7 +135,7 @@ def all_user_daily_quests():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500 
       
-@all_bp.route('/story-quests', methods=["GET", "POST"])
+@all_bp.route('/story-quests', methods=["POST", "GET"])
 def all_story_quests():
     try:
         all_entries = StoryQuests.query.all()
@@ -158,7 +158,7 @@ def all_story_quests():
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
-@all_bp.route('/user-story-quests', methods=["GET", "POST"])
+@all_bp.route('/user-story-quests', methods=["POST", "GET"])
 def all_user_story_quests():
     try:
         all_entries = UserStoryQuests.query.all()

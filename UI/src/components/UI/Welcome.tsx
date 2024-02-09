@@ -44,11 +44,11 @@ function Welcome() {
                     <section id='welcome-page-section-2'>
                         <div className='welcome-page-credentials'>
                             <p id='welcome-page-title'>Credentials</p>
-                            <p>👤 <strong>Username : </strong>{user?.info.username}</p>
-                            <p>🏆 <strong>Title : </strong>{user?.stats.title.title}</p>
-                            <p>🔥 <strong>Streak : </strong>{user?.stats.streak}</p>
-                            <p>💎 <strong>Gems : </strong>{user?.stats.gems}</p>
-                            <p>❤️ <strong>Lives : </strong>{user?.stats.lives}</p>
+                            <p>👤 Username → {user?.info.username}</p>
+                            <p>🏆 Title → {user?.stats.title.title}</p>
+                            <p>🔥 Streak → {user?.stats.streak}</p>
+                            <p>💎 Gems → {user?.stats.gems}</p>
+                            <p>❤️ Lives → {user?.stats.lives}</p>
                         </div>
                     </section>
                     <section id='welcome-page-section-3'>

@@ -125,7 +125,7 @@ class UserDailyQuests(db.Model):
     isComplete = db.Column(db.Boolean, nullable=False)
     def __init__(self, user_id, quest_id, isComplete):
         self._user_id = user_id
-        self._dailyquest_id = quest_id
+        self._daily_quest_id = quest_id
         self.isComplete = isComplete
 
         db.session.add(self)
@@ -138,7 +138,7 @@ class UserStoryQuests(db.Model):
     isComplete = db.Column(db.Boolean, nullable=False)
     completion_date =  db.Column(db.Date)
     def __init__(self, user_id, quest_id, isComplete, completion_date):
-        self._storyquest_id = quest_id
+        self._story_quest_id = quest_id
         self._user_id = user_id
         self.isComplete = isComplete
         self.completion_date = completion_date

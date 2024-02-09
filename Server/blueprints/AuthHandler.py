@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, make_response
 from database import *
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from datetime import timedelta
-from utils.Create import create_stats, create_user_daily_quests
+from utils.Create import create_user_daily_quests
 from blueprints.Stats import get_streak
 
 auth_bp = Blueprint("auth_bp", __name__)
@@ -42,7 +42,11 @@ def create_account():
 
     user = Users(username, email, password)
     user_id = user._user_id
-    create_stats(user_id)
+
+    title_row = Titles.query.filter(Titles.level_required<=1).order_by(Titles.level_required.desc()).first()
+    title = title_row.title
+    Stats(user_id, 0, 1, title, 0, 100, 5)
+
     return jsonify({"success": True, "message": "Account Created successfully"}), 201
 
 @auth_bp.route("/load-user", methods=["POST"])
@@ -118,7 +122,6 @@ def validate_token():
     daily_quests = create_user_daily_quests(user_id)
     total_quests = []
     get_streak(user_id)
-    print(daily_quests)
     for i in range(len(daily_quests)):
         total_quests.append(
             {

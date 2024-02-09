@@ -5,20 +5,6 @@ from datetime import date, timedelta
 
 stats_bp = Blueprint("stats", __name__)
 
-@stats_bp.route("/test")
-def test():
-	try:
-		user = Users("test", "test@gmail.com", "test")
-		user_id = user._user_id
-
-		row = Titles.query.filter(Titles.level_required<=1).first()
-		title = row.title
-		Stats(user_id, 0, 1, title, 0, 100, 5)
-	except Exception as e:
-		db.session.rollback()
-		return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-	return jsonify({"user_created": True, "user_id": user_id})
-
 def update_gems(user_id, gems):
 	try:
 		user_stats = Stats.query.filter_by(_user_id=user_id).first()
@@ -33,11 +19,14 @@ def update_gems(user_id, gems):
 	return {"user_gems": user_stats.gems}
 
 @stats_bp.route("/lives", methods=["POST"])
-def update_lives():
+def decrement_lives():
 	data = request.get_json()
 	user_id = data.get("user_id")
 	lives = data.get("lives")
 
+	return update_lives(user_id, lives)
+
+def update_lives(user_id, lives):
 	try:
 		user_stats = Stats.query.filter_by(_user_id=user_id).first()
 		user_stats.lives += lives
@@ -95,7 +84,7 @@ def update_streak(user_id):
 	today_quests = []
 	
 	for quest in all_quests_today:
-		today_quests.append(UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest._dailyquest_id).first())
+		today_quests.append(UserDailyQuests.query.filter_by(_user_id=user_id, _daily_quest_id=quest._daily_quest_id).first())
 	
 	if today_quests:
 		all_quests_today_completed = all(quest.isComplete for quest in today_quests)
@@ -112,10 +101,12 @@ def get_streak(user_id):
 	yesterday_quests = []
 
 	for quest in all_quests_yesterday:
-		yesterday_quests.append(UserDailyQuests.query.filter_by(_user_id=user_id, _dailyquest_id=quest._dailyquest_id).first())
+		user_daily_quest = (UserDailyQuests.query.filter_by(_user_id=user_id, _daily_quest_id=quest._daily_quest_id).first())
+		if user_daily_quest:
+			yesterday_quests.append(user_daily_quest)
 
-	if yesterday_quests:
-		all_quests_yesterday_completed = all(quest.isComplete for quest in yesterday_quests)
+	if yesterday_quests:		
+		all_quests_yesterday_completed = all(quest.isComplete for quest in yesterday_quests if quest)
 	if not all_quests_yesterday_completed:
 		user_stats.streak = 0
 		db.session.commit()
