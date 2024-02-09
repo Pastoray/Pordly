@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, make_response
 from database import *
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from datetime import timedelta
-from utils.Create import create_user_daily_quests
+from utils.Create import *
 from blueprints.Stats import get_streak
 
 auth_bp = Blueprint("auth_bp", __name__)
@@ -119,23 +119,9 @@ def validate_token():
     user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).order_by(Levels.xp_required.desc()).first()
     user_title = Titles.query.filter(Titles.level_required<=user_level.level).order_by(Titles.level_required.desc()).first()
     
-    daily_quests = create_user_daily_quests(user_id)
-    total_quests = []
+    create_user_daily_quests(user_id)
+    create_user_story_quests(user_id)
     get_streak(user_id)
-    for i in range(len(daily_quests)):
-        total_quests.append(
-            {
-                f"daily_quest_{i + 1}": {
-                    "date": daily_quests[i].get("date"),
-                    "difficulty": daily_quests[i].get("difficulty"),
-                    "requirements": {
-                        "accuracy": daily_quests[i].get("requirements").get("accuracy"),
-                        "time": daily_quests[i].get("requirements").get("time"),
-                        "wpm": daily_quests[i].get("requirements").get("wpm")
-                    },
-                }
-            }
-        )
     return jsonify({
         "success": (user_id != None),
         "info": {
@@ -160,19 +146,6 @@ def validate_token():
                 "title": user_title.title,
                 "level_required": user_title.level_required,
                 "color": user_title.color
-            }
-        },
-        "quests": {
-            "quests": {
-
-            },
-
-            "daily_quests": {
-
-            },
-
-            "achivements": {
-                
             }
         }
     }), 200

@@ -55,8 +55,10 @@ class StoryQuests(db.Model):
     rewards = db.column_property(db.Column(db.JSON))
     def __init__(self, title, requirements, paras, difficulty, rewards):
         self.title = title
+        self.requirements = requirements
         self.paras = paras
         self.difficulty = difficulty
+        self.rewards = rewards
 
         db.session.add(self)
         db.session.commit()

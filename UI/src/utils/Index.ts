@@ -100,31 +100,20 @@ function checkWord(input: String, word: String, paragraphData: ParagraphData | n
     }
 }
 
-export function loadQuests(Container: Ref<HTMLDivElement | null>) {
-    for (let i = 1; i <= 50; i++) {
-        const QuestContainer = document.createElement('div');
-
-        const QuestNumber = document.createElement('p');
-        const QuestReward = document.createElement('p');
-
-        QuestNumber.className = 'quest-number';
-        QuestNumber.textContent = `Quest ${i}`;
-        
-        QuestReward.className = 'quest-reward';
-        QuestReward.textContent = `${i * 5}💎`;
-        
-        QuestContainer.className = 'quest'
-        
-        QuestContainer.appendChild(QuestNumber)
-        QuestContainer.appendChild(QuestReward)
-
-
-        QuestContainer.addEventListener('click', () => {
-            window.location.href = `/story-quests/${i}`;
+export async function getStoryQuests() {
+        const user_id = await getUserId()
+        const data = await fetch('http://127.0.0.1:8080//story-quests/fetch', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({ user_id })
         })
 
-        Container.current!.appendChild(QuestContainer);
-    }
+        const response = await data.json()
+        console.log(response)
+        return response
 }
 
 export function setCookie(name: string, value: string, daysToExpire: number) {

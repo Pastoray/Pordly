@@ -8,10 +8,11 @@ import '../../styles/components/Game.scss'
 import Accuracy from './Accuracy';
 import { DailyQuestsContext } from '../../context/DailyQuestsContext';
 import GameOver from '../UI/GameOver';
+import { StoryQuestsContext } from '../../context/StoryQuestsContext';
 
-function Game({ quest_id }: GameProps) {
-    const daily_quests = useContext(DailyQuestsContext)
-    const quest = daily_quests!.filter((quest) => quest_id === quest.daily_quest_id)[0];
+function Game({ quest_type, quest_id }: GameProps) {
+    const quests = quest_type == "daily-quests" ? useContext(DailyQuestsContext) : useContext(StoryQuestsContext);
+    const quest = quests!.filter((quest) => quest_id === (quest_type == "daily-quests" ? quest.daily_quest_id : quest.story_quest_id))[0];
     const paras = 1;
 
     const [input, setInput] = useState('');

@@ -1,5 +1,6 @@
+$prefix: "story-quests";
 
-.layout-container {
+.#{$prefix}-container {
     height: calc(100vh - 4rem);
     width: 100vw;
     display: flex;
@@ -9,7 +10,7 @@
     overflow: none;
 }
 
-.layout-bar {
+.#{$prefix}-bar {
     height: 3rem;
     width: 100%;
     display: flex;
@@ -18,7 +19,7 @@
     border-radius: 6px 6px 0px 0px;
 }
 
-.layout-bar-data {
+.#{$prefix}-bar-data {
     height: 100%;
     width: 80%;
     display: flex;
@@ -30,18 +31,7 @@
     }
 }
 
-.layout-bar-quests {
-    height: 100%;
-    width: 50%;
-    position: sticky;
-    top: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.layout-quests {
+.#{$prefix} {
     height: 100%;
     width: 100%;
     display: flex;
@@ -50,7 +40,7 @@
     overflow: auto;
 }
 
-.level-section {
+#quest-section {
     height: 100%;
     width: 100%;
     display: flex;
@@ -60,14 +50,14 @@
 
 .quest {
     width: 80%;
-    height: 4rem;
+    height: 3rem;
     display: flex;
     justify-content: space-between;
     border: 2px solid black;
     display: flex;
     padding: 1rem;
     align-items: center;
-    background-color: hsl(0, 0%, 80%);
+    background-color:hsl(0, 0%, 20%);
     border-radius: 4px;
     margin-bottom: 1rem;
     cursor: pointer;
@@ -78,7 +68,7 @@
 }
 
 .quest-number {
-    color: black;
+    color: hsl(0, 0%, 85%);
 }
 
 .quest-reward {

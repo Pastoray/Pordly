@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import Toolbar from '../components/UI/Toolbar';
-import '../styles/pages/DailyQuests.scss'
 import { DailyQuestsContext } from '../context/DailyQuestsContext';
 import { DailyQuests } from '../types/Index';
 import LoadingScreen from '../components/UI/LoadingScreen';
+import '../styles/pages/DailyQuests.scss'
 
 function DailyQuests() {
     const DailyQuests: DailyQuests | undefined = useContext(DailyQuestsContext);
@@ -16,7 +16,7 @@ function DailyQuests() {
             <main className='daily-quest-menu'>
                 {DailyQuests ? 
                     DailyQuests.map((quest, i) => (
-                        <div key={i} className='daily-quest' onClick={async () => {
+                        <div key={i} className='daily-quest' onClick={() => {
                                                                                 window.location.href = `daily-quests/${quest.daily_quest_id}`;
                                                                             }}>
                             <p className={`daily-quest-title daily-quest-${quest.difficulty.toLocaleLowerCase()}`}>{quest.title}</p>
@@ -30,7 +30,7 @@ function DailyQuests() {
                             {
                             quest.isComplete ? 
  
-                                <p className='daily-quest-complete'>C o m p l e t e d</p>
+                                <p className='daily-quest-complete'>Completed</p>
                             :
                                 <div className='daily-quest-reward-container'>
                                     <p className='daily-quest-xp'>{quest.reward.xp}🌟</p>

@@ -1,7 +1,7 @@
 export type State<T> = React.Dispatch<React.SetStateAction<T>>
 export type Ref<T> = React.MutableRefObject<T>
 
-export type QuestType = 'daily-quest' | 'story-quest'
+export type QuestType = 'daily-quests' | 'story-quests'
 
 export type ParagraphData = {
     paragraphs: string[],
@@ -13,7 +13,6 @@ export type ParagraphData = {
 export type User = {
     info: Info,
     stats: Stats,
-    quests: Quests
 }
 
 export type Info = {
@@ -29,14 +28,9 @@ export type Stats = {
     lives: number
 }
 
-export type Quests = {
-    dailyQuests: DailyQuests[],
-    storyQuests: StoryQuests[],
-    achievements: Achievements[]
-}
-
 
 export type DailyQuests = DailyQuest[]
+export type StoryQuests = StoryQuest[]
 
 export type DailyQuest = {
     daily_quest_id: number,
@@ -44,6 +38,16 @@ export type DailyQuest = {
     difficulty: string,
     isComplete: boolean,
     date: Date,
+    requirements: QuestRequirements,
+    reward: QuestRewards
+}
+
+export type StoryQuest = {
+    story_quest_id: number,
+    title: string,
+    difficulty: string,
+    isComplete: boolean,
+    completion_date: Date,
     requirements: QuestRequirements,
     reward: QuestRewards
 }
@@ -67,9 +71,6 @@ export type QuestRewards = {
     lives: number
 }
 
-export type StoryQuests = {
-
-}
 
 export type Achievements = {
 

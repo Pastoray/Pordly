@@ -115,15 +115,20 @@ def create_user_story_quests(user_id):
     entries = StoryQuests.query.all()
     quests = []
 
-    for entry in entries:
-        quests.append({
-            "_story_quest_id": entry._story_quest_id,
-            "_user_id": entry._user_id,
-            "isComplete": entry.isComplete,
-            "completionDate": entry.completionDate,
-        })
-        quest_id = entry._dailyquest_id
-        UserStoryQuests(user_id, quest_id, False, None)
+    user_in_table = UserStoryQuests.query.filter_by(_user_id=user_id).first()
+
+    if not user_in_table:
+        for entry in entries:
+            quests.append({
+                "_story_quest_id": entry._story_quest_id, 
+                "title": entry.title,
+                "requirements": entry.requirements,
+                "paras": entry.paras,
+                "difficulty": entry.difficulty,
+                "rewards": entry.rewards
+            })
+            quest_id = entry._story_quest_id
+            UserStoryQuests(user_id, quest_id, False, None)
 
     return quests
 
@@ -140,9 +145,7 @@ def create_story_quests():
     else:
         entries = default_story_quests
         for entry in entries:
-            requirements = json.dumps(entry.get("requirements"))
-            rewards = json.dumps(entry.get("rewards"))
+            StoryQuests(entry.get("title"), entry.get("requirements"), entry.get("paras"), entry.get("difficulty"), entry.get("rewards"))
 
-            StoryQuests(entry.get("title"), requirements, entry.get("paras"), entry.get("difficulty"), rewards)
     return jsonify({"entries": entries}), 201
     

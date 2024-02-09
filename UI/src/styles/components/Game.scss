@@ -149,6 +149,8 @@
 
     #mission {
         font-size: 4rem;
+        font-family: monospace;
+
     }
 
     p {
@@ -194,4 +196,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.mission-results {
+    p {
+        font-family: monospace;
+    }
 }

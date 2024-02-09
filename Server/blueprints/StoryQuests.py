@@ -10,14 +10,14 @@ def check_story_quest():
     user_id = data.get("user_id")
     quest_id = data.get("quest_id")
 
-    story_quest = UserStoryQuests.query.filter_by(_user_id=user_id, _story_quest_id=quest_id).first()
-    user_story_quest = StoryQuests.query.filter_by(_story_quest_id=quest_id).first()
+    user_story_quest = UserStoryQuests.query.filter_by(_user_id=user_id, _story_quest_id=quest_id).first()
+    story_quest = StoryQuests.query.filter_by(_story_quest_id=quest_id).first()
     
     if not user_story_quest.isComplete:
         rewards = story_quest.rewards
-        lives = rewards.lives
-        gems = rewards.gems
-        xp = rewards.xp
+        lives = rewards.get("lives")
+        gems = rewards.get("gems")
+        xp = rewards.get("xp")
         
         user_story_quest.isComplete = True
         user_story_quest.completion_date = date.today()
@@ -46,17 +46,9 @@ def get_user_story_quests():
             quests.append({
                 "story_quest_id": story_quest._story_quest_id,
                 "title": story_quest.title,
-                "requirements": {
-                    "accuracy": story_quest.accuracy_req,
-                    "wpm": story_quest.wpm_req,
-                    "time": story_quest.time_req
-                },
+                "requirements": story_quest.requirements,
                 "difficulty": story_quest.difficulty,
-                "reward": {
-                    "xp": story_quest.xp,
-                    "gems": story_quest.gems,
-                    "lives": story_quest.lives
-                },
+                "reward": story_quest.rewards,
                 "isComplete": user_story_quest.isComplete,
                 "completion_date": user_story_quest.completion_date
             })
@@ -65,5 +57,6 @@ def get_user_story_quests():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
+    
  
 

@@ -1,11 +1,9 @@
 import { useEffect, useRef } from "react";
-import { loadQuests } from "../../utils/Index";
-import '../../styles/components/Layout.scss'
 
-function Layout() {
-    const QuestsContainer = useRef<HTMLDivElement | null>(null)
+function LeaderboardsLayout() {
+    const leaderboardsContainer = useRef<HTMLDivElement | null>(null)
     useEffect(() => {
-        loadQuests(QuestsContainer)
+        
     }, [])
         
     return(
@@ -20,7 +18,7 @@ function Layout() {
                         </div>
                     </div>
                     <div className="layout-quests">
-                        <div ref={QuestsContainer} id='level-section' className="level-section">
+                        <div ref={leaderboardsContainer} id='level-section' className="level-section">
                         </div>
                     </div>
                     <div className="layout-bar">
@@ -33,4 +31,4 @@ function Layout() {
     );
 }
 
-export default Layout;
+export default LeaderboardsLayout;
