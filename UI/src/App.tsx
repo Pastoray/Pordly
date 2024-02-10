@@ -11,6 +11,7 @@ import DailyQuestsContextProvider from './context/DailyQuestsContext'
 import LeaderBoards from './pages/LeaderBoards'
 import StoryQuestsContextProvider from './context/StoryQuestsContext'
 import './main.scss'
+import Achievements from './pages/Achievements'
 
 function App() {
   return (
@@ -22,12 +23,13 @@ function App() {
               <Routes>
                 <Route index element={<Home/>}/>
                 <Route path='/home' element={<Home/>}/>
-                <Route path='leaderboards' element={<LeaderBoards/>}/>
+                <Route path='/leaderboards' element={<LeaderBoards/>}/>
                 <Route path='/daily-quests' element={<DailyQuests/>}/>
                 <Route path='/story-quests' element={<StoryQuests/>}/>
                 <Route path='/:quest_type/:quest_id' element={<LoadQuest/>}/>
-                <Route path='/sign-up' element={<Signup/>}/>
-                <Route path='/log-in' element={<Login/>}/>
+                <Route path='/achievements' element={<Achievements/>}/>
+                <Route path='/signup' element={<Signup/>}/>
+                <Route path='/login' element={<Login/>}/>
                 <Route path='/*' element={<NoPage/>}/>
               </Routes>
             </BrowserRouter>

@@ -350,6 +350,110 @@ default_daily_quests = [
     }
 ]
 
+default_achievements = [
+    {
+        "title": "Champion",
+        "description": "Get #1 in any category 🏆",
+        "difficulty": "Hard",
+        "rewards": {
+            "gems": 2500,
+            "xp": 3000,
+            "lives": 10
+        }
+    },
+    {
+        "title": "Zenith",
+        "description": "Reach level 50 🌙",
+        "difficulty": "Hard",
+        "rewards": {
+            "gems": 2000,
+            "xp": 2500,
+            "lives": 5
+        }
+    },
+    {
+        "title": "Master",
+        "description": "Complete all story quests 📚",
+        "difficulty": "Hard",
+        "rewards": {
+            "gems": 1500,
+            "xp": 1000,
+            "lives": 3
+        }
+    },
+    {
+        "title": "Lightning",
+        "description": "Get 100 wpm in any quest ⚡",
+        "difficulty": "Hard",
+        "rewards": {
+            "gems": 1500,
+            "xp": 1000,
+            "lives": 2
+        }
+    },
+    {
+        "title": "Flawless",
+        "description": "Get 95% accuracy in any quest ✔",
+        "difficulty": "Medium",
+        "rewards": {
+            "gems": 750,
+            "xp": 1000,
+            "lives": 2
+        }
+    },
+    {
+        "title": "Streaker",
+        "description": "Maintain your streak for a month 🌋",
+        "difficulty": "Medium",
+        "rewards": {
+            "gems": 750,
+            "xp": 750,
+            "lives": 2
+        }
+    },
+    {
+        "title": "Loaded",
+        "description": "Have 10,000 Gems at any point in time 💰",
+        "difficulty": "Medium",
+        "rewards": {
+            "gems": 750,
+            "xp": 500,
+            "lives": 1
+        }
+    },
+    {
+        "title": "Collector",
+        "description": "Buy an item from the shop 💲",
+        "difficulty": "Easy",
+        "rewards": {
+            "gems": 150,
+            "xp": 250,
+            "lives": 1
+        }
+    },
+    {
+        "title": "Warrior",
+        "description": "Win a 1vs1 ⚔️",
+        "difficulty": "Easy",
+        "rewards": {
+            "gems": 150,
+            "xp": 250,
+            "lives": 1
+        }
+    },
+    {
+        "title": "Gladiator",
+        "description": "Participate in a tournament 🛡️",
+        "difficulty": "Easy",
+        "rewards": {
+            "gems": 150,
+            "xp": 250,
+            "lives": 1
+        }
+    }
+]
+ 
+
 default_titles = [
     {
       "color": "grey",

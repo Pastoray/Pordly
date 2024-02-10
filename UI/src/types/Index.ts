@@ -10,6 +10,8 @@ export type ParagraphData = {
     paragraphIdx: number
 }
 
+export type Users = User[]
+
 export type User = {
     info: Info,
     stats: Stats,
@@ -25,12 +27,13 @@ export type Stats = {
     title: Title,
     streak: number,
     gems: number,
-    lives: number
+    lives: number,
+    xp: number
 }
-
 
 export type DailyQuests = DailyQuest[]
 export type StoryQuests = StoryQuest[]
+export type Achievements = Achievement[]
 
 export type DailyQuest = {
     daily_quest_id: number,
@@ -39,7 +42,7 @@ export type DailyQuest = {
     isComplete: boolean,
     date: Date,
     requirements: QuestRequirements,
-    reward: QuestRewards
+    reward: Rewards
 }
 
 export type StoryQuest = {
@@ -49,7 +52,17 @@ export type StoryQuest = {
     isComplete: boolean,
     completion_date: Date,
     requirements: QuestRequirements,
-    reward: QuestRewards
+    reward: Rewards
+}
+
+export type Achievement = {
+    achievement_id: number,
+    title: string,
+    description: string,
+    difficulty: string,
+    rewards: Rewards,
+    isComplete: boolean,
+    completion_date: Date
 }
 
 export type QuestRequirements = {
@@ -65,15 +78,10 @@ export type GameOverProps = {
     reset: Function
 }
 
-export type QuestRewards = {
+export type Rewards = {
     xp: number
     gems: number
     lives: number
-}
-
-
-export type Achievements = {
-
 }
 
 export type Level = {

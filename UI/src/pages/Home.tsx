@@ -20,7 +20,7 @@ function Home() {
                 <div className='main-right-window'>
                     <Calender/>
                     <Quests/>
-                    <Achivements/>
+                    <p>cock</p>
                 </div>
             </div>
         </>

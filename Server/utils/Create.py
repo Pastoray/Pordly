@@ -7,6 +7,11 @@ import json
 
 create_bp = Blueprint("create", __name__)
 
+def create_user_stats(user_id):
+    title_row = Titles.query.filter(Titles.level_required<=1).order_by(Titles.level_required.desc()).first()
+    title = title_row.title
+    Stats(user_id, 0, 1, title, 0, 100, 5)
+
 @create_bp.route("/levels", methods=["POST", "GET"])
 def create_levels():
     levels = []
@@ -31,7 +36,7 @@ def create_levels():
 @create_bp.route("/titles", methods=["POST", "GET"])
 def create_titles():
     titles = []
-    if request.metohd == "POST":
+    if request.method == "POST":
         titles = request.get_json()
         for entry in titles:
             title = entry.get("title")
@@ -115,20 +120,17 @@ def create_user_story_quests(user_id):
     entries = StoryQuests.query.all()
     quests = []
 
-    user_in_table = UserStoryQuests.query.filter_by(_user_id=user_id).first()
-
-    if not user_in_table:
-        for entry in entries:
-            quests.append({
-                "_story_quest_id": entry._story_quest_id, 
-                "title": entry.title,
-                "requirements": entry.requirements,
-                "paras": entry.paras,
-                "difficulty": entry.difficulty,
-                "rewards": entry.rewards
-            })
-            quest_id = entry._story_quest_id
-            UserStoryQuests(user_id, quest_id, False, None)
+    for entry in entries:
+        quests.append({
+            "_story_quest_id": entry._story_quest_id, 
+            "title": entry.title,
+            "requirements": entry.requirements,
+            "paras": entry.paras,
+            "difficulty": entry.difficulty,
+            "rewards": entry.rewards
+        })
+        quest_id = entry._story_quest_id
+        UserStoryQuests(user_id, quest_id, False, None)
 
     return quests
 
@@ -146,6 +148,38 @@ def create_story_quests():
         entries = default_story_quests
         for entry in entries:
             StoryQuests(entry.get("title"), entry.get("requirements"), entry.get("paras"), entry.get("difficulty"), entry.get("rewards"))
+
+    return jsonify({"entries": entries}), 201
+
+def create_user_achievements(user_id):
+    entries = Achievements.query.all()
+    quests = []
+
+    for entry in entries:
+        quests.append({
+            "_achievement_id": entry._achievement_id, 
+            "title": entry.title,
+            "description": entry.description,
+            "difficulty": entry.difficulty,
+            "rewards": entry.rewards
+        })
+        achievement_id = entry._achievement_id
+        UserAchievements(user_id, achievement_id, False, None)
+
+    return quests
+
+@create_bp.route("/achievements", methods=["POST", "GET"])
+def create_achievements():
+    entries = []
+    if request.method == "POST":
+        entries = request.get_json()
+        for entry in entries:
+            
+            Achievements(entry.get("title"), entry.get("description"), entry.get("difficulty"), entry.get("rewards"))
+    else:
+        entries = default_achievements
+        for entry in entries:
+            Achievements(entry.get("title"), entry.get("description"), entry.get("difficulty"), entry.get("rewards"))
 
     return jsonify({"entries": entries}), 201
     

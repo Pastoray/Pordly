@@ -68,7 +68,7 @@ function Welcome() {
                         <div className='welcome-page-cards-container'>
                             <Card title={'Daily Quests'} doneCount={dailyQuestsFinished} totalCount={3}/>
                             <Card title={'Story Quests'} doneCount={storyQuestsFinished} totalCount={20}/>
-                            <Card title={'Achivements'} doneCount={0} totalCount={15}/>
+                            <Card title={'Achivements'} doneCount={0} totalCount={10}/>
                         </div>
                     </section>
                 </main>

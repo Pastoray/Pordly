@@ -179,3 +179,48 @@ def all_user_story_quests():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500 
+    
+@all_bp.route('/achievements', methods=["POST", "GET"])
+def all_achievements():
+    try:
+        all_entries = Achievements.query.all()
+        entries_list = []
+
+        for entry in all_entries:
+            entries_list.append(
+                {
+                    "_achievement_id": entry._achievement_id,
+                    "title": entry.title,
+                    "description": entry.description,
+                    "difficulty": entry.difficulty,
+                    "rewards": entry.rewards
+                }
+            )
+
+        return jsonify({"entries": entries_list}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500
+    
+@all_bp.route('/user-achievements', methods=["POST", "GET"])
+def all_user_achievements():
+    try:
+        all_entries = UserAchievements.query.all()
+        entries_list = []
+
+        for entry in all_entries:
+            entries_list.append(
+                {
+                    "user_achievements_id": entry.user_achievements_id,
+                    "user_id": entry._user_id,
+                    "_achievement_id": entry._achievement_id,
+                    "isComplete": entry.isComplete,
+                    "completion_date": entry.completion_date
+                }
+            )
+
+        return jsonify({"entries": entries_list}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500 
+      

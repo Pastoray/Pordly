@@ -1,5 +1,5 @@
 import fetchParagraph from "../data/fetchParagraph";
-import { State, Ref, ParagraphData, LoginError, QuestType } from "../types/Index";
+import { State, Ref, ParagraphData, LoginError, QuestType, Achievements, Users, User } from "../types/Index";
 
 let Words = 0;
 
@@ -183,7 +183,7 @@ export async function getUser() {
         const cookie = cookies[i].trim();
         if (cookie.startsWith("accessToken" + '=')) {
             const cookieValue = cookie.substring("accessToken".length + 1);
-            const user = await validateToken(cookieValue);
+            const user: User | undefined = await validateToken(cookieValue);
             console.log(user)
             return user
         }
@@ -192,8 +192,8 @@ export async function getUser() {
 }
 
 export async function getUserId() {
-    const user = await getUser();
-    const user_id = user.info.id
+    const user: User | null | undefined = await getUser();
+    const user_id = user?.info.id
     console.log(user_id)
     return user_id
 }
@@ -269,4 +269,29 @@ export async function decrement_lives() {
     const response = await data.json()
     return response
 
+}
+
+export async function fetchLeaderboardParticipants(type: string, setParticipants: React.Dispatch<React.SetStateAction<Users>>) {
+    const data = await fetch(`http://127.0.0.1:8080/leaderboards/${type}`, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    const response: Users = await data.json()
+    setParticipants(response)
+}
+
+export async function fetchUserAchievements(user_id: number | undefined, setAchievements: React.Dispatch<React.SetStateAction<Achievements>>) {
+    const data = await fetch(`http://127.0.0.1:8080/achievements/fetch`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id
+        })
+    })
+    const response: Achievements = await data.json()
+    console.log(response)
+    setAchievements(response)
 }

@@ -10,10 +10,8 @@ type CardProps = {
 function Card({ title, doneCount, totalCount }: CardProps) {
     const [progressPercentage, setProgressPercentage] = useState(0);
     useEffect(() => {
-        setTimeout(() => {
-            const progress = (doneCount / totalCount) * 100;
-            setProgressPercentage(progress);
-        }, 2000);
+        const progress = (doneCount / totalCount) * 100;
+        setProgressPercentage(progress);
     }, [doneCount])
     return(
         <>

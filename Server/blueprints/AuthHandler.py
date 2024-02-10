@@ -43,9 +43,9 @@ def create_account():
     user = Users(username, email, password)
     user_id = user._user_id
 
-    title_row = Titles.query.filter(Titles.level_required<=1).order_by(Titles.level_required.desc()).first()
-    title = title_row.title
-    Stats(user_id, 0, 1, title, 0, 100, 5)
+    create_user_stats(user_id)
+    create_user_story_quests(user_id)
+    create_user_achievements(user_id)
 
     return jsonify({"success": True, "message": "Account Created successfully"}), 201
 
@@ -120,7 +120,6 @@ def validate_token():
     user_title = Titles.query.filter(Titles.level_required<=user_level.level).order_by(Titles.level_required.desc()).first()
     
     create_user_daily_quests(user_id)
-    create_user_story_quests(user_id)
     get_streak(user_id)
     return jsonify({
         "success": (user_id != None),

@@ -7,7 +7,7 @@ function Sidebar() {
                 <button onClick={() => window.location.href = '/1vs1'}>1VS1</button>
                 <button onClick={() => window.location.href = '/daily-quests'}>Daily Quests</button>
                 <button onClick={() => window.location.href = '/story-quests'}>Story Quests</button>
-                <button onClick={() => window.location.href = '/achivements'}>Achivements</button>
+                <button onClick={() => window.location.href = '/achievements'}>Achievements</button>
                 <button onClick={() => window.location.href = '/leaderboards'}>Leaderboards</button>
                 <button onClick={() => window.location.href = '/tournements'}>Tournements</button>
                 <button onClick={() => window.location.href = '/shop'}>Shop</button>

@@ -1,11 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 function LeaderboardsLayout() {
     const leaderboardsContainer = useRef<HTMLDivElement | null>(null)
-    useEffect(() => {
-        
-    }, [])
-        
     return(
         <>
             <div className="layout-body-cotainer">

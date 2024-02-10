@@ -36,12 +36,11 @@ class Achievements(db.Model):
     description = db.Column(db.String(128), nullable=False)
     difficulty = db.Column(db.String(32), nullable=False)
     rewards = db.column_property(db.Column(db.JSON))
-    def __init__(self, title, description, difficulty, rewards, condition):
+    def __init__(self, title, description, difficulty, rewards):
         self.title = title
         self.description = description
         self.difficulty = difficulty
         self.rewards = rewards
-        self.condition = condition
 
         db.session.add(self)
         db.session.commit()
@@ -148,3 +147,17 @@ class UserStoryQuests(db.Model):
         db.session.add(self)
         db.session.commit()
         
+class UserAchievements(db.Model):
+    _user_achievements_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id), nullable=False)
+    _achievement_id = db.Column(db.Integer, db.ForeignKey(Achievements._achievement_id), nullable=False)
+    isComplete = db.Column(db.Boolean, nullable=False)
+    completion_date =  db.Column(db.Date)
+    def __init__(self, user_id, achievement_id, isComplete, completion_date):
+        self._user_id = user_id
+        self._achievement_id = achievement_id
+        self.isComplete = isComplete
+        self.completion_date = completion_date
+
+        db.session.add(self)
+        db.session.commit()

@@ -2,10 +2,11 @@ from flask import Flask
 from database import db
 
 from blueprints.AuthHandler import jwt, auth_bp
-from blueprints.Achivements import achivements_bp
+from blueprints.Achivements import achievements_bp
 from blueprints.Stats import stats_bp
 from blueprints.DailyQuests import daily_quests_bp
 from blueprints.StoryQuests import story_quests_bp
+from blueprints.Leaderboards import leaderboards_bp
 
 from utils.Create import create_bp
 from utils.All import all_bp
@@ -29,7 +30,8 @@ app.register_blueprint(clear_bp, url_prefix="/clear")
 app.register_blueprint(all_bp, url_prefix="/all")
 
 app.register_blueprint(auth_bp, url_prefix="/auth")
-app.register_blueprint(achivements_bp, url_prefix="/achievements")
+app.register_blueprint(achievements_bp, url_prefix="/achievements")
+app.register_blueprint(leaderboards_bp, url_prefix="/leaderboards")
 app.register_blueprint(stats_bp, url_prefix="/stats")
 app.register_blueprint(daily_quests_bp, url_prefix="/daily-quests")
 app.register_blueprint(story_quests_bp, url_prefix="/story-quests")
