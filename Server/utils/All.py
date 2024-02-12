@@ -189,7 +189,7 @@ def all_achievements():
         for entry in all_entries:
             entries_list.append(
                 {
-                    "_achievement_id": entry._achievement_id,
+                    "achievement_id": entry._achievement_id,
                     "title": entry.title,
                     "description": entry.description,
                     "difficulty": entry.difficulty,
@@ -211,7 +211,7 @@ def all_user_achievements():
         for entry in all_entries:
             entries_list.append(
                 {
-                    "user_achievements_id": entry.user_achievements_id,
+                    "user_achievements_id": entry._user_achievements_id,
                     "user_id": entry._user_id,
                     "_achievement_id": entry._achievement_id,
                     "isComplete": entry.isComplete,

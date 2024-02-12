@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { DailyQuestsContext } from "../../context/DailyQuestsContext";
 import { useParams } from "react-router-dom";
 import { GameOverProps, QuestType } from "../../types/Index";
-import { check_quest } from "../../utils/Index";
+import { check_quest, check_achievement } from "../../utils/Index";
 import { StoryQuestsContext } from "../../context/StoryQuestsContext";
 
 type QuestInfo = {
@@ -12,14 +12,26 @@ type QuestInfo = {
 
 function GameOver({ accuracy, wpm, time, reset }: GameOverProps) {
     const { quest_type, quest_id } = useParams<QuestInfo>();
+    
     const quests = quest_type == "daily-quests" ? useContext(DailyQuestsContext) : useContext(StoryQuestsContext);
     const quest = quests!.filter((quest) => quest_id == (quest_type == "daily-quests" ? quest.daily_quest_id : quest.story_quest_id))[0];
     
     const quest_complete = true//accuracy >= quest.requirements.accuracy && Math.ceil(wpm) >= quest.requirements.wpm && time > 0;
-    
+    const accuracy_achievement_finished = accuracy >= 95
+    const wpm_achievement_finished = wpm >= 100
+
+
     useEffect(() => {
         if (quest_complete) {
             check_quest(parseInt(quest_id!), quest_type)
+        }
+
+        if (accuracy_achievement_finished) {
+            check_achievement(5)
+        }
+
+        if (wpm_achievement_finished) {
+            check_achievement(4)
         }
     }, [])
 

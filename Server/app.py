@@ -1,7 +1,7 @@
 from flask import Flask
 from database import db
 
-from blueprints.AuthHandler import jwt, auth_bp
+from blueprints.Authentication import jwt, auth_bp
 from blueprints.Achivements import achievements_bp
 from blueprints.Stats import stats_bp
 from blueprints.DailyQuests import daily_quests_bp

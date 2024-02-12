@@ -22,6 +22,7 @@ function LeaderBoards() {
                 <div className='leaderboards'>
                     {participants.map((participant, i) => (
                         <div className="leaderboards-participant" key={i}>
+    
                             <div className="participant-credentials">
                                 <p id="leaderboards-participant-level" style={{color: `${participant.stats.level.color}`, textShadow: `0px 0px 3px ${participant.stats.level.color}`}}>『 {participant.stats.level.level} 』</p>
                                 <div>

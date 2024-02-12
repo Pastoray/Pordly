@@ -22,7 +22,6 @@ def check_story_quest():
         user_story_quest.isComplete = True
         user_story_quest.completion_date = date.today()
         db.session.commit()
-        
         if lives > 0:
             update_lives(user_id, lives)
         if gems > 0:
@@ -30,6 +29,15 @@ def check_story_quest():
         if xp > 0:
             update_xp(user_id, xp) 
         update_streak(user_id)
+        all_user_story_quests_query = UserStoryQuests.query.filter_by(_user_id=user_id)
+        all_user_story_quests = []
+
+        for quest in all_user_story_quests_query:
+            all_user_story_quests.append(UserStoryQuests.query.filter_by(_user_id=user_id, _story_quest_id=quest._story_quest_id).first())
+
+        all_user_story_quests_completed = all(quest.isComplete for quest in all_user_story_quests)
+        if all_user_story_quests_completed:
+            check_achievement(user_id, 3)
 
     return jsonify({"success": True, "quest_complete": user_story_quest.isComplete})
 

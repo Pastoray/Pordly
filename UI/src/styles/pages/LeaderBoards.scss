@@ -42,7 +42,6 @@ $prefix: "leaderboards";
     border-radius: 8px;
     padding: 1rem;
     background-color: hsl(0, 0%, 10%);
-    border: 3px solid white;
     transition: all 0.1s;
     cursor: pointer;
     p {
@@ -53,6 +52,7 @@ $prefix: "leaderboards";
 
 .#{$prefix}-participant:hover {
     box-shadow: 0px 0px 5px white;
+    border: 3px solid white;
 }
 .#{$prefix}-participant:active {
     transform: scale(0.98);

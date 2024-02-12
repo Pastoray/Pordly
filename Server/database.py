@@ -80,7 +80,38 @@ class DailyQuests(db.Model):
 
         db.session.add(self)
         db.session.commit()
+
+class Boosters(db.Model):
+    _booster_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    title = db.Column(db.String(32), nullable=False)
+    description = db.Column(db.String(64), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    category = db.Column(db.String(64), nullable=False)
+    multiplier = db.Column(db.Integer, nullable=False)
+    def __init__(self, title, description, price, category, multiplier):
+        self.title = title
+        self.description = description
+        self.price = price
+        self.category = category
+        self.multiplier = multiplier
+        
+        db.session.add(self)
+        db.session.commit()
+        
+class Items(db.Model):
+    _item_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    title = db.Column(db.String(32), nullable=False)
+    description = db.Column(db.String(64), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    def __init__(self):
     
+        db.session.add(self)
+        db.session.commit()
+
+#----------------------------------------------------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------------#
+
 class Users(db.Model):
     _user_id = db.Column(db.Integer, unique=True, primary_key=True)
     username = db.Column(db.String(32), unique=True, nullable=False)
@@ -102,8 +133,8 @@ class Stats(db.Model):
     _stats_id = db.Column(db.Integer, unique=True, primary_key=True)
     _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id))
     xp = db.Column(db.Integer)
-    level = db.Column(db.Integer, nullable=False) 
-    title = db.Column(db.String(64), nullable=False) 
+    level = db.column_property(db.Column(db.JSON))
+    title = db.Column(db.String(64), nullable=False)
     streak = db.Column(db.Integer, nullable=False)
     gems = db.Column(db.Integer, nullable=False)
     lives = db.Column(db.Integer, nullable=False)
@@ -115,6 +146,17 @@ class Stats(db.Model):
         self.streak = streak
         self.gems = gems
         self.lives = lives
+
+        db.session.add(self)
+        db.session.commit()
+
+class UserTitles(db.Model):
+    _user_titles_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id), nullable=False)
+    _title_id = db.Column(db.Integer, db.ForeignKey(Titles._title_id), nullable=False)
+    def __init__(self, user_id, title_id):
+        self._user_id = user_id
+        self._title_id = title_id
 
         db.session.add(self)
         db.session.commit()
@@ -158,6 +200,36 @@ class UserAchievements(db.Model):
         self._achievement_id = achievement_id
         self.isComplete = isComplete
         self.completion_date = completion_date
+
+        db.session.add(self)
+        db.session.commit()
+
+class UserBoosters(db.Model):
+    _user_boosters_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id), nullable=False)
+    _booster_id = db.Column(db.Integer, db.ForeignKey(Boosters._booster_id), nullable=False)
+    category = db.Column(db.String(64), db.ForeignKey(Boosters.category), nullable=False)
+    multiplier = db.Column(db.Float, db.ForeignKey(Boosters.multiplier), nullable=False)
+    isActive = db.Column(db.Boolean, nullable=False)
+    expiration_date = db.Column(db.Date)
+    def __init__(self, user_id, booster_id, category, multiplier, isActive, expiration_date):
+        self._user_id = user_id
+        self._booster_id = booster_id
+        self.category = category        
+        self.multiplier = multiplier
+        self.isActive = isActive
+        self.expiration_date = expiration_date
+
+        db.session.add(self)
+        db.session.commit()
+        
+class UserItems(db.Model):
+    _user_items_id = db.Column(db.Integer, nullable=False, primary_key=True)
+    _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id), nullable=False)
+    _item_id = db.Column(db.Integer, db.ForeignKey(Items._item_id), nullable=False)
+    def __init__(self, user_id, item_id):
+        self._user_id = user_id
+        self._item_id = item_id
 
         db.session.add(self)
         db.session.commit()

@@ -12,6 +12,7 @@ import LeaderBoards from './pages/LeaderBoards'
 import StoryQuestsContextProvider from './context/StoryQuestsContext'
 import './main.scss'
 import Achievements from './pages/Achievements'
+import Shop from './pages/Shop'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                 <Route path='/story-quests' element={<StoryQuests/>}/>
                 <Route path='/:quest_type/:quest_id' element={<LoadQuest/>}/>
                 <Route path='/achievements' element={<Achievements/>}/>
+                <Route path='/shop' element={<Shop/>}/>
                 <Route path='/signup' element={<Signup/>}/>
                 <Route path='/login' element={<Login/>}/>
                 <Route path='/*' element={<NoPage/>}/>

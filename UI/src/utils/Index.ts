@@ -295,3 +295,20 @@ export async function fetchUserAchievements(user_id: number | undefined, setAchi
     console.log(response)
     setAchievements(response)
 }
+
+export async function check_achievement(achievement_id: number) {
+    const user_id = await getUserId();
+    const data = await fetch(`http://127.0.0.1:8080/achievements/check`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+            achievement_id
+        })
+    })
+    const response: Achievements = await data.json()
+    console.log(response)
+    return response
+} 
