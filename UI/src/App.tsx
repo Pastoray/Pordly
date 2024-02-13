@@ -1,43 +1,34 @@
-import Home from './pages/Home'
-import StoryQuests from './pages/StoryQuests'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import LoadQuest from './pages/LoadQuest'
-import NoPage from './pages/NoPage'
-import DailyQuests from './pages/DailyQuests'
+import HomeWrapper from './pages/HomeWrapper'
+import DailyQuestsWrapper from './pages/DailyQuestsWrapper'
+import StoryQuestsWrapper from './pages/StoryQuestsWrapper'
+import LoadQuestWrapper from './pages/LoadQuestWrapper'
+import LeaderboardsWrapper from './pages/LeaderboardsWrapper'
+import AchievementsWrapper from './pages/AchievementsWrapper'
+import ShopWrapper from './pages/ShopWrapper'
 import Login from './components/UI/Login'
 import Signup from './components/UI/Sigup'
-import UserContextProvider from './context/UserContext'
-import DailyQuestsContextProvider from './context/DailyQuestsContext'
-import LeaderBoards from './pages/LeaderBoards'
-import StoryQuestsContextProvider from './context/StoryQuestsContext'
+import NoPage from './pages/NoPage'
 import './main.scss'
-import Achievements from './pages/Achievements'
-import Shop from './pages/Shop'
 
 function App() {
   return (
     <>
-      <UserContextProvider>
-        <DailyQuestsContextProvider>
-          <StoryQuestsContextProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route index element={<Home/>}/>
-                <Route path='/home' element={<Home/>}/>
-                <Route path='/leaderboards' element={<LeaderBoards/>}/>
-                <Route path='/daily-quests' element={<DailyQuests/>}/>
-                <Route path='/story-quests' element={<StoryQuests/>}/>
-                <Route path='/:quest_type/:quest_id' element={<LoadQuest/>}/>
-                <Route path='/achievements' element={<Achievements/>}/>
-                <Route path='/shop' element={<Shop/>}/>
-                <Route path='/signup' element={<Signup/>}/>
-                <Route path='/login' element={<Login/>}/>
-                <Route path='/*' element={<NoPage/>}/>
-              </Routes>
-            </BrowserRouter>
-          </StoryQuestsContextProvider>
-        </DailyQuestsContextProvider>
-      </UserContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<HomeWrapper/>}/>
+          <Route path='/home' element={<HomeWrapper/>}/>
+          <Route path='/daily-quests' element={<DailyQuestsWrapper/>}/>
+          <Route path='/story-quests' element={<StoryQuestsWrapper/>}/>
+          <Route path='/:quest_type/:quest_id' element={<LoadQuestWrapper/>}/>
+          <Route path='/leaderboards' element={<LeaderboardsWrapper/>}/>
+          <Route path='/achievements' element={<AchievementsWrapper/>}/>
+          <Route path='/shop' element={<ShopWrapper/>}/>
+          <Route path='/signup' element={<Signup/>}/>
+          <Route path='/login' element={<Login/>}/>
+          <Route path='/*' element={<NoPage/>}/>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

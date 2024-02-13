@@ -4,7 +4,7 @@ import "../styles/pages/LeaderBoards.scss"
 import { fetchLeaderboardParticipants } from "../utils/Index";
 import { User } from "../types/Index";
 
-function LeaderBoards() {
+function Leaderboards() {
     const [participants, setParticipants] = useState<User[]>([])
     useEffect(() => {
         fetchLeaderboardParticipants("streak", setParticipants)
@@ -50,4 +50,4 @@ function LeaderBoards() {
     );
 }
 
-export default LeaderBoards;
+export default Leaderboards;

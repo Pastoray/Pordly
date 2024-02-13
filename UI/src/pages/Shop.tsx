@@ -15,7 +15,7 @@ function Shop() {
                         <div className='shop-boosters'>
                             {
                             boosters.map((booster, i) => (
-                                    <div className='shop-booster'>
+                                    <div className='shop-booster' key={i}>
                                         <p id='shop-booster-title'>XP Booster x2</p>
                                         <p id='shop-booster-description'>Boosts experience received by two times</p>
                                         <p id='shop-booster-price'>1000 💎</p>
@@ -29,7 +29,7 @@ function Shop() {
                         <div className='shop-items'>
                             {
                             items.map((item, i) => (
-                                    <div className='shop-item'>
+                                    <div className='shop-item' key={i}>
                                         <p id='shop-item-title'>Titles Lives Name Nexus..</p>
                                         <p id='shop-item-description'>The Crimson Conqueror</p>
                                         <p id='shop-item-price'>1000 💎</p>

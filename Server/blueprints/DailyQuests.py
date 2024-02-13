@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from database import UserDailyQuests, DailyQuests, db
 from datetime import date
 from blueprints.Stats import *
+import calendar
 
 daily_quests_bp = Blueprint("daily_quests", __name__)
 
@@ -69,4 +70,24 @@ def reset_quests():
     db.session.commit()
     return jsonify({"success": True})
 
+@daily_quests_bp.route("/this-month", methods=["POST"])
+def get_daily_quests_of_this_month():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    
+    current_date = date.today()
+    current_year = (int(str(current_date).split("-")[0]))
+    current_month = (int(str(current_date).split("-")[1]))
+    current_month_days = calendar.monthrange(current_year, current_month)[1]
 
+    result = []
+    for day in range(1, date.today().day + 1):
+        current_date = date(date.today().year, date.today().month, day)
+        day_daily_quests = DailyQuests.query.filter(date=current_date).order_by(DailyQuests._daily_quest_id.asc())
+        temp = []
+        for quest in day_daily_quests:
+            user_daily_quest = UserDailyQuests.query.filter(_user_id=user_id, _daily_quest_id=quest._daily_quest_id).first()
+            temp.append(user_daily_quest)
+        result.append(all(q.isComplete for q in temp))
+
+    return jsonify({"user_daily_quests": result,"days_this_month": current_month_days})

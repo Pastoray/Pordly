@@ -48,13 +48,19 @@
 
 
 .prev {
-    color: gold;
+    color: white;
+    background-color: hsl(120, 100%, 40%);
+    box-shadow: 0px 0px 5px hsl(120, 100%, 40%);
 }
 
 .today {
-    background-color: gold;
+    color: white;
+    background-color: hsl(120, 100%, 40%);
+    box-shadow: 0px 0px 5px hsl(120, 100%, 40%);
 }
 
 .next {
-    color: red;
+    color: white;
+    background-color: hsl(0, 100%, 40%);
+    box-shadow: 0px 0px 5px hsl(0, 100%, 40%);
 }

@@ -2,7 +2,6 @@ import Welcome from '../components/UI/Welcome'
 import Toolbar from '../components/UI/Toolbar'
 import Sidebar from '../components/UI/Sidebar'
 import Calender from '../components/UI/Caldender'
-import Achivements from '../components/UI/Achivements'
 import Quests from '../components/UI/Quests'
 import '../styles/pages/Home.scss'
 

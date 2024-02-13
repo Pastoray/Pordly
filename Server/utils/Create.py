@@ -107,7 +107,6 @@ def create_user_daily_quests(user_id):
         quest_id = entry._daily_quest_id
         quest_in_table = UserDailyQuests.query.filter_by(_user_id=user_id, _daily_quest_id=quest_id).first()
         if not quest_in_table:
-
             UserDailyQuests(user_id, quest_id, False)
             lives_reset = True
     

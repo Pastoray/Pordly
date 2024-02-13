@@ -29,7 +29,7 @@ function DailyQuests() {
                                 <p className={`daily-quest-${quest.difficulty.toLocaleLowerCase()}`}>{quest.difficulty}</p>
                             {
                             quest.isComplete ? 
- 
+
                                 <p className='daily-quest-complete'>Completed</p>
                             :
                                 <div className='daily-quest-reward-container'>
@@ -41,15 +41,14 @@ function DailyQuests() {
                                         <p className='daily-quest-lives'>{quest.reward.lives}❤️</p>
                                     }
                                 </div>
-
-                            }
-                        </div>
-                    ))
-                :
-                <LoadingScreen/>
-                }
-            </main>
-        </>
-    );
-}
-export default DailyQuests;
+                                }
+                            </div>
+                        ))
+                    :
+                        <LoadingScreen/>
+                    }
+                </main>
+            </>
+        );
+    }
+    export default DailyQuests;
