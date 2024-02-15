@@ -28,7 +28,6 @@ def check_story_quest():
             update_gems(user_id, gems)
         if xp > 0:
             update_xp(user_id, xp) 
-        update_streak(user_id)
         all_user_story_quests_query = UserStoryQuests.query.filter_by(_user_id=user_id)
         all_user_story_quests = []
 
@@ -63,7 +62,6 @@ def get_user_story_quests():
         return jsonify(quests)
     
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
  

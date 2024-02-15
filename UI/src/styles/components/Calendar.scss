@@ -1,4 +1,4 @@
-.calender-container {
+.calendar-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,7 +11,7 @@
     }
 }
 
-.calender-days {
+.calendar-days {
     height: 100%;
     width: 100%;
     display: flex;
@@ -24,42 +24,43 @@
     }
 }
 
-.calender-day {
-    height: 1.7rem;
-    width: 1.7rem;
+.calendar-day {
+    height: 1.695rem;
+    width: 1.695rem;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0.4rem;
     border-radius: 50%;
     background-color: hsl(0, 0%, 20%);
+    box-shadow: 0px 0px 5px hsl(0, 0%, 20%);
     transition: all 0.1s;
     cursor: pointer;
 }
 
-.calender-day:hover {
+.calendar-day:hover {
     filter: brightness(150%)
 }
 
-.calender-day:active {
+.calendar-day:active {
     transform: scale(0.92);
 }
 
 
 
-.prev {
+.calendar-day-done{
     color: white;
     background-color: hsl(120, 100%, 40%);
     box-shadow: 0px 0px 5px hsl(120, 100%, 40%);
 }
 
-.today {
+.calendar-day-today {
     color: white;
-    background-color: hsl(120, 100%, 40%);
-    box-shadow: 0px 0px 5px hsl(120, 100%, 40%);
+    background-color: hsl(40, 100%, 40%);
+    box-shadow: 0px 0px 5px hsl(40, 100%, 40%);
 }
 
-.next {
+.calendar-day-undone {
     color: white;
     background-color: hsl(0, 100%, 40%);
     box-shadow: 0px 0px 5px hsl(0, 100%, 40%);

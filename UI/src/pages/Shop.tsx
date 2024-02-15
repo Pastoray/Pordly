@@ -1,10 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Toolbar from '../components/UI/Toolbar';
 import '../styles/pages/Shop.scss'
+import { buy_booster } from '../utils/Index';
+import { Booster } from '../types/Index';
 
 function Shop() {
-    const [boosters, setBoosters] = useState(Array.from({ length: 10 }).fill(''));
-    const [items, setItems] = useState(Array.from({ length: 10 }).fill(''));
+    const [boosters, setBoosters] = useState<Booster[]>([]);
+    useEffect(() => {
+        async function fetch_boosters() {
+
+            const data = await fetch("http://127.0.0.1:8080/all/boosters", {
+            method: "GET",
+            headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            const response = await data.json()
+            setBoosters(response)
+        }
+        fetch_boosters()
+    }, [])
+
     return(
         <>
             <div className='shop-container'>
@@ -14,31 +30,23 @@ function Shop() {
                         <p id='shop-boosters'>Boosters</p>
                         <div className='shop-boosters'>
                             {
-                            boosters.map((booster, i) => (
-                                    <div className='shop-booster' key={i}>
-                                        <p id='shop-booster-title'>XP Booster x2</p>
-                                        <p id='shop-booster-description'>Boosts experience received by two times</p>
-                                        <p id='shop-booster-price'>1000 💎</p>
-                                    </div>
+                            boosters ?
+                                boosters.map((booster, i) => (
+                                        <div className='shop-booster' key={i} onClick={() => {
+                                            buy_booster(booster.id)
+                                        }}>
+                                            <p id='shop-booster-title'>- {booster.title} -</p>
+                                            <p id='shop-booster-info'>{booster.category.toLocaleUpperCase()} &times;{booster.multiplier}</p>
+                                            <p id='shop-booster-description'>{booster.description}</p>
+                                            <p id='shop-booster-price'>{booster.price} 💎</p>
+                                        </div>
+                                    )
                                 )
-                            )}
+                            :
+                                null
+                            }
                         </div>
                     </div>
-                    <div>
-                        <p id='shop-items'>Items</p>
-                        <div className='shop-items'>
-                            {
-                            items.map((item, i) => (
-                                    <div className='shop-item' key={i}>
-                                        <p id='shop-item-title'>Titles Lives Name Nexus..</p>
-                                        <p id='shop-item-description'>The Crimson Conqueror</p>
-                                        <p id='shop-item-price'>1000 💎</p>
-                                    </div>
-                                )
-                            )}
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </>

@@ -1,8 +1,9 @@
 import Welcome from '../components/UI/Welcome'
 import Toolbar from '../components/UI/Toolbar'
 import Sidebar from '../components/UI/Sidebar'
-import Calender from '../components/UI/Caldender'
-import Quests from '../components/UI/Quests'
+import Calendar from '../components/UI/Calendar'
+import StoryQuestsComponent from '../components/UI/StoryQuestsComponent'
+import AchievementsComponent from '../components/UI/AchievementsComponent'
 import '../styles/pages/Home.scss'
 
 function Home() {
@@ -17,9 +18,9 @@ function Home() {
                     <Welcome/>
                 </div>
                 <div className='main-right-window'>
-                    <Calender/>
-                    <Quests/>
-                    <p>cock</p>
+                    <Calendar/>
+                    <StoryQuestsComponent/>
+                    <AchievementsComponent/>
                 </div>
             </div>
         </>

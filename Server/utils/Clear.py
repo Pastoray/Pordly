@@ -112,10 +112,32 @@ def clear_user_achievements():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
+    
+@clear_bp.route("/boosters", methods=["POST", "GET"])
+def clear_boosters():
+    try:
+        db.session.query(Boosters).delete()
+        db.session.commit()
+        return jsonify({"message": "All records deleted successfully"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500
 
+@clear_bp.route("/user-boosters", methods=["POST", "GET"])
+def clear_user_boosters():
+    try:
+        db.session.query(UserBoosters).delete()
+        db.session.commit()
+        return jsonify({"message": "All records deleted successfully"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error: {str(e)}"}), 500
+    
 @clear_bp.route("/all", methods=["POST", "GET"])
 def clear_all():
-    models = [Levels, DailyQuests, StoryQuests, Titles, Users, Stats, UserDailyQuests, UserStoryQuests]
+    models = [Levels, DailyQuests, StoryQuests, Boosters, Titles, Users, Stats, UserDailyQuests, UserStoryQuests, UserBoosters]
     try:
         for model in models:
             db.session.query(model).delete()

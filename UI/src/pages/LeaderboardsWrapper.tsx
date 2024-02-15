@@ -1,5 +1,5 @@
 import UserContextProvider from "../context/UserContext"
-import Leaderboards from "./LeaderBoards"
+import Leaderboards from "./Leaderboards"
 
 
 function LeaderboardsWrapper() {

@@ -1,0 +1,30 @@
+
+.profile-sidebar-container {
+    height: 100%;
+    width: 18rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1rem;
+    gap: 2rem 0rem;
+    button {
+        height: 4rem;
+        width: 80%;
+        font-family: monospace;
+        font-size: 1.5rem;
+        color: white;
+        background-color: hsl(0, 0%, 15%);
+        border: none;
+        border-radius: 8px;
+        transition: all 0.1s;
+        cursor: pointer;
+    }
+
+    button:hover {
+        transform: scale(0.98);
+    }
+    
+    button:active {
+        transform: scale(0.96);
+    }
+}

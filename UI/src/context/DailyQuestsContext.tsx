@@ -1,15 +1,15 @@
 import { createContext, useEffect, useState } from "react";
-import { DailyQuests, ContextProviderProps } from "../types/Index";
+import { DailyQuest, ContextProviderProps } from "../types/Index";
 import { getDailyQuests } from "../utils/Index";
 
 
-export const DailyQuestsContext = createContext<DailyQuests | undefined>(undefined);
+export const DailyQuestsContext = createContext<DailyQuest[] | undefined>(undefined);
 
 function DailyQuestsContextProvider({ children }: ContextProviderProps) {
   const [dailyQuests, setDailyQuests] = useState();
   
   useEffect(() => {
-    async function fetchDailyQuests() {
+    async function fetch_daily_quests() {
       try {
         const newDailyQuests = await getDailyQuests();
         setDailyQuests(newDailyQuests);
@@ -18,7 +18,7 @@ function DailyQuestsContextProvider({ children }: ContextProviderProps) {
       }
     };
 
-    fetchDailyQuests();
+    fetch_daily_quests();
   }, []);
 
   return (

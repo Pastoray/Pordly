@@ -20,7 +20,6 @@ def all_users():
             )
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
 
 @all_bp.route('/stats', methods=["POST", "GET"])
@@ -44,7 +43,6 @@ def all_user_stats():
             )
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
         
 
@@ -67,7 +65,6 @@ def all_levels():
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
 @all_bp.route('/titles', methods=["POST", "GET"])
@@ -88,7 +85,6 @@ def all_titles():
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
 @all_bp.route('/daily-quests', methods=["POST", "GET"])
@@ -111,7 +107,6 @@ def all_daily_quests():
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
 @all_bp.route('/user-daily-quests', methods=["POST", "GET"])
@@ -132,7 +127,6 @@ def all_user_daily_quests():
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500 
       
 @all_bp.route('/story-quests', methods=["POST", "GET"])
@@ -155,7 +149,6 @@ def all_story_quests():
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
 @all_bp.route('/user-story-quests', methods=["POST", "GET"])
@@ -177,7 +170,6 @@ def all_user_story_quests():
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500 
     
 @all_bp.route('/achievements', methods=["POST", "GET"])
@@ -199,7 +191,6 @@ def all_achievements():
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Error: {str(e)}"}), 500
     
 @all_bp.route('/user-achievements', methods=["POST", "GET"])
@@ -221,6 +212,49 @@ def all_user_achievements():
 
         return jsonify({"entries": entries_list}), 200
     except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": f"Error: {str(e)}"}), 500 
-      
+        return jsonify({"error": f"Error: {str(e)}"}), 500
+
+@all_bp.route('/boosters', methods=["POST", "GET"])
+def all_boosters():
+    try:
+        all_entries = Boosters.query.all()
+        entries_list = []
+
+        for entry in all_entries:
+            entries_list.append(
+                {
+                    "id": entry._booster_id,
+                    "title": entry.title,
+                    "description": entry.description,
+                    "price": entry.price,
+                    "category": entry.category,
+                    "multiplier": entry.multiplier
+                }
+            )
+
+        return jsonify(entries_list), 200
+    except Exception as e:
+        return jsonify({"error": f"Error: {str(e)}"}), 500
+    
+@all_bp.route('/user-boosters', methods=["POST", "GET"])
+def all_user_boosters():
+    try:
+        all_entries = UserBoosters.query.all()
+        entries_list = []
+
+        for entry in all_entries:
+            entries_list.append(
+                {
+                    "user_boosters_id": entry._user_boosters_id,
+                    "user_id": entry._user_id,
+                    "booster_id": entry._booster_id,
+                    "category": entry.category,
+                    "multiplier": entry.multiplier,
+                    "isActive": entry.isActive,
+                    "expiration_date": entry.expiration_date
+                }
+            )
+
+        return jsonify({"entries": entries_list}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error: {str(e)}"}), 500

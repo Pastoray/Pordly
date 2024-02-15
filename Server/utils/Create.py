@@ -182,3 +182,37 @@ def create_achievements():
 
     return jsonify({"entries": entries}), 201
     
+@create_bp.route("/boosters", methods=["POST", "GET"])
+def create_boosters():
+    entries = []
+    if request.method == "POST":
+        entries = request.get_json()
+        for entry in entries:
+            Boosters(entry.get("title"), entry.get("description"), entry.get("price"), entry.get("category"), entry.get("multiplier"))
+
+    else:
+        entries = default_boosters
+        for entry in entries:
+            Boosters(entry.get("title"), entry.get("description"), entry.get("price"), entry.get("category"), entry.get("multiplier"))
+
+    return jsonify({"entries": entries}), 201
+
+def create_user_boosters(user_id):
+    entries = Boosters.entries.all()
+    boosters = []
+
+    for entry in entries:
+        boosters.append(
+            {
+                "user_id": entry._user_id,
+                "booster_id": entry._booster_id,
+                "count": entry.count,
+                "isActive": entry.isActive,
+                "expiration_date": entry.expiration_date
+            }
+        )
+        UserBoosters(user_id, entry._booster_id, 0, False, None)
+
+    return boosters
+
+

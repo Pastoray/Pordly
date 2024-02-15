@@ -31,10 +31,6 @@ export type Stats = {
     xp: number
 }
 
-export type DailyQuests = DailyQuest[]
-export type StoryQuests = StoryQuest[]
-export type Achievements = Achievement[]
-
 export type DailyQuest = {
     daily_quest_id: number,
     title: string,
@@ -98,6 +94,15 @@ export type Title = {
     color: string,
 }
 
+export type Booster = {
+    id: number,
+    title: string,
+    description: string,
+    category: string,
+    multiplier: number,
+    price: number
+}
+
 export type GameProps = {
     quest_type: QuestType | undefined,
     quest_id: number,
@@ -105,8 +110,7 @@ export type GameProps = {
 
 export type LoadQuestProps = {
     questType: QuestType,
-} 
-
+}
 
 export type TimerProps = {
     time: number

@@ -7,12 +7,11 @@ import calendar
 stats_bp = Blueprint("stats", __name__)
 
 def update_gems(user_id, gems):
-
 	user_stats = Stats.query.filter_by(_user_id=user_id).first()
-	try:
-		user_booster = UserBoosters.query.filter_by(_user_id=user_id, category="gems").order_by(UserBoosters.expiration_date.desc()).first()
-		if user_booster.isActive and date.today() < user_booster.expiration_date:
-			user_stats.gems += (gems) * user_booster.multiplier
+	try:															
+		user_xp_booster = UserBoosters.query.filter_by(_user_id=user_id, category="gems", isActive=True).order_by(UserBoosters.expiration_date.desc()).first()
+		if date.today() <= user_xp_booster.expiration_date:
+			user_stats.gems += gems * user_xp_booster.multiplier
 		else:
 			user_stats.gems += gems
 		db.session.commit()
@@ -51,12 +50,13 @@ def update_lives(user_id, lives):
 def update_xp(user_id, xp):
 	try:
 		user_stats = Stats.query.filter_by(_user_id=user_id).first()
-		user_booster = UserBoosters.query.filter_by(_user_id=user_id, category="xp").order_by(UserBoosters.expiration_date.desc()).first()
-		if user_booster.isActive and date.today() < user_booster.expiration_date:
-			user_stats.xp += (xp) * user_booster.multiplier
+		user_booster = UserBoosters.query.filter_by(_user_id=user_id, category="xp", isActive=True).order_by(UserBoosters.expiration_date.desc()).first()
+		if date.today() <= user_booster.expiration_date:
+			user_stats.xp += xp * user_booster.multiplier
 		else:
 			user_stats.xp += xp
 		db.session.commit()
+
 		user_xp = user_stats.xp
 
 		level_row = Levels.query.filter(Levels.xp_required<=user_xp).order_by(Levels.xp_required.desc()).first()
@@ -107,7 +107,6 @@ def update_streak(user_id):
 
 	db.session.commit()
 
-
 	current_date = date.today()
 	current_year = (int(str(current_date).split("-")[0]))
 	current_month = (int(str(current_date).split("-")[1]))
@@ -123,27 +122,25 @@ def update_streak(user_id):
 
 def check_achievement(user_id, achievement_id):
 	user_achievement = UserAchievements.query.filter_by(_user_id=user_id, _achievement_id=achievement_id).first()
-
-	if not user_achievement.isComplete:
-		user_achievement.isComplete = True
-		user_achievement.completion_date = date.today()
-
-		achievement = Achievements.query.filter_by(_achievement_id=achievement_id).first()
-		achievement_rewards = achievement.rewards
-
-		update_xp(user_id, achievement_rewards.get("xp"))
-		update_gems(user_id, achievement_rewards.get("gems"))
-		update_lives(user_id, achievement_rewards.get("lives"))
-
+	if user_achievement.isComplete:
+		return
+	user_achievement.isComplete = True
+	user_achievement.completion_date = date.today()
+	
 	db.session.commit()
 
+	achievement = Achievements.query.filter_by(_achievement_id=achievement_id).first()
+	achievement_rewards = achievement.rewards
+
+	update_xp(user_id, achievement_rewards.get("xp"))
+	update_gems(user_id, achievement_rewards.get("gems"))
+	update_lives(user_id, achievement_rewards.get("lives"))
 
 
 def get_streak(user_id):
 	user_stats = Stats.query.filter_by(_user_id=user_id).first()
 	all_quests_yesterday = DailyQuests.query.filter_by(date=date.today() - timedelta(days=1))
 	all_quests_yesterday_completed = False
-
 	yesterday_quests = []
 
 	for quest in all_quests_yesterday:

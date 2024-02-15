@@ -10,6 +10,8 @@ import Login from './components/UI/Login'
 import Signup from './components/UI/Sigup'
 import NoPage from './pages/NoPage'
 import './main.scss'
+import ProfileWrapper from './pages/ProfileWrapper'
+
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
           <Route path='/:quest_type/:quest_id' element={<LoadQuestWrapper/>}/>
           <Route path='/leaderboards' element={<LeaderboardsWrapper/>}/>
           <Route path='/achievements' element={<AchievementsWrapper/>}/>
+          <Route path='/profile' element={<ProfileWrapper/>}/>
           <Route path='/shop' element={<ShopWrapper/>}/>
           <Route path='/signup' element={<Signup/>}/>
           <Route path='/login' element={<Login/>}/>

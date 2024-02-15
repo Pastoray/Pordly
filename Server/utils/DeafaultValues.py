@@ -565,3 +565,41 @@ default_levels = [
     {"color": "black", "level": 49, "xp_required": 4800},
     {"color": "white", "level": 50, "xp_required": 4900}
 ]
+
+default_boosters = [
+    {
+        "title": "Skill Amplify 🏹",
+        "description": "Boosts experience gained for the 14 days after activation",
+        "price": 2500,
+        "category": "xp",
+        "multiplier": 1.5,
+    },
+    {
+        "title": "Opti Boost 🔹",
+        "description": "Boosts experience gained for the 14 days after activation",
+        "price": 3000,
+        "category": "xp",
+        "multiplier": 1.75,
+    },
+        {
+        "title": "Methical Elixir 🔮",
+        "description": "Boosts experience gained for the 14 days after activation",
+        "price": 4000,
+        "category": "xp",
+        "multiplier": 2,
+    },
+        {
+        "title": "Fortune Potion ⭐",
+        "description": "Boosts experience gained for the 7 days after activation",
+        "price": 5000,
+        "category": "gems",
+        "multiplier": 2,
+    },
+        {
+        "title": "Wealth Warp 🌌",
+        "description": "Boosts experience gained for the 7 days after activation",
+        "price": 7500,
+        "category": "gems",
+        "multiplier": 3,
+    }
+]

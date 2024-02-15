@@ -67,5 +67,3 @@ def reset_achievements():
         user_achievement.completion_date = None
     db.session.commit()
     return jsonify({"success": True})
-
-

@@ -1,17 +1,21 @@
-import Card from './Card';
-import '../../styles/components/Welcome.scss'
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context/UserContext';
 import { DailyQuestsContext } from '../../context/DailyQuestsContext';
-import { DailyQuests, StoryQuests, User } from '../../types/Index';
+import { Achievement, DailyQuest, StoryQuest, User } from '../../types/Index';
 import { StoryQuestsContext } from '../../context/StoryQuestsContext';
+import { AchievementsContext } from '../../context/AchievementsContext';
+import Card from './Card';
+import '../../styles/components/Welcome.scss'
 
 function Welcome() {
     const user = useContext<User | undefined>(UserContext);
-    const daily_quests = useContext<DailyQuests | undefined>(DailyQuestsContext);
-    const story_quests = useContext<StoryQuests | undefined>(StoryQuestsContext);
+    const daily_quests = useContext<DailyQuest[] | undefined>(DailyQuestsContext);
+    const story_quests = useContext<StoryQuest[] | undefined>(StoryQuestsContext);
+    const achievements = useContext<Achievement[] | undefined>(AchievementsContext);
+
     const [dailyQuestsFinished, setDailyQuestsFinished] = useState(0)
     const [storyQuestsFinished, setStoryQuestsFinished] = useState(0)
+    const [achievementsFinished, setAchivementsFinished] = useState(0)
 
     useEffect(() => {
         if (daily_quests) {
@@ -23,6 +27,9 @@ function Welcome() {
             }
             setDailyQuestsFinished(count);
         }
+    }, [daily_quests])
+
+    useEffect(() => {
         if (story_quests) {
             let count = 0
             for (const quest of story_quests) {
@@ -32,7 +39,19 @@ function Welcome() {
             }
             setStoryQuestsFinished(count);
         }
-    }, [daily_quests, story_quests])
+    }, [story_quests])
+
+    useEffect(() => {
+        if (achievements) {
+            let count = 0
+            for (const achievement of achievements) {
+                if (achievement.isComplete) {
+                    count += 1
+                }
+            }
+            setAchivementsFinished(count);
+        }
+    }, [achievements])
 
     return(
         <>
@@ -68,7 +87,7 @@ function Welcome() {
                         <div className='welcome-page-cards-container'>
                             <Card title={'Daily Quests'} doneCount={dailyQuestsFinished} totalCount={3}/>
                             <Card title={'Story Quests'} doneCount={storyQuestsFinished} totalCount={20}/>
-                            <Card title={'Achivements'} doneCount={0} totalCount={10}/>
+                            <Card title={'Achivements'} doneCount={achievementsFinished} totalCount={10}/>
                         </div>
                     </section>
                 </main>

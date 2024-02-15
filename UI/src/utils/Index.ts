@@ -1,5 +1,5 @@
 import fetchParagraph from "../data/fetchParagraph";
-import { State, Ref, ParagraphData, LoginError, QuestType, Achievements, Users, User } from "../types/Index";
+import { State, Ref, ParagraphData, LoginError, Achievement, QuestType, Users, User } from "../types/Index";
 
 let Words = 0;
 
@@ -108,7 +108,9 @@ export async function getStoryQuests() {
                 "Content-Type": "application/json"
             },
             credentials: "include",
-            body: JSON.stringify({ user_id })
+            body: JSON.stringify({
+                user_id
+            })
         })
 
         const response = await data.json()
@@ -137,7 +139,10 @@ export async function checkForAccount(event: React.MouseEvent<HTMLInputElement>,
                 "Content-Type": "application/json"
             },
             credentials: "include",
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({
+                email,
+                password
+            })
         })
         
         const response = await data.json()
@@ -227,7 +232,11 @@ export async function createAccount(event: React.MouseEvent<HTMLInputElement>, e
         headers: {
             "Content-type": "application/json"
         },
-        body: JSON.stringify({ username, email, password })
+        body: JSON.stringify({
+            username,
+            email,
+            password 
+        })
     })
     const response = await data.json();
     console.log(response);
@@ -281,7 +290,8 @@ export async function fetchLeaderboardParticipants(type: string, setParticipants
     setParticipants(response)
 }
 
-export async function fetchUserAchievements(user_id: number | undefined, setAchievements: React.Dispatch<React.SetStateAction<Achievements>>) {
+export async function get_achievements() {
+    const user_id = await getUserId()
     const data = await fetch(`http://127.0.0.1:8080/achievements/fetch`, {
         method: "POST",
         headers: {
@@ -291,9 +301,9 @@ export async function fetchUserAchievements(user_id: number | undefined, setAchi
             user_id
         })
     })
-    const response: Achievements = await data.json()
+    const response: Achievement[] = await data.json()
     console.log(response)
-    setAchievements(response)
+    return response
 }
 
 export async function check_achievement(achievement_id: number) {
@@ -308,7 +318,63 @@ export async function check_achievement(achievement_id: number) {
             achievement_id
         })
     })
-    const response: Achievements = await data.json()
+    const response: Achievement[] = await data.json()
     console.log(response)
     return response
-} 
+}
+
+export async function fetchCalendar() {
+    const user_id = await getUserId();
+    const data = await fetch(`http://127.0.0.1:8080/daily-quests/this-month`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id
+        })
+    })
+    const response = await data.json()
+    console.log(response)
+
+    return { daily_quests: response.user_daily_quests, days_this_month: response.days_this_month }
+}
+    
+export function format_date(date: Date) {
+    const completion_date = new Date(date);
+    const formatted_date = `${completion_date.getFullYear()}-${(completion_date.getMonth() + 1).toString().padStart(2, '0')}-${completion_date.getDate().toString().padStart(2, '0')}`;
+    return formatted_date
+}
+
+export async function buy_booster(booster_id: number) {
+    const user_id = await getUserId()
+    const data = await fetch("http://127.0.0.1:8080/boosters/buy", {
+        method: "POST",
+        headers: {
+                "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+            booster_id
+        })
+    })
+
+    const response = await data.json()
+    return response
+}
+
+export async function fetch_boosters() {
+    const user_id = await getUserId()
+    const data = await fetch("http://127.0.0.1:8080/boosters/fetch", {
+        method: "POST",
+        headers: {
+                "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+        })
+    })
+
+    const response = await data.json()
+    return response
+}

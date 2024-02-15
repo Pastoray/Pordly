@@ -114,7 +114,6 @@ def load_account():
 def validate_token():
     user_id = get_jwt_identity()
     user = Users.query.filter_by(_user_id=user_id).first()
-
     user_stats = Stats.query.filter_by(_user_id=user_id).first()
     user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).order_by(Levels.xp_required.desc()).first()
     user_title = Titles.query.filter(Titles.level_required<=user_level.level).order_by(Titles.level_required.desc()).first()

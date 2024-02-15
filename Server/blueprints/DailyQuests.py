@@ -83,11 +83,12 @@ def get_daily_quests_of_this_month():
     result = []
     for day in range(1, date.today().day + 1):
         current_date = date(date.today().year, date.today().month, day)
-        day_daily_quests = DailyQuests.query.filter(date=current_date).order_by(DailyQuests._daily_quest_id.asc())
+        day_daily_quests = DailyQuests.query.filter_by(date=current_date).order_by(DailyQuests._daily_quest_id.asc())
         temp = []
         for quest in day_daily_quests:
-            user_daily_quest = UserDailyQuests.query.filter(_user_id=user_id, _daily_quest_id=quest._daily_quest_id).first()
-            temp.append(user_daily_quest)
-        result.append(all(q.isComplete for q in temp))
+            user_daily_quest = UserDailyQuests.query.filter_by(_user_id=user_id, _daily_quest_id=quest._daily_quest_id).first()
+            if user_daily_quest:
+                temp.append(user_daily_quest)
+        result.append(all(q.isComplete for q in temp) if temp and len(temp) == 3 else False)
 
-    return jsonify({"user_daily_quests": result,"days_this_month": current_month_days})
+    return jsonify({"user_daily_quests": result, "days_this_month": current_month_days})

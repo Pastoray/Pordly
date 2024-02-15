@@ -1,14 +1,14 @@
 import { createContext, useEffect, useState } from "react";
-import { StoryQuests, ContextProviderProps } from "../types/Index";
+import { StoryQuest , ContextProviderProps } from "../types/Index";
 import { getStoryQuests } from "../utils/Index";
 
-export const StoryQuestsContext = createContext<StoryQuests | undefined>(undefined);
+export const StoryQuestsContext = createContext<StoryQuest[] | undefined>(undefined);
 
 function StoryQuestsContextProvider({ children }: ContextProviderProps) {
   const [storyQuests, setStoryQuests] = useState();
 
   useEffect(() => {
-    async function fetchStoryQuests() {
+    async function fetch_story_quests() {
       try {
         const newStoryQuests = await getStoryQuests();
         setStoryQuests(newStoryQuests);
@@ -17,7 +17,7 @@ function StoryQuestsContextProvider({ children }: ContextProviderProps) {
       }
     };
 
-    fetchStoryQuests();
+    fetch_story_quests();
   }, []);
 
   return (
