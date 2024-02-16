@@ -40,7 +40,8 @@ def create_account():
     elif emailExists:
         return jsonify({"success": False, "error": {"emailError": "Email already exists"}}), 400
 
-    user = Users(username, email, password)
+    hashed_password = generate_password_hash(password)
+    user = Users(username, email, hashed_password, "")
     user_id = user._user_id
 
     create_user_stats(user_id)
@@ -85,7 +86,7 @@ def load_account():
                 }
             }), 400
     else:
-        if not user.check_password(password):
+        if not check_password_hash(user.hashed_password, password):
             return jsonify({
                 "success": False,
                 "error": {
@@ -109,22 +110,37 @@ def load_account():
 
     return response
 
+@auth_bp.route("/change-bio", methods=["POST"])
+def change_bio():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    bio = data.get("bio")
+
+    user = Users.query.filter_by(_user_id=user_id).first()
+    if user:
+        user.bio = bio
+    db.session.commit()
+    return jsonify({"success": True})
+    
 @auth_bp.route('/validate-token', methods=["GET"])
 @jwt_required()
 def validate_token():
     user_id = get_jwt_identity()
+
     user = Users.query.filter_by(_user_id=user_id).first()
     user_stats = Stats.query.filter_by(_user_id=user_id).first()
     user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).order_by(Levels.xp_required.desc()).first()
     user_title = Titles.query.filter(Titles.level_required<=user_level.level).order_by(Titles.level_required.desc()).first()
-    
+
     create_user_daily_quests(user_id)
     get_streak(user_id)
+
     return jsonify({
         "success": (user_id != None),
         "info": {
             "id": user_id,
-            "username": user.username
+            "username": user.username,
+            "bio": user.bio
         },
         "stats": {              
             "stats_id": user_stats._stats_id,
@@ -148,34 +164,14 @@ def validate_token():
         }
     }), 200
 
-@auth_bp.route("/change-email", methods=["POST"])
-def change_email():
+@auth_bp.route("/change-credentials", methods=["POST"])
+def change_credentials():
     data = request.get_json()
     user_id = data.get("user_id")
     email = data.get("email")
     password = data.get("password")
+    new_username = data.get("new_username")
     new_email = data.get("new_email")
-
-    user = Users.query.filter_by(_user_id=user_id, email=email).first()
-
-    if user:
-        hashed_password = generate_password_hash(password)
-        
-        if check_password_hash(user.hashed_password, hashed_password):
-            user.email = new_email
-            db.session.commit()
-            return jsonify({"message": "Email updated successfully"}), 200
-        else:
-            return jsonify({"error": "Invalid password"}), 401
-    else:
-        return jsonify({"error": "Invalid email"}), 404
-    
-@auth_bp.route("/change-password", methods=["POST"])
-def change_password():
-    data = request.get_json()
-    user_id = data.get("user_id")
-    email = data.get("email")
-    password = data.get("password")
     new_password = data.get("new_password")
 
     user = Users.query.filter_by(_user_id=user_id, email=email).first()
@@ -185,15 +181,20 @@ def change_password():
         
         if check_password_hash(user.hashed_password, hashed_password):
             new_password = generate_password_hash(new_password)
+
+            user.username = new_username
+            user.email = new_email
             user.password = new_password
+
             db.session.commit()
-            return jsonify({"message": "Password updated successfully"}), 200
+
+            return jsonify({"message": "Email updated successfully"}), 200
         else:
             return jsonify({"error": "Invalid password"}), 401
     else:
         return jsonify({"error": "Invalid email"}), 404
 
-@auth_bp.route("/delete", methods=["DELETE"])
+@auth_bp.route("/delete-account", methods=["DELETE"])
 def delete_account():
     data = request.get_json()
     user_id = data.get("user_id")
@@ -201,16 +202,33 @@ def delete_account():
     password = data.get("password")
 
     user = Users.query.filter_by(_user_id=user_id, email=email).first()
+    stats = Stats.query.filter_by(_user_id=user_id).first()
 
-    if user:
-        hashed_password = generate_password_hash(password)
-        
-        if check_password_hash(user.hashed_password, hashed_password):
+    if user:    
+        if check_password_hash(user.hashed_password, password):
             db.session.delete(user)
+            db.session.delete(stats)
+
+            story_quests = UserStoryQuests.query.filter_by(_user_id=user_id)
+            for story_quest in story_quests:
+                db.session.delete(story_quest)
+
+            daily_quests = UserDailyQuests.query.filter_by(_user_id=user_id)
+            for daily_quest in daily_quests:
+                db.session.delete(daily_quest)
+
+            achievements = UserAchievements.query.filter_by(_user_id=user_id)
+            for achievement in achievements:
+                db.session.delete(achievement)
+
+            boosters = UserBoosters.query.filter_by(_user_id=user_id)
+            for booster in boosters:
+                db.session.delete(booster)
+
             db.session.commit()
-            return jsonify({"message": "Account deleted successfully"}), 200
+            return jsonify({"succes": True,"message": "Account deleted successfully"}), 200
         else:
-            return jsonify({"error": "Invalid password"}), 401
+            return jsonify({"succes": False,"error": "Invalid password"}), 401
     else:
-        return jsonify({"error": "Invalid email"}), 404
+        return jsonify({"succes": False,"error": "Invalid email"}), 404
 

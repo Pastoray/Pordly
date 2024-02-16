@@ -19,7 +19,8 @@ export type User = {
 
 export type Info = {
     id: number,
-    username: string 
+    username: string,
+    bio: string
 }
 
 export type Stats = {
@@ -95,12 +96,14 @@ export type Title = {
 }
 
 export type Booster = {
-    id: number,
+    booster_id: number,
     title: string,
     description: string,
     category: string,
     multiplier: number,
-    price: number
+    price: number,
+    isActive: boolean,
+    expiration_date: Date
 }
 
 export type GameProps = {

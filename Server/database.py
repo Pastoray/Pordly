@@ -107,32 +107,26 @@ class Users(db.Model):
     username = db.Column(db.String(32), unique=True, nullable=False)
     email = db.Column(db.String(64), unique=True, nullable=False)
     hashed_password = db.Column(db.String(128), nullable=False)
-
-    def __init__(self, username, email, password):
+    bio = db.Column(db.String(512), nullable=False)
+    def __init__(self, username, email, hashed_password, bio):
         self.username = username
         self.email = email
-        self.hashed_password = generate_password_hash(password)
+        self.hashed_password = hashed_password
+        self.bio = bio
 
         db.session.add(self)
         db.session.commit()
-
-    def check_password(self, password):
-        return check_password_hash(self.hashed_password, password)
     
 class Stats(db.Model):
     _stats_id = db.Column(db.Integer, unique=True, primary_key=True)
     _user_id = db.Column(db.Integer, db.ForeignKey(Users._user_id))
     xp = db.Column(db.Integer)
-    level = db.column_property(db.Column(db.JSON))
-    title = db.Column(db.String(64), nullable=False)
     streak = db.Column(db.Integer, nullable=False)
     gems = db.Column(db.Integer, nullable=False)
     lives = db.Column(db.Integer, nullable=False)
-    def __init__(self, user_id, xp, level, title, streak, gems, lives):
+    def __init__(self, user_id, xp, streak, gems, lives):
         self._user_id = user_id
         self.xp = xp
-        self.level = level
-        self.title = title
         self.streak = streak
         self.gems = gems
         self.lives = lives

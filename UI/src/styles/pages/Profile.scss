@@ -45,7 +45,7 @@ $prefix: "profile";
         width: 100%;
         color: white;
         background-color: inherit;
-        border: 2px solid white;
+        border: 1px solid white;
         border-radius: 8px;
         resize: none;
         padding: 1rem;
@@ -59,9 +59,19 @@ $prefix: "profile";
 }
 
 ##{$prefix}-bio {
+    color: white;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
     font-family: monospace;
-    font-size: 2rem;
-    text-shadow: 0px 0px 2px white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+
+##{$prefix}-bio:active {
+    transform: scale(0.96);
 }
 
 .#{$prefix}-page {
@@ -79,9 +89,9 @@ $prefix: "profile";
 }
 
 .#{$prefix}-booster {
-    min-height: 7rem;
-    height: 7rem;
-    width: 9rem;
+    min-height: 9rem;
+    height: 9rem;
+    width: 14rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -99,15 +109,22 @@ $prefix: "profile";
     transform: scale(0.96);
 }
 
+##{$prefix}-booster-title {
+    font-family: monospace;
+    font-size: 1.25rem;
+    padding-top: 0.5rem;
+}
+
 ##{$prefix}-booster-info {
     font-family: monospace;
-    font-size: 1.5rem;
-    padding-top: 0.5rem;
+    font-size: 1.25rem;
+    padding-top: 0.2rem;
 }
 
 ##{$prefix}-booster-active {
     font-family: monospace;
     font-size: 1.25rem;
+    padding: 0.2rem;
     text-align: center;
 }
 
@@ -115,4 +132,134 @@ $prefix: "profile";
     font-family: monospace;
     font-size: 1.5rem;
     padding: 0.25rem 0rem;
+}
+
+.#{$prefix}-account-container {
+    height: calc(100vh - 4rem);
+    width: calc(100vw - 18rem);
+}
+
+.#{$prefix}-account-forms-container {
+    height: calc(100% - 4rem);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.#{$prefix}-account-form-1 {
+    height: 45%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 2rem;
+    gap: 2rem;
+    
+    p {
+        color: red;
+        font-family: monospace;
+        font-size: 1rem;
+    }
+
+    input {
+        height: 15%;
+        width: 60%;
+        padding: 1rem;
+        color: white;
+        background-color: hsl(0, 0%, 15%);
+        font-family: monospace;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+    }
+    input:focus {
+        outline: none;
+    }
+}
+
+.#{$prefix}-account-form-2 {
+    height: 55%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
+
+    p {
+        color: red;
+        font-family: monospace;
+        font-size: 1rem;
+    }
+
+    input {
+        height: 15%;
+        width: 60%;
+        padding: 1rem;
+        color: white;
+        background-color: hsl(0, 0%, 15%);
+        font-family: monospace;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    button {
+        height: 10%;
+        width: 10%;
+        color: white;
+        background-color: hsl(0, 0%, 15%);
+        font-family: monospace;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.1s;
+    }
+
+    button:hover {
+        transform: scale(0.98);
+    }
+
+    button:active {
+        transform: scale(0.96);
+    }
+}
+
+.#{$prefix}-account-delete-button-container {
+    height: 4rem;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+##{$prefix}-account-delete-button {
+    height: 80%;
+    width: 14rem;
+    font-family: monospace;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    background-color: red;
+    box-shadow: 0px 0px 5px red;
+    margin: 0.5rem;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+##{$prefix}-account-delete-button:hover {
+    transform: scale(0.98);
+}
+
+##{$prefix}-account-delete-button:active {
+    transform: scale(0.96);
 }

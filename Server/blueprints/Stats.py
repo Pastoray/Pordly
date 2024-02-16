@@ -9,9 +9,9 @@ stats_bp = Blueprint("stats", __name__)
 def update_gems(user_id, gems):
 	user_stats = Stats.query.filter_by(_user_id=user_id).first()
 	try:															
-		user_xp_booster = UserBoosters.query.filter_by(_user_id=user_id, category="gems", isActive=True).order_by(UserBoosters.expiration_date.desc()).first()
-		if date.today() <= user_xp_booster.expiration_date:
-			user_stats.gems += gems * user_xp_booster.multiplier
+		user_booster = UserBoosters.query.filter_by(_user_id=user_id, category="gems", isActive=True).order_by(UserBoosters.expiration_date.desc()).first()
+		if user_booster and date.today() <= user_booster.expiration_date:
+			user_stats.gems += gems * user_booster.multiplier
 		else:
 			user_stats.gems += gems
 		db.session.commit()
@@ -51,7 +51,7 @@ def update_xp(user_id, xp):
 	try:
 		user_stats = Stats.query.filter_by(_user_id=user_id).first()
 		user_booster = UserBoosters.query.filter_by(_user_id=user_id, category="xp", isActive=True).order_by(UserBoosters.expiration_date.desc()).first()
-		if date.today() <= user_booster.expiration_date:
+		if user_booster and date.today() <= user_booster.expiration_date:
 			user_stats.xp += xp * user_booster.multiplier
 		else:
 			user_stats.xp += xp
@@ -188,3 +188,4 @@ def cheating():
 
 	return jsonify({"cock": True})
 	#update_streak(user_id)
+

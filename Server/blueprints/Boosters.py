@@ -13,11 +13,11 @@ def buy_booster():
     try:
         booster = Boosters.query.filter_by(_booster_id=booster_id).first()
         user_stats = Stats.query.filter_by(_user_id=user_id).first()
-        if booster.price <= user_stats.gems:
-            user_stats.gems -= booster.price
-            UserBoosters(user_id, booster_id, booster.category, booster.multiplier, False, None)
-                
-            db.session.commit()
+        # if booster.price <= user_stats.gems:
+        #     user_stats.gems -= booster.price
+        UserBoosters(user_id, booster_id, booster.category, booster.multiplier, False, None)
+            
+        db.session.commit()
 
         return jsonify({"success": True})
     except Exception as e:
@@ -27,15 +27,17 @@ def buy_booster():
 @boosters_bp.route("/activate", methods=["POST"])
 def activate_booster():
     data = request.get_json()
-    user_id = data.get("user_id")
-    booster_id = data.get("booster_id")
+    #user_id = data.get("user_id")
+    user_booster_id = data.get("booster_id")
 
     try:
-          
-        user_booster = UserBoosters.query.filter_by(_user_id=user_id, _booster_id=booster_id).first()
+        user_booster = UserBoosters.query.filter_by(_user_boosters_id=user_booster_id).first()
         if user_booster and not user_booster.isActive:
             user_booster.isActive = True
-            user_booster.expiration_date = date.today() + timedelta(days=7)
+            if user_booster.category == "xp":
+                user_booster.expiration_date = date.today() + timedelta(days=14)
+            else:
+                user_booster.expiration_date = date.today() + timedelta(days=7)
             db.session.commit()
 
         return jsonify({"success": True})
@@ -54,11 +56,11 @@ def fetch_boosters():
         for user_booster in user_boosters:
             booster = Boosters.query.filter_by(_booster_id=user_booster._booster_id).first()
             boosters.append({
+                "user_booster_id": user_booster._user_boosters_id,
                 "user_id": user_booster._user_id,
                 "booster_id": user_booster._booster_id,
                 "title": booster.title,
                 "description": booster.description,
-                #"price": booster.price,
                 "category": user_booster.category,
                 "multiplier": user_booster.multiplier,
                 "isActive": user_booster.isActive,

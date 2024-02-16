@@ -378,3 +378,112 @@ export async function fetch_boosters() {
     const response = await data.json()
     return response
 }
+
+export async function activate_booster(booster_id: number) {
+    const user_id = await getUserId()
+    const data = await fetch("http://127.0.0.1:8080/boosters/activate", {
+        method: "POST",
+        headers: {
+                "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+            booster_id
+        })
+    })
+
+    const response = await data.json()
+    return response
+}
+
+type OldCredentials = {
+    email: string,
+    password: string
+}
+
+type NewCredentials = {
+    username: string
+} & OldCredentials
+
+export async function send_data(oldCredentials: OldCredentials, newCredentials: NewCredentials) {
+    const user_id = await getUserId()
+    const data = await fetch("http://127.0.0.1:8080/auth/change-credentials", {
+        method: "POST",
+        headers: {
+                "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+            "email": oldCredentials.email,
+            "password": oldCredentials.password,
+            "new_username": newCredentials.username,
+            "new_email": newCredentials.email,
+            "new_password": newCredentials.password,
+        })
+    })
+
+    const response = await data.json()
+    console.log(response)
+    return response
+}
+
+export async function delete_account(oldCredentials: OldCredentials) {
+    const user_id = await getUserId()
+    const data = await fetch("http://127.0.0.1:8080/auth/delete-account", {
+        method: "DELETE",
+        headers: {
+                "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+            "email": oldCredentials.email,
+            "password": oldCredentials.password,
+        })
+    })
+
+    const response = await data.json()
+    console.log(response)
+    return response.success
+}
+
+export function validate_form(oldCredentials: OldCredentials, newCredentials: NewCredentials) {
+    let error_message_1 = ""
+    let error_message_2 = ""
+
+    if (!oldCredentials.email || !newCredentials.email){
+        error_message_1 = !oldCredentials.email ? "Invalid Email" : ""
+        error_message_2 = !newCredentials.email ? "Invalid Email" : ""
+    } else if (!oldCredentials.password || !newCredentials.password) {
+        error_message_1 = !oldCredentials.password ? "Invalid Password" : ""
+        error_message_2 = !newCredentials.password ? "Invalid Password" : ""
+    } else if (!validateEmail(oldCredentials.email)) {
+        error_message_1 = "Invalid Email"
+        error_message_2 = ""
+    } else if (!validateEmail(newCredentials.email)) {
+        error_message_1 = ""
+        error_message_2 = "invalid email"
+    }
+    return [error_message_1, error_message_2]
+}
+
+export function delete_access_token() {
+    document.cookie = `accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
+
+export async function change_bio(bio: string) {
+    const user_id = await getUserId()
+    const data = await fetch("http://127.0.0.1:8080/auth/change-bio", {
+        method: "POST",
+        headers: {
+                "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+            bio
+        })
+    })
+
+    const response = await data.json()
+    console.log(response)
+    return response.success
+}
