@@ -228,11 +228,12 @@ def all_boosters():
                     "description": entry.description,
                     "price": entry.price,
                     "category": entry.category,
-                    "multiplier": entry.multiplier
+                    "multiplier": entry.multiplier,
+                    "color": entry.color
                 }
             )
 
-        return jsonify(entries_list), 200
+        return jsonify({"entries": entries_list}), 200
     except Exception as e:
         return jsonify({"error": f"Error: {str(e)}"}), 500
     

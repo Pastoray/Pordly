@@ -186,12 +186,12 @@ def create_boosters():
     if request.method == "POST":
         entries = request.get_json()
         for entry in entries:
-            Boosters(entry.get("title"), entry.get("description"), entry.get("price"), entry.get("category"), entry.get("multiplier"))
+            Boosters(entry.get("title"), entry.get("description"), entry.get("price"), entry.get("category"), entry.get("multiplier"), entry.get("color"))
 
     else:
         entries = default_boosters
         for entry in entries:
-            Boosters(entry.get("title"), entry.get("description"), entry.get("price"), entry.get("category"), entry.get("multiplier"))
+            Boosters(entry.get("title"), entry.get("description"), entry.get("price"), entry.get("category"), entry.get("multiplier"), entry.get("color"))
 
     return jsonify({"entries": entries}), 201
 
@@ -204,12 +204,13 @@ def create_user_boosters(user_id):
             {
                 "user_id": entry._user_id,
                 "booster_id": entry._booster_id,
-                "count": entry.count,
+                "category": entry.category,
+                "multiplier": entry.multiplier,
                 "isActive": entry.isActive,
                 "expiration_date": entry.expiration_date
             }
         )
-        UserBoosters(user_id, entry._booster_id, 0, False, None)
+        UserBoosters(user_id, entry._booster_id, entry.category, entry.multiplier, False, None)
 
     return boosters
 

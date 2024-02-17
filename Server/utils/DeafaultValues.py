@@ -442,11 +442,11 @@ default_achievements = [
         }
     },
     {
-        "title": "Gladiator",
-        "description": "Participate in a tournament 🛡️",
+        "title": "Starter",
+        "description": "Create an account 🌱",
         "difficulty": "Easy",
         "rewards": {
-            "gems": 150,
+            "gems": 250,
             "xp": 250,
             "lives": 1
         }
@@ -573,6 +573,7 @@ default_boosters = [
         "price": 2500,
         "category": "xp",
         "multiplier": 1.5,
+        "color": "lightgreen"
     },
     {
         "title": "Opti Boost 🔹",
@@ -580,6 +581,7 @@ default_boosters = [
         "price": 3000,
         "category": "xp",
         "multiplier": 1.75,
+        "color": "dodgerblue"
     },
         {
         "title": "Methical Elixir 🔮",
@@ -587,6 +589,7 @@ default_boosters = [
         "price": 4000,
         "category": "xp",
         "multiplier": 2,
+        "color": "magenta"
     },
         {
         "title": "Fortune Potion ⭐",
@@ -594,6 +597,7 @@ default_boosters = [
         "price": 5000,
         "category": "gems",
         "multiplier": 2,
+        "color": "gold"
     },
         {
         "title": "Wealth Warp 🌌",
@@ -601,5 +605,6 @@ default_boosters = [
         "price": 7500,
         "category": "gems",
         "multiplier": 3,
+        "color": "mediumturquoise"
     }
 ]

@@ -1,14 +1,22 @@
-@function randomColor() {
-    @return hsl(random(360), 100%, 60%)
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
-.game-starting {
+.spinner {
     height: 100%;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: hsl(0, 0%, 10%);
+    background-color: inherit;
+    border-top: 2px solid magenta;
+    border-radius: 50%;
+    animation: spin 0.8s ease infinite;
     span {
         font-family: monospace;
         font-size: 2rem;

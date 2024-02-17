@@ -1,5 +1,8 @@
 from flask import Flask
 from database import db
+from flask_socketio import SocketIO
+
+from sockets import init_socketio
 
 from blueprints.Authentication import jwt, auth_bp
 from blueprints.Stats import stats_bp
@@ -18,6 +21,7 @@ from flask_cors import CORS
 import os
 
 app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app, supports_credentials=True, origins="http://localhost:5173")
 
 secret_key = os.urandom(24)
@@ -43,6 +47,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 jwt.init_app(app)
+init_socketio(socketio)
 
 @app.route("/")
 def home():
@@ -53,4 +58,4 @@ with app.app_context():
     #db.drop_all()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    socketio.run(app, host="0.0.0.0", port=8080, debug=True)

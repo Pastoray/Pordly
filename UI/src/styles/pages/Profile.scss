@@ -20,7 +20,6 @@ $prefix: "profile";
     gap: 1rem;
 }
 
-
 .#{$prefix}-header {
     padding: 2rem;
     width: 40%;
@@ -38,7 +37,8 @@ $prefix: "profile";
 }
 
 .#{$prefix}-bio {
-    height: 30%;
+    min-height: 14rem;
+    height: 14rem;
     width: 50%;
     textarea {
         height: 100%;
@@ -83,6 +83,7 @@ $prefix: "profile";
 .#{$prefix}-boosters {
     height: fit-content;
     width: calc(100% - 18rem);
+    color: white;
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
@@ -135,12 +136,14 @@ $prefix: "profile";
 }
 
 .#{$prefix}-account-container {
-    height: calc(100vh - 4rem);
+    min-height: 44rem;
+    height: 44rem;
     width: calc(100vw - 18rem);
 }
 
 .#{$prefix}-account-forms-container {
-    height: calc(100% - 4rem);
+    min-height: calc(40rem);
+    height: calc(40rem);
     width: 100%;
     display: flex;
     flex-direction: column;

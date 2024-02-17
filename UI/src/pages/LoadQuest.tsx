@@ -55,8 +55,9 @@ function LoadQuest() {
                             <Toolbar/>
                             <p id='not-enough-lives'>NOT ENOUGH LIVES</p>
                         </div>
-                :*/
-                    <LoadingScreen/>
+                :*/ <div className='loadgame-loading-screen'>
+                        <LoadingScreen/>
+                    </div>
             }   
             
         </>

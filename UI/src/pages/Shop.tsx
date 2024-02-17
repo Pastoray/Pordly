@@ -16,7 +16,8 @@ function Shop() {
                 }
             })
             const response = await data.json()
-            setBoosters(response)
+            setBoosters(response.entries)
+            console.log(response)
         }
         fetch_boosters()
     }, [])
@@ -32,10 +33,10 @@ function Shop() {
                             {
                             boosters ?
                                 boosters.map((booster, i) => (
-                                        <div className='shop-booster' key={i} onClick={() => {
+                                        <div className='shop-booster' key={i} style={{border: `3px solid ${booster.color}`}} onClick={() => {
                                             buy_booster(booster.id)
                                         }}>
-                                            <p id='shop-booster-title'>- {booster.title} -</p>
+                                            <p id='shop-booster-title' style={{color: booster.color}}>- {booster.title} -</p>
                                             <p id='shop-booster-info'>{booster.category.toLocaleUpperCase()} &times;{booster.multiplier}</p>
                                             <p id='shop-booster-description'>{booster.description}</p>
                                             <p id='shop-booster-price'>{booster.price} 💎</p>

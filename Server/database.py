@@ -88,12 +88,14 @@ class Boosters(db.Model):
     price = db.Column(db.Integer, nullable=False)
     category = db.Column(db.String(64), nullable=False)
     multiplier = db.Column(db.Integer, nullable=False)
-    def __init__(self, title, description, price, category, multiplier):
+    color = db.Column(db.String(64), nullable=False)
+    def __init__(self, title, description, price, category, multiplier, color):
         self.title = title
         self.description = description
         self.price = price
         self.category = category
         self.multiplier = multiplier
+        self.color = color
         
         db.session.add(self)
         db.session.commit()

@@ -8,8 +8,9 @@ stats_bp = Blueprint("stats", __name__)
 
 def update_gems(user_id, gems):
 	user_stats = Stats.query.filter_by(_user_id=user_id).first()
-	try:															
-		user_booster = UserBoosters.query.filter_by(_user_id=user_id, category="gems", isActive=True).order_by(UserBoosters.expiration_date.desc()).first()
+	try:							
+		delete_outdated_boosters(UserBoosters.query.filter_by(_user_id=user_id, category="gems", isActive=True))			
+		user_booster = UserBoosters.query.filter_by(_user_id=user_id, category="gems", isActive=True).order_by(UserBoosters.multiplier.desc(), UserBoosters.expiration_date.desc()).first()
 		if user_booster and date.today() <= user_booster.expiration_date:
 			user_stats.gems += gems * user_booster.multiplier
 		else:
@@ -50,7 +51,10 @@ def update_lives(user_id, lives):
 def update_xp(user_id, xp):
 	try:
 		user_stats = Stats.query.filter_by(_user_id=user_id).first()
-		user_booster = UserBoosters.query.filter_by(_user_id=user_id, category="xp", isActive=True).order_by(UserBoosters.expiration_date.desc()).first()
+		delete_outdated_boosters(UserBoosters.query.filter_by(_user_id=user_id, category="xp", isActive=True))
+		user_booster = UserBoosters.query.filter_by(_user_id=user_id, category="xp", isActive=True).order_by(UserBoosters.multiplier.desc(), UserBoosters.expiration_date.desc()).first()
+
+		
 		if user_booster and date.today() <= user_booster.expiration_date:
 			user_stats.xp += xp * user_booster.multiplier
 		else:
@@ -119,9 +123,9 @@ def update_streak(user_id):
 	if number_one._user_id == user_id:
 		check_achievement(user_id, 1)
 
-
 def check_achievement(user_id, achievement_id):
 	user_achievement = UserAchievements.query.filter_by(_user_id=user_id, _achievement_id=achievement_id).first()
+
 	if user_achievement.isComplete:
 		return
 	user_achievement.isComplete = True
@@ -136,6 +140,11 @@ def check_achievement(user_id, achievement_id):
 	update_gems(user_id, achievement_rewards.get("gems"))
 	update_lives(user_id, achievement_rewards.get("lives"))
 
+def delete_outdated_boosters(boosters):
+    for booster in boosters:
+        if booster.isActive and booster.expiration_date <= date.today():
+            db.session.delete(booster)
+        db.session.commit()
 
 def get_streak(user_id):
 	user_stats = Stats.query.filter_by(_user_id=user_id).first()
@@ -175,17 +184,5 @@ def show_user_stats():
 	except Exception as e:
 		return jsonify({"error": f"Error: {str(e)}"}), 500
 	
-@stats_bp.route("/cheating", methods=["POST"])
-def cheating():
-	data = request.get_json()
-	user_id = data.get("user_id")
-
-	user_stats = Stats.query.filter_by(_user_id=user_id).first()
-	user_stats.streak = 60
-
-	db.session.commit()
 	
-
-	return jsonify({"cock": True})
-	#update_streak(user_id)
 

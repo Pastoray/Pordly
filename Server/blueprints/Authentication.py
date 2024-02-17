@@ -3,7 +3,7 @@ from database import *
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from datetime import timedelta
 from utils.Create import *
-from blueprints.Stats import get_streak
+from blueprints.Stats import get_streak, check_achievement
 
 auth_bp = Blueprint("auth_bp", __name__)
 jwt = JWTManager()
@@ -47,6 +47,7 @@ def create_account():
     create_user_stats(user_id)
     create_user_story_quests(user_id)
     create_user_achievements(user_id)
+    check_achievement(user_id, 10)
 
     return jsonify({"success": True, "message": "Account Created successfully"}), 201
 
@@ -177,10 +178,18 @@ def change_credentials():
     user = Users.query.filter_by(_user_id=user_id, email=email).first()
 
     if user:
-        hashed_password = generate_password_hash(password)
-        
-        if check_password_hash(user.hashed_password, hashed_password):
+        if check_password_hash(user.hashed_password, password):
             new_password = generate_password_hash(new_password)
+
+            user2 = Users.query.filter_by(username=new_username).first()
+            if user2:
+                if user._user_id != user2._user_id:
+                    return jsonify({"success": False, "error": "Username already taken"}), 400
+
+            user2 = Users.query.filter_by(email=new_email).first()
+            if user2:
+                if user._user_id != user2._user_id:
+                    return jsonify({"success": False, "error": "Email already taken"}), 400
 
             user.username = new_username
             user.email = new_email
@@ -188,11 +197,11 @@ def change_credentials():
 
             db.session.commit()
 
-            return jsonify({"message": "Email updated successfully"}), 200
+            return jsonify({"success": True, "message": "Credenetials updated successfully"}), 200
         else:
-            return jsonify({"error": "Invalid password"}), 401
+            return jsonify({"success": False, "error": "Invalid password"}), 401
     else:
-        return jsonify({"error": "Invalid email"}), 404
+        return jsonify({"success": False, "error": "Invalid email"}), 404
 
 @auth_bp.route("/delete-account", methods=["DELETE"])
 def delete_account():
@@ -226,9 +235,9 @@ def delete_account():
                 db.session.delete(booster)
 
             db.session.commit()
-            return jsonify({"succes": True,"message": "Account deleted successfully"}), 200
+            return jsonify({"success": True,"message": "Account deleted successfully"}), 200
         else:
-            return jsonify({"succes": False,"error": "Invalid password"}), 401
+            return jsonify({"success": False,"error": "Invalid password"}), 401
     else:
-        return jsonify({"succes": False,"error": "Invalid email"}), 404
+        return jsonify({"success": False,"error": "Invalid email"}), 404
 

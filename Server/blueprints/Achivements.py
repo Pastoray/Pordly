@@ -1,11 +1,11 @@
 from flask import Blueprint, request, jsonify
-from blueprints.Stats import *
+from blueprints.Stats import update_gems, update_lives, update_xp
 from database import *
 
 achievements_bp = Blueprint("achievements", __name__)
 
 @achievements_bp.route("/check", methods=["POST"])
-def check_achievement():
+def check_user_achievement():
     data = request.get_json()
     user_id = data.get("user_id")
     achievement_id = data.get("achievement_id")

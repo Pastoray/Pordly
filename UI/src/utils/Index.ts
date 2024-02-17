@@ -405,7 +405,7 @@ type NewCredentials = {
     username: string
 } & OldCredentials
 
-export async function send_data(oldCredentials: OldCredentials, newCredentials: NewCredentials) {
+export async function change_credentials(oldCredentials: OldCredentials, newCredentials: NewCredentials) {
     const user_id = await getUserId()
     const data = await fetch("http://127.0.0.1:8080/auth/change-credentials", {
         method: "POST",
@@ -443,7 +443,7 @@ export async function delete_account(oldCredentials: OldCredentials) {
 
     const response = await data.json()
     console.log(response)
-    return response.success
+    return response
 }
 
 export function validate_form(oldCredentials: OldCredentials, newCredentials: NewCredentials) {

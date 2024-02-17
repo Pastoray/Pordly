@@ -9,8 +9,9 @@ import ShopWrapper from './pages/ShopWrapper'
 import Login from './components/UI/Login'
 import Signup from './components/UI/Sigup'
 import NoPage from './pages/NoPage'
-import './main.scss'
 import ProfileWrapper from './pages/ProfileWrapper'
+import DuelWrapper from './pages/DuelWrapper'
+import './main.scss'
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route index element={<HomeWrapper/>}/>
           <Route path='/home' element={<HomeWrapper/>}/>
+          <Route path='/duel' element={<DuelWrapper/>}/>
           <Route path='/daily-quests' element={<DailyQuestsWrapper/>}/>
           <Route path='/story-quests' element={<StoryQuestsWrapper/>}/>
           <Route path='/:quest_type/:quest_id' element={<LoadQuestWrapper/>}/>

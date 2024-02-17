@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
-from blueprints.Stats import *
+from blueprints.Stats import check_achievement, delete_outdated_boosters
 from database import *
+from datetime import date, timedelta
 
 boosters_bp = Blueprint("boosters", __name__)
 
@@ -13,8 +14,9 @@ def buy_booster():
     try:
         booster = Boosters.query.filter_by(_booster_id=booster_id).first()
         user_stats = Stats.query.filter_by(_user_id=user_id).first()
-        # if booster.price <= user_stats.gems:
-        #     user_stats.gems -= booster.price
+        #if booster.price <= user_stats.gems:
+        #    user_stats.gems -= booster.price
+        check_achievement(user_id, 8)
         UserBoosters(user_id, booster_id, booster.category, booster.multiplier, False, None)
             
         db.session.commit()
@@ -27,7 +29,6 @@ def buy_booster():
 @boosters_bp.route("/activate", methods=["POST"])
 def activate_booster():
     data = request.get_json()
-    #user_id = data.get("user_id")
     user_booster_id = data.get("booster_id")
 
     try:
@@ -52,7 +53,9 @@ def fetch_boosters():
     user_id = data.get("user_id")
     boosters = []
     try:
+        delete_outdated_boosters(UserBoosters.query.filter_by(_user_id=user_id))
         user_boosters = UserBoosters.query.filter_by(_user_id=user_id)
+
         for user_booster in user_boosters:
             booster = Boosters.query.filter_by(_booster_id=user_booster._booster_id).first()
             boosters.append({
@@ -61,6 +64,7 @@ def fetch_boosters():
                 "booster_id": user_booster._booster_id,
                 "title": booster.title,
                 "description": booster.description,
+                "color": booster.color,
                 "category": user_booster.category,
                 "multiplier": user_booster.multiplier,
                 "isActive": user_booster.isActive,
