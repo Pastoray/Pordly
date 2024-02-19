@@ -1,25 +1,29 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import DuelGame from "../components/Features/DuelGame"
 import Toolbar from "../components/UI/Toolbar"
 import '../styles/pages/Duel.scss'
 import Spinner from "../components/UI/Spinner"
 import io from 'socket.io-client'
+import { UserContext } from "../context/UserContext"
 
 function Duel() {
-  const socket = io('ws://localhost:8080');
+  const user = useContext(UserContext)
   const [isLoading, setIsLoading] = useState(true)
-  const [counter, setCounter] = useState(0)
-  /*useEffect(() => {
-    //stop_loading()
-    socket.on("message", (message) => {
-      setCounter(message)
-      console.log(message);
-    });
-  }, [])*/
 
-  async function stop_loading() {
-    setTimeout(() => setIsLoading(false), 5000)
-  }
+  useEffect(() => {
+    if (!user) return
+    const socket = io('ws://localhost:8080');
+    socket.emit('initial_data', { user_id: user.info.id, user_level: user.stats.level.level });
+    socket.on(`response`, (response) => {
+      console.log(response);
+      if (response.match_found) {
+        setIsLoading(false)
+      }
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [user]);
 
   return (
     <>

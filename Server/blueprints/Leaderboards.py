@@ -5,7 +5,7 @@ leaderboards_bp = Blueprint("leaderboards", __name__)
 
 @leaderboards_bp.route("/streak", methods=["GET", "POST"])
 def streak_leaderboards():
-    top_ten_stats = Stats.query.order_by(Stats.streak.desc()).limit(50).all()
+    top_ten_stats = Stats.query.order_by(Stats.streak.desc(), Stats.xp.desc(), Stats.gems.desc()).limit(50).all()
     top_ten = []
     for user_stats in top_ten_stats:
         user = Users.query.filter_by(_user_id=user_stats._user_id).first()
@@ -44,7 +44,7 @@ def streak_leaderboards():
 
 @leaderboards_bp.route("/gems", methods=["GET", "POST"])
 def gems_leaderboards():
-    top_ten_stats = Stats.query.order_by(Stats.gems.desc()).limit(50).all()
+    top_ten_stats = Stats.query.order_by(Stats.gems.desc(), Stats.xp.desc(), Stats.streak.desc()).limit(50).all()
     top_ten = []
     for user_stats in top_ten_stats:
         user = Users.query.filter_by(_user_id=user_stats._user_id).first()
@@ -83,7 +83,7 @@ def gems_leaderboards():
     
 @leaderboards_bp.route("/xp", methods=["GET", "POST"])
 def xp_leaderboards():
-    top_ten_stats = Stats.query.order_by(Stats.xp.desc()).limit(50).all()
+    top_ten_stats = Stats.query.order_by(Stats.xp.desc(), Stats.gems.desc(), Stats.streak.desc()).limit(50).all()
     top_ten = []
     for user_stats in top_ten_stats:
         user = Users.query.filter_by(_user_id=user_stats._user_id).first()

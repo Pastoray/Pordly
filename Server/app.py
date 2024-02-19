@@ -2,7 +2,7 @@ from flask import Flask
 from database import db
 from flask_socketio import SocketIO
 
-from sockets import init_socketio
+from queue_system import init_socket 
 
 from blueprints.Authentication import jwt, auth_bp
 from blueprints.Stats import stats_bp
@@ -42,12 +42,13 @@ app.register_blueprint(daily_quests_bp, url_prefix="/daily-quests")
 app.register_blueprint(story_quests_bp, url_prefix="/story-quests")
 app.register_blueprint(boosters_bp, url_prefix="/boosters")
 
+app.register_blueprint(init_socket(socketio), url_prefix="/queue")
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 jwt.init_app(app)
-init_socketio(socketio)
 
 @app.route("/")
 def home():
