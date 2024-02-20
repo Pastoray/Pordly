@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import Toolbar from '../components/UI/Toolbar';
 import { StoryQuestsContext } from '../context/StoryQuestsContext';
-import { StoryQuest, StoryQuests } from '../types/Index';
-import LoadingScreen from '../components/UI/LoadingScreen';
+import { StoryQuest } from '../types/Index';
+import Loading from '../components/UI/Loading';
 import '../styles/pages/StoryQuests.scss'
 
 function StoryQuests() {
-    const StoryQuests: StoryQuests | undefined = useContext(StoryQuestsContext);
+    const StoryQuests: StoryQuest[] | undefined = useContext(StoryQuestsContext);
     function format_date(quest: StoryQuest) {
         const completionDate = new Date(quest.completion_date);
         const formattedDate = `${completionDate.getFullYear()}-${(completionDate.getMonth() + 1).toString().padStart(2, '0')}-${completionDate.getDate().toString().padStart(2, '0')}`;
@@ -39,9 +39,10 @@ function StoryQuests() {
                                     <div className='story-quest-reward-container'>
                                         <p className='story-quest-xp'>{quest.reward.xp}🌟</p>
                                         <p className='story-quest-gems'>{quest.reward.gems}💎</p>
-                                        {quest.reward.lives == 0 ?
+                                        {
+                                        quest.reward.lives == 0 ?
                                             null
-                                            :
+                                        :
                                             <p className='story-quest-lives'>{quest.reward.lives}❤️</p>
                                         }
                                     </div>
@@ -51,7 +52,7 @@ function StoryQuests() {
                         ))
                     :
                     <div className='story-quest-loading-screen'>
-                        <LoadingScreen/>
+                        <Loading/>
                     </div>
                     }
                 </div>

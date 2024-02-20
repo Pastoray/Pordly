@@ -1,23 +1,28 @@
 import Wpm from './Wpm';
 import Timer from './Times';
-import { setGameOver, restart, handleInput, initData, updateParagraph, handleChange } from '../../utils/Index';
+import { setGameOver, handleInput, initData, updateParagraph, handleChange } from '../../utils/Index';
 import { useEffect, useRef, useState } from 'react';
 import { ParagraphData } from '../../types/Index';
-import LoadingScreen from '../UI/LoadingScreen';
+import Loading from '../UI/Loading';
 import '../../styles/components/Game.scss'
 import '../../styles/components/DuelGame.scss'
 import Accuracy from './Accuracy';
-import GameOver from '../UI/GameOver';
+import DuelOver from '../UI/DuelOver';
 
-function DuelGame() {
-    const paras = 1;
+type GameStats = {
+  accuracy: number,
+  wpm: number
+}
+
+function DuelGame({ opponentStats, statsUpdate }: { opponentStats: GameStats, statsUpdate: (accuracy: number, wpm: number) => void }) {
+    const paras = 50;
 
     const [input, setInput] = useState('');
     const [paragraphData, setParagraphData] = useState<ParagraphData | null>(null);
     const [accuracy, setAccuracy] = useState(0);
     const [gameFinished, setGameFinished] = useState(false);
     const [timePassed, setTimePassed] = useState(0.016);
-    const [time, setTime] = useState(180);
+    const [time, setTime] = useState(10);
     const [correctWords, setCorrectWords] = useState(0);
     const [wpm, setWpm] = useState(0);
     const [wordIdx, setWordIdx] = useState(0);
@@ -41,6 +46,7 @@ function DuelGame() {
     }, [loading])
     useEffect(() => {
         if (time == 0) {
+
             setGameOver(setGameFinished, setInput, inputRef)
             return;
         }
@@ -49,6 +55,7 @@ function DuelGame() {
             setTimePassed((t) => t + 0.016);
             updateWPM();
             setTime((t) => t - 1);
+            statsUpdate(accuracy, wpm);
         }, 1000)
         return () => {
             clearInterval(intervalId)
@@ -62,21 +69,15 @@ function DuelGame() {
         setTime((t) => t + bonus)
     }, [bonus])
 
-    function reset() {
-        restart(setLoading, setBonus, setWordIdx, setParagraphData, setAccuracy, setGameFinished, inputRef)
-        setTimePassed(0.016);
-        setCorrectWords(0);
-        setTime(180);
-        inputRef.current!.focus()
-    }
-
     return(
         <div className='game-container'>
             <div className='game'>
                 <div id='game-timer-container'>
                     <div id='game-stats-container'>
-                        <Accuracy accuracy={accuracy}/>
-                        <Wpm wpm={wpm}/>
+                        <Accuracy text={"Accuracy"} accuracy={accuracy}/>
+                        <Wpm text={"WPM"} wpm={wpm}/>
+                        <Accuracy text={"Opponent Accuracy"} accuracy={opponentStats.accuracy}/>
+                        <Wpm text={"Opponent WPM"} wpm={opponentStats.wpm}/>
                     </div>
                     <Timer time={time}/>
                 </div>
@@ -85,7 +86,7 @@ function DuelGame() {
                         {
                         loading ?
                         <div className='game-loading-screen'>
-                            <LoadingScreen/>
+                            <Loading/>
                         </div>
                         :
                         !gameFinished ?
@@ -101,7 +102,7 @@ function DuelGame() {
                                     <span key={`span 2 ${idx}`}>{"\u00A0"}</span>
                                 </div>))
                         :   
-                            <GameOver accuracy={accuracy} wpm={wpm} time={time} reset={reset}/>
+                            <DuelOver userStats={{ accuracy: accuracy, wpm: wpm }} opponentStats={opponentStats}/>
                         }
                     </div>
                 </div>

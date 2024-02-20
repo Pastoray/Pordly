@@ -1,6 +1,6 @@
-import '../../styles/components/LoadingScreen.scss'
+import '../../styles/components/Loading.scss'
 
-function LoadingScreen() {
+function Loading() {
     return(
         <div className='game-starting'>
             <span>L</span>
@@ -17,4 +17,4 @@ function LoadingScreen() {
     );
 }
 
-export default LoadingScreen;
+export default Loading;

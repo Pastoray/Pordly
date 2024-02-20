@@ -487,3 +487,21 @@ export async function change_bio(bio: string) {
     console.log(response)
     return response.success
 }
+
+export async function update_gems(gems: number) {
+    const user_id = await getUserId()
+    const data = await fetch("http://127.0.0.1:8080/stats/gems", {
+        method: "POST",
+        headers: {
+                "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user_id,
+            gems
+        })
+    })
+
+    const response = await data.json()
+    console.log(response)
+    return response.success
+}

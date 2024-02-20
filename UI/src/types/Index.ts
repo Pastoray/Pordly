@@ -96,9 +96,20 @@ export type Title = {
 }
 
 export type Booster = {
-    booster_id: number,
+    id: number,
     title: string,
     description: string,
+    color: string,
+    category: string,
+    multiplier: number,
+    price: number,
+}
+
+export type UserBooster = {
+    user_booster_id: number,
+    title: string,
+    description: string,
+    color: string,
     category: string,
     multiplier: number,
     price: number,
@@ -120,11 +131,13 @@ export type TimerProps = {
 }
 
 export type AccuracyProps = {
+    text: string,
     accuracy: number
 }
 
 export type WpmProps = {
-    wpm: number,
+    text: string,
+    wpm: number
 }
 
 export type LoginError = {
@@ -136,5 +149,14 @@ export type LoginError = {
 export type ContextProviderProps = {
   children: React.ReactNode
 }
+
+export type OldCredentials = {
+    email: string,
+    password: string
+}
+
+export type NewCredentials = {
+    username: string
+} & OldCredentials
 
 

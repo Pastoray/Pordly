@@ -14,8 +14,8 @@ def buy_booster():
     try:
         booster = Boosters.query.filter_by(_booster_id=booster_id).first()
         user_stats = Stats.query.filter_by(_user_id=user_id).first()
-        #if booster.price <= user_stats.gems:
-        #    user_stats.gems -= booster.price
+        if booster.price <= user_stats.gems:
+            user_stats.gems -= booster.price
         check_achievement(user_id, 8)
         UserBoosters(user_id, booster_id, booster.category, booster.multiplier, False, None)
             

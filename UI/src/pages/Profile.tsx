@@ -3,22 +3,13 @@ import ProfileSidebar from "../components/UI/ProfileSidebar"
 import Toolbar from "../components/UI/Toolbar"
 import '../styles/pages/Profile.scss'
 import { UserContext } from "../context/UserContext"
-import { Booster } from "../types/Index"
+import { OldCredentials, NewCredentials, UserBooster } from "../types/Index"
 import { activate_booster, change_bio, change_credentials, delete_access_token, delete_account, fetch_boosters, format_date, validate_form } from "../utils/Index"
-
-type OldCredentials = {
-    email: string,
-    password: string
-}
-
-type NewCredentials = {
-    username: string
-} & OldCredentials
 
 
 function Profile() {
     const user = useContext(UserContext)
-    const [boosters, setBoosters] = useState<Booster[]>([]);
+    const [boosters, setBoosters] = useState<UserBooster[]>([]);
     
     const [category, setCategory] = useState(1);
     

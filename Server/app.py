@@ -2,7 +2,7 @@ from flask import Flask
 from database import db
 from flask_socketio import SocketIO
 
-from queue_system import init_socket 
+from server_socket import init_socket
 
 from blueprints.Authentication import jwt, auth_bp
 from blueprints.Stats import stats_bp

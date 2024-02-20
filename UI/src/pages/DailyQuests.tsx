@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import Toolbar from '../components/UI/Toolbar';
 import { DailyQuestsContext } from '../context/DailyQuestsContext';
 import { DailyQuests } from '../types/Index';
-import LoadingScreen from '../components/UI/LoadingScreen';
+import Loading from '../components/UI/Loading';
 import '../styles/pages/DailyQuests.scss'
 
 function DailyQuests() {
@@ -45,7 +45,7 @@ function DailyQuests() {
                             </div>
                         ))
                     :
-                        <LoadingScreen/>
+                        <Loading/>
                     }
                 </main>
             </>

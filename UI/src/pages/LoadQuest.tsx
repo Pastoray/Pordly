@@ -6,7 +6,7 @@ import { useContext, useEffect } from 'react';
 import { DailyQuestsContext } from '../context/DailyQuestsContext';
 import { UserContext } from '../context/UserContext';
 import { QuestType } from '../types/Index';
-import LoadingScreen from '../components/UI/LoadingScreen';
+import Loading from '../components/UI/Loading';
 import { decrement_lives } from '../utils/Index';
 import { StoryQuestsContext } from '../context/StoryQuestsContext';
 
@@ -29,9 +29,6 @@ function LoadQuest() {
         const quest = quests?.find((quest) => quest.story_quest_id === parseInt(quest_id!))!
         q_id = quest?.story_quest_id
     }
-    /*const daily_quests = useContext(DailyQuestsContext);
-    const { quest_type, quest_id } = useParams<QuestInfo>();
-    const quest = daily_quests?.find((quest) => quest.daily_quest_id === parseInt(quest_id!))!*/
 
     useEffect(() => {
         if (user) {
@@ -45,18 +42,18 @@ function LoadQuest() {
         <>  
             {
                 quests && user && q_id ?
-                    /*user.stats.lives > 0 ?*/
+                    user.stats.lives > 0 ?
                         <div className='loadgame-container'>
                             <Toolbar/>
                             <Game quest_type={quest_type} quest_id={q_id}/>
                         </div>
                     :   
-                    /*    <div className='loadgame-not-enough-lives'>
+                        <div className='loadgame-not-enough-lives'>
                             <Toolbar/>
                             <p id='not-enough-lives'>NOT ENOUGH LIVES</p>
                         </div>
-                :*/ <div className='loadgame-loading-screen'>
-                        <LoadingScreen/>
+                : <div className='loadgame-loading-screen'>
+                        <Loading/>
                     </div>
             }   
             

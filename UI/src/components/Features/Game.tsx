@@ -3,7 +3,7 @@ import Timer from './Times';
 import { setGameOver, restart, handleInput, initData, updateParagraph, handleChange } from '../../utils/Index';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ParagraphData, GameProps } from '../../types/Index';
-import LoadingScreen from '../UI/LoadingScreen';
+import Loading from '../UI/Loading';
 import '../../styles/components/Game.scss'
 import Accuracy from './Accuracy';
 import { DailyQuestsContext } from '../../context/DailyQuestsContext';
@@ -78,16 +78,17 @@ function Game({ quest_type, quest_id }: GameProps) {
             <div className='game'>
                 <div id='game-timer-container'>
                     <div id='game-stats-container'>
-                        <Accuracy accuracy={accuracy}/>
-                        <Wpm wpm={wpm}/>
+                        <Accuracy text={"Accuracy"} accuracy={accuracy}/>
+                        <Wpm text={"WPM"} wpm={wpm}/>
                     </div>
                     <Timer time={time}/>
                 </div>
                 <div className='game-paragraph'>
                     <div className='game-words'>
-                        {loading ?
+                        {
+                        loading ?
                         <div className='game-loading-screen'>
-                            <LoadingScreen/>
+                            <Loading/>
                         </div>
                         :
                         !gameFinished ?

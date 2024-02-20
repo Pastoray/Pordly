@@ -6,6 +6,19 @@ import calendar
 
 stats_bp = Blueprint("stats", __name__)
 
+@stats_bp.route("/gems", methods=["POST"])
+def update_gems_route():
+	data = request.get_json()
+	user_id = data.get("user_id")
+	gems = data.get("gems")
+	
+	try:
+		update_gems(user_id, gems)
+		return jsonify({"success": True})
+	except Exception as e:
+		db.session.rollback()
+		return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 def update_gems(user_id, gems):
 	user_stats = Stats.query.filter_by(_user_id=user_id).first()
 	try:							

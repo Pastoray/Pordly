@@ -16,7 +16,7 @@ function GameOver({ accuracy, wpm, time, reset }: GameOverProps) {
     const quests = quest_type == "daily-quests" ? useContext(DailyQuestsContext) : useContext(StoryQuestsContext);
     const quest = quests!.filter((quest) => quest_id == (quest_type == "daily-quests" ? quest.daily_quest_id : quest.story_quest_id))[0];
     
-    const quest_complete = true//accuracy >= quest.requirements.accuracy && Math.ceil(wpm) >= quest.requirements.wpm && time > 0;
+    const quest_complete = accuracy >= quest.requirements.accuracy && Math.ceil(wpm) >= quest.requirements.wpm && time > 0;
     const accuracy_achievement_finished = accuracy >= 95
     const wpm_achievement_finished = wpm >= 100
 
