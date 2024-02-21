@@ -1,8 +1,8 @@
-import AchievementsContextProvider from "../context/AchievementsContext"
-import DailyQuestsContextProvider from "../context/DailyQuestsContext"
-import StoryQuestsContextProvider from "../context/StoryQuestsContext"
-import UserContextProvider from "../context/UserContext"
-import Home from "./Home"
+import AchievementsContextProvider from "../../context/AchievementsContext"
+import DailyQuestsContextProvider from "../../context/DailyQuestsContext"
+import StoryQuestsContextProvider from "../../context/StoryQuestsContext"
+import UserContextProvider from "../../context/UserContext"
+import Home from "../pages/Home"
 
 
 function HomeWrapper() {

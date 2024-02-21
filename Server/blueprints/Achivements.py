@@ -5,10 +5,16 @@ from database import *
 achievements_bp = Blueprint("achievements", __name__)
 
 @achievements_bp.route("/check", methods=["POST"])
-def check_user_achievement():
-    data = request.get_json()
-    user_id = data.get("user_id")
-    achievement_id = data.get("achievement_id")
+def check_user_achievement(user_id_p=None, achievement_id_p=None):
+    user_id = user_id_p
+    achievement_id = achievement_id_p
+    if request.method == "POST":
+        data = request.get_json()
+        user_id = data.get("user_id")
+        achievement_id = data.get("achievement_id")
+    
+    if not (user_id and achievement_id):
+        return jsonify({"success": False})
     
     user_achievement = UserAchievements.query.filter_by(_user_id=user_id, _achievement_id=achievement_id).first()
     achievement = Achievements.query.filter_by(_achievement_id=achievement_id).first()

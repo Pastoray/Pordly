@@ -103,3 +103,9 @@ $prefix: "login-form";
         padding: 0rem 0.2rem;
     } 
 }
+
+##{$prefix}-no-account {
+    font-family: monospace;
+    padding-bottom: 1rem;
+    color: palevioletred;
+}

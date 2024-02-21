@@ -100,6 +100,7 @@ def all_daily_quests():
                     "title": entry.title,
                     "requirements": entry.requirements,
                     "date": entry.date,
+                    "paras": entry.paras,
                     "difficulty": entry.difficulty,
                     "rewards": entry.rewards
                 }
@@ -141,6 +142,7 @@ def all_story_quests():
                     "story_quest_id": entry._story_quest_id,
                     "title": entry.title,
                     "requirements": entry.requirements,
+                    "paras": entry.paras,
                     "paragraphs": entry.paras,
                     "difficulty": entry.difficulty,
                     "rewards": entry.rewards

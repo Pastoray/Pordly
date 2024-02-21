@@ -1,9 +1,9 @@
-import fetchParagraph from "../data/fetchParagraph";
-import { State, Ref, ParagraphData, LoginError, Achievement, QuestType, Users, User } from "../types/Index";
+import fetch_paragraph from "../data/fetch_paragraph";
+import { State, Ref, ParagraphData, LoginError, Achievement, QuestType, User, OldCredentials, NewCredentials } from "../types/Index";
 
 let Words = 0;
 
-export function setGameOver(setGameFinished: State<boolean>, setInput: State<string>, inputRef: Ref<HTMLInputElement | null>) {
+export function set_game_over(setGameFinished: State<boolean>, setInput: State<string>, inputRef: Ref<HTMLInputElement | null>) {
     inputRef.current!.readOnly = true;
     setGameFinished(true);
     setInput('');
@@ -18,28 +18,28 @@ export function restart(setLoading: State<boolean>, setBonus: State<number>, set
 
     setAccuracy(0);
     setParagraphData((prevData) => ({ ...prevData!, paragraphIdx: -1 }));
-    loadingEnded(setLoading, setGameFinished)
+    end_loading(setLoading, setGameFinished)
 }
 
-export function handleInput(event: React.KeyboardEvent<HTMLInputElement>, paragraphData: ParagraphData | null, input: string, setInput: State<string>, wordIdx: number, setWordIdx: State<number>, cooldown: number, setCooldown: State<number>, luckyIdx: number, setLuckyIdx: State<number>, setBonus: State<number>, setAccuracy: State<number>, setCorrectWords: State<number>) {
+export function handle_input(event: React.KeyboardEvent<HTMLInputElement>, paragraphData: ParagraphData | null, input: string, setInput: State<string>, wordIdx: number, setWordIdx: State<number>, cooldown: number, setCooldown: State<number>, luckyIdx: number, setLuckyIdx: State<number>, setBonus: State<number>, setAccuracy: State<number>, setCorrectWords: State<number>) {
     if (event.key == 'Enter' || event.key == ' ') {
         if (Date.now() - cooldown > 50) {
             setCooldown(Date.now())
-            checkWord(input, paragraphData!.words[wordIdx], paragraphData, wordIdx, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords);
+            check_word(input, paragraphData!.words[wordIdx], paragraphData, wordIdx, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords);
             setInput('');
             setWordIdx((idx) => idx + 1);
         }
     }
 }
 
-export function handleChange(event: React.ChangeEvent<HTMLInputElement>, setInput: State<string>) {
+export function handle_word(event: React.ChangeEvent<HTMLInputElement>, setInput: State<string>) {
     if (!event.target.value.endsWith(" ")) {
         setInput(event.target.value)
     }
 }
 
-export async function initData(sentences: number, setParagraphData: State<ParagraphData | null>, setLuckyIdx: State<number>, setLoading: State<boolean>) {
-    const data = await fetchParagraph(sentences);
+export async function initialize_paragraph_data(sentences: number, setParagraphData: State<ParagraphData | null>, setLuckyIdx: State<number>, setLoading: State<boolean>) {
+    const data = await fetch_paragraph(sentences);
     for (let paragraph of data) {   
         Words += paragraph.split(' ').length
     }
@@ -52,7 +52,7 @@ export async function initData(sentences: number, setParagraphData: State<Paragr
     setLoading(false);
 }
 
-export async function updateParagraph(paragraphData: ParagraphData | null, setParagraphData: State<ParagraphData | null>, wordIdx: number, setWordIdx: State<number>, setLuckyIdx: State<number>, setGameFinished: State<boolean>, inputRef: Ref<HTMLInputElement | null>) {
+export async function update_paragraph(paragraphData: ParagraphData | null, setParagraphData: State<ParagraphData | null>, wordIdx: number, setWordIdx: State<number>, setLuckyIdx: State<number>, setGameFinished: State<boolean>, inputRef: Ref<HTMLInputElement | null>) {
     if (paragraphData !== null && wordIdx >= paragraphData!.words.length) {
         if (paragraphData.paragraphIdx >= paragraphData.paragraphs.length - 1) {
             inputRef.current!.readOnly = true;
@@ -72,14 +72,14 @@ export async function updateParagraph(paragraphData: ParagraphData | null, setPa
     }
 }
 
-async function loadingEnded(setLoading: State<boolean>, setGameFinished: State<boolean>) {
+async function end_loading(setLoading: State<boolean>, setGameFinished: State<boolean>) {
     setTimeout(() => {
         setLoading(false);
         setGameFinished(false);
     }, 1000);
 }
 
-function checkWord(input: String, word: String, paragraphData: ParagraphData | null, wordIdx: number, luckyIdx: number, setLuckyIdx: State<number>, setBonus: State<number>, setAccuracy: State<number>, setCorrectWords: State<number>) {
+function check_word(input: String, word: String, paragraphData: ParagraphData | null, wordIdx: number, luckyIdx: number, setLuckyIdx: State<number>, setBonus: State<number>, setAccuracy: State<number>, setCorrectWords: State<number>) {
     if (input === word) {
         if (wordIdx === luckyIdx) {
             setBonus(5);
@@ -100,8 +100,8 @@ function checkWord(input: String, word: String, paragraphData: ParagraphData | n
     }
 }
 
-export async function getStoryQuests() {
-        const user_id = await getUserId()
+export async function get_story_quests() {
+        const user_id = await get_user_id()
         const data = await fetch('http://127.0.0.1:8080//story-quests/fetch', {
             method: "POST",
             headers: {
@@ -114,11 +114,10 @@ export async function getStoryQuests() {
         })
 
         const response = await data.json()
-        console.log(response)
         return response
 }
 
-export function setCookie(name: string, value: string, daysToExpire: number) {
+export function set_cookie(name: string, value: string, daysToExpire: number) {
     const date = new Date();
     date.setTime(date.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
     const expires = "expires=" + date.toUTCString() + ";";
@@ -126,11 +125,11 @@ export function setCookie(name: string, value: string, daysToExpire: number) {
     return cookie;
 }
 
-export async function checkForAccount(event: React.MouseEvent<HTMLInputElement>, emailErrorRef: Ref<HTMLParagraphElement | null>, passwordErrorRef: Ref<HTMLParagraphElement |null>, email: string, password: string) {
+export async function fetch_account(event: React.MouseEvent<HTMLInputElement>, emailErrorRef: Ref<HTMLParagraphElement | null>, passwordErrorRef: Ref<HTMLParagraphElement |null>, email: string, password: string) {
         event.preventDefault()
-        const validEmail = validateEmail(email);
+        const validEmail = validate_email(email);
         if (!validEmail) {
-            promptError(null, emailErrorRef, passwordErrorRef, {"emailError": "Invalid email"})
+            prompt_error(null, emailErrorRef, passwordErrorRef, {"emailError": "Invalid email"})
             return
         }
         const data = await fetch('http://127.0.0.1:8080/auth/load-user', {
@@ -147,15 +146,15 @@ export async function checkForAccount(event: React.MouseEvent<HTMLInputElement>,
         
         const response = await data.json()
         if (response.success) {
-            const cookie = setCookie("accessToken", response.accessToken, 30);
+            const cookie = set_cookie("accessToken", response.accessToken, 30);
             document.cookie = cookie;
             window.location.href = "/"
         } else {
-            promptError(null, emailErrorRef, passwordErrorRef, response.error)
+            prompt_error(null, emailErrorRef, passwordErrorRef, response.error)
         }
 }
 
-export function promptError(usernameErrorRef: Ref<HTMLParagraphElement | null> | null, emailErrorRef: Ref<HTMLParagraphElement | null>, passwordErrorRef: Ref<HTMLParagraphElement | null>, error: LoginError) {
+export function prompt_error(usernameErrorRef: Ref<HTMLParagraphElement | null> | null, emailErrorRef: Ref<HTMLParagraphElement | null>, passwordErrorRef: Ref<HTMLParagraphElement | null>, error: LoginError) {
         if (usernameErrorRef) usernameErrorRef.current!.textContent = ""
         emailErrorRef.current!.textContent = ""
         passwordErrorRef.current!.textContent = ""
@@ -164,12 +163,12 @@ export function promptError(usernameErrorRef: Ref<HTMLParagraphElement | null> |
         if (error.passwordError) passwordErrorRef.current!.textContent = "Error: " + error.passwordError
 }
 
-export function validateEmail(email: string) {
+export function validate_email(email: string) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
 }
 
-export async function validateToken(cookieValue: string) {
+export async function validate_token(cookieValue: string) {
     const data = await fetch("http://127.0.0.1:8080/auth/validate-token", {
         method: "GET",
         headers: {
@@ -182,29 +181,27 @@ export async function validateToken(cookieValue: string) {
     
 }
 
-export async function getUser() {
+export async function get_user() {
     const cookies = document.cookie.split(";")
     for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
         if (cookie.startsWith("accessToken" + '=')) {
             const cookieValue = cookie.substring("accessToken".length + 1);
-            const user: User | undefined = await validateToken(cookieValue);
-            console.log(user)
+            const user: User | undefined = await validate_token(cookieValue);
             return user
         }
     }
-    return null;
+    return undefined;
 }
 
-export async function getUserId() {
-    const user: User | null | undefined = await getUser();
+export async function get_user_id() {
+    const user: User | null | undefined = await get_user();
     const user_id = user?.info.id
-    console.log(user_id)
     return user_id
 }
 
-export async function getDailyQuests() {
-    const user_id = await getUserId()
+export async function get_daily_quests() {
+    const user_id = await get_user_id()
     const data = await fetch("http://127.0.0.1:8080/daily-quests/fetch", {
         method: "POST",
         headers: {
@@ -215,15 +212,14 @@ export async function getDailyQuests() {
         })
     })
     const response = await data.json()
-    console.log(response)
     return response
 }
 
-export async function createAccount(event: React.MouseEvent<HTMLInputElement>, emailErrorRef: Ref<HTMLParagraphElement | null>, passwordErrorRef: Ref<HTMLParagraphElement | null>, usernameErrorRef: Ref<HTMLParagraphElement | null>, username: string, email: string, password: string) {
+export async function create_account(event: React.MouseEvent<HTMLInputElement>, emailErrorRef: Ref<HTMLParagraphElement | null>, passwordErrorRef: Ref<HTMLParagraphElement | null>, usernameErrorRef: Ref<HTMLParagraphElement | null>, username: string, email: string, password: string) {
     event.preventDefault()
-    const validEmail = validateEmail(email);
+    const validEmail = validate_email(email);
     if (!validEmail) {
-        promptError(null, emailErrorRef, passwordErrorRef, {"emailError": "Invalid email"})
+        prompt_error(null, emailErrorRef, passwordErrorRef, {"emailError": "Invalid email"})
         return
     }
     
@@ -243,12 +239,12 @@ export async function createAccount(event: React.MouseEvent<HTMLInputElement>, e
     if (response.success) {
         window.location.href = "/login"
     } else {
-        promptError(usernameErrorRef, emailErrorRef, passwordErrorRef, response.error)
+        prompt_error(usernameErrorRef, emailErrorRef, passwordErrorRef, response.error)
     }
 }
 
 export async function check_quest(quest_id: number, quest_type: QuestType | undefined) {
-    const user_id = await getUserId();
+    const user_id = await get_user_id();
     const data = await fetch(`http://127.0.0.1:8080/${quest_type}/check`, {
         method: "POST",
         headers: {
@@ -264,7 +260,7 @@ export async function check_quest(quest_id: number, quest_type: QuestType | unde
 }
 
 export async function decrement_lives() {
-    const user_id = await getUserId();
+    const user_id = await get_user_id();
     const data = await fetch(`http://127.0.0.1:8080/stats/lives`, {
         method: "POST",
         headers: {
@@ -280,18 +276,18 @@ export async function decrement_lives() {
 
 }
 
-export async function fetchLeaderboardParticipants(type: string, setParticipants: React.Dispatch<React.SetStateAction<Users>>) {
+export async function fetch_leaderboard_participants(type: string) {
     const data = await fetch(`http://127.0.0.1:8080/leaderboards/${type}`, {
         headers: {
             "Content-Type": "application/json",
         },
     })
-    const response: Users = await data.json()
-    setParticipants(response)
+    const response: User[] = await data.json()
+    return response
 }
 
 export async function get_achievements() {
-    const user_id = await getUserId()
+    const user_id = await get_user_id()
     const data = await fetch(`http://127.0.0.1:8080/achievements/fetch`, {
         method: "POST",
         headers: {
@@ -302,12 +298,11 @@ export async function get_achievements() {
         })
     })
     const response: Achievement[] = await data.json()
-    console.log(response)
     return response
 }
 
 export async function check_achievement(achievement_id: number) {
-    const user_id = await getUserId();
+    const user_id = await get_user_id();
     const data = await fetch(`http://127.0.0.1:8080/achievements/check`, {
         method: "POST",
         headers: {
@@ -319,12 +314,11 @@ export async function check_achievement(achievement_id: number) {
         })
     })
     const response: Achievement[] = await data.json()
-    console.log(response)
     return response
 }
 
-export async function fetchCalendar() {
-    const user_id = await getUserId();
+export async function fetch_calendar() {
+    const user_id = await get_user_id();
     const data = await fetch(`http://127.0.0.1:8080/daily-quests/this-month`, {
         method: "POST",
         headers: {
@@ -335,7 +329,6 @@ export async function fetchCalendar() {
         })
     })
     const response = await data.json()
-    console.log(response)
 
     return { daily_quests: response.user_daily_quests, days_this_month: response.days_this_month }
 }
@@ -347,7 +340,7 @@ export function format_date(date: Date) {
 }
 
 export async function buy_booster(booster_id: number) {
-    const user_id = await getUserId()
+    const user_id = await get_user_id()
     const data = await fetch("http://127.0.0.1:8080/boosters/buy", {
         method: "POST",
         headers: {
@@ -363,8 +356,8 @@ export async function buy_booster(booster_id: number) {
     return response
 }
 
-export async function fetch_boosters() {
-    const user_id = await getUserId()
+export async function fetch_user_boosters() {
+    const user_id = await get_user_id()
     const data = await fetch("http://127.0.0.1:8080/boosters/fetch", {
         method: "POST",
         headers: {
@@ -379,8 +372,20 @@ export async function fetch_boosters() {
     return response
 }
 
+export async function fetch_boosters() {
+    const data = await fetch("http://127.0.0.1:8080/all/boosters", {
+        method: "POST",
+        headers: {
+                "Content-Type": "application/json",
+        }
+    })
+
+    const response = await data.json()
+    return response.entries
+}
+
 export async function activate_booster(booster_id: number) {
-    const user_id = await getUserId()
+    const user_id = await get_user_id()
     const data = await fetch("http://127.0.0.1:8080/boosters/activate", {
         method: "POST",
         headers: {
@@ -396,17 +401,8 @@ export async function activate_booster(booster_id: number) {
     return response
 }
 
-type OldCredentials = {
-    email: string,
-    password: string
-}
-
-type NewCredentials = {
-    username: string
-} & OldCredentials
-
 export async function change_credentials(oldCredentials: OldCredentials, newCredentials: NewCredentials) {
-    const user_id = await getUserId()
+    const user_id = await get_user_id()
     const data = await fetch("http://127.0.0.1:8080/auth/change-credentials", {
         method: "POST",
         headers: {
@@ -423,12 +419,11 @@ export async function change_credentials(oldCredentials: OldCredentials, newCred
     })
 
     const response = await data.json()
-    console.log(response)
     return response
 }
 
 export async function delete_account(oldCredentials: OldCredentials) {
-    const user_id = await getUserId()
+    const user_id = await get_user_id()
     const data = await fetch("http://127.0.0.1:8080/auth/delete-account", {
         method: "DELETE",
         headers: {
@@ -442,7 +437,6 @@ export async function delete_account(oldCredentials: OldCredentials) {
     })
 
     const response = await data.json()
-    console.log(response)
     return response
 }
 
@@ -456,10 +450,10 @@ export function validate_form(oldCredentials: OldCredentials, newCredentials: Ne
     } else if (!oldCredentials.password || !newCredentials.password) {
         error_message_1 = !oldCredentials.password ? "Invalid Password" : ""
         error_message_2 = !newCredentials.password ? "Invalid Password" : ""
-    } else if (!validateEmail(oldCredentials.email)) {
+    } else if (!validate_email(oldCredentials.email)) {
         error_message_1 = "Invalid Email"
         error_message_2 = ""
-    } else if (!validateEmail(newCredentials.email)) {
+    } else if (!validate_email(newCredentials.email)) {
         error_message_1 = ""
         error_message_2 = "invalid email"
     }
@@ -471,7 +465,7 @@ export function delete_access_token() {
 }
 
 export async function change_bio(bio: string) {
-    const user_id = await getUserId()
+    const user_id = await get_user_id()
     const data = await fetch("http://127.0.0.1:8080/auth/change-bio", {
         method: "POST",
         headers: {
@@ -484,24 +478,5 @@ export async function change_bio(bio: string) {
     })
 
     const response = await data.json()
-    console.log(response)
-    return response.success
-}
-
-export async function update_gems(gems: number) {
-    const user_id = await getUserId()
-    const data = await fetch("http://127.0.0.1:8080/stats/gems", {
-        method: "POST",
-        headers: {
-                "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            user_id,
-            gems
-        })
-    })
-
-    const response = await data.json()
-    console.log(response)
     return response.success
 }

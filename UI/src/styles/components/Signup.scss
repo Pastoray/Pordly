@@ -32,7 +32,7 @@ $prefix: "signup-form";
 }
 
 .#{$prefix}-container {
-    height: 70%;
+    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -40,7 +40,6 @@ $prefix: "signup-form";
     align-items: center;
     box-sizing: border-box;
     padding: 1rem;
-
     input {
         height: 3rem;
         width: 100%;
@@ -102,4 +101,10 @@ $prefix: "signup-form";
         color: red;
         padding: 0rem 0.2rem;
     }
+}
+
+##{$prefix}-have-account {
+    font-family: monospace;
+    padding-bottom: 1rem;
+    color: palevioletred;
 }

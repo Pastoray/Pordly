@@ -1,7 +1,6 @@
 
 
-async function fetchParagraph(paras: number) {
-    
+async function fetch_paragraph(paras: number) {
     const data = await fetch(`https://baconipsum.com/api/?type=all-meat&paras=${paras}`);
     const array = await data.json();
     const result: string[] = [];
@@ -11,4 +10,4 @@ async function fetchParagraph(paras: number) {
     return result;
 }
 
-export default fetchParagraph;
+export default fetch_paragraph;

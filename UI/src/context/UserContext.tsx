@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { User, ContextProviderProps } from "../types/Index";
-import { getUser } from "../utils/Index";
+import { get_user } from "../utils/Index";
 
 export const UserContext = createContext<User | null | undefined>(undefined);
 
@@ -10,7 +10,7 @@ function UserContextProvider({ children }: ContextProviderProps) {
   useEffect(() => {
     async function fetch_user() {
       try {
-        const newUser = await getUser();
+        const newUser = await get_user();
         setUser(newUser);
       } catch (error) {
         console.error("Error fetching user:", error);

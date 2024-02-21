@@ -55,6 +55,7 @@ def get_user_story_quests():
                 "title": story_quest.title,
                 "requirements": story_quest.requirements,
                 "difficulty": story_quest.difficulty,
+                "paras": story_quest.paras,
                 "reward": story_quest.rewards,
                 "isComplete": user_story_quest.isComplete,
                 "completion_date": user_story_quest.completion_date

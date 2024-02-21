@@ -1,20 +1,14 @@
-import Wpm from './Wpm';
-import Timer from './Times';
-import { setGameOver, handleInput, initData, updateParagraph, handleChange } from '../../utils/Index';
 import { useEffect, useRef, useState } from 'react';
-import { ParagraphData } from '../../types/Index';
 import Loading from '../UI/Loading';
-import '../../styles/components/Game.scss'
-import '../../styles/components/DuelGame.scss'
-import Accuracy from './Accuracy';
 import DuelOver from '../UI/DuelOver';
+import Timer from './Times';
+import Wpm from './Wpm';
+import Accuracy from './Accuracy';
+import { set_game_over, handle_input, initialize_paragraph_data, update_paragraph, handle_word } from '../../utils/Index';
+import { ParagraphData, GameStats } from '../../types/Index';
+import '../../styles/components/Game.scss'
 
-type GameStats = {
-  accuracy: number,
-  wpm: number
-}
-
-function DuelGame({ opponentStats, statsUpdate }: { opponentStats: GameStats, statsUpdate: (accuracy: number, wpm: number) => void }) {
+function DuelGame({ opponent_stats, update_stats, game_state }: { opponent_stats: GameStats, update_stats: (accuracy: number, wpm: number) => void, game_state: () => void }) {
     const paras = 50;
 
     const [input, setInput] = useState('');
@@ -22,7 +16,7 @@ function DuelGame({ opponentStats, statsUpdate }: { opponentStats: GameStats, st
     const [accuracy, setAccuracy] = useState(0);
     const [gameFinished, setGameFinished] = useState(false);
     const [timePassed, setTimePassed] = useState(0.016);
-    const [time, setTime] = useState(10);
+    const [time, setTime] = useState(90);
     const [correctWords, setCorrectWords] = useState(0);
     const [wpm, setWpm] = useState(0);
     const [wordIdx, setWordIdx] = useState(0);
@@ -34,11 +28,11 @@ function DuelGame({ opponentStats, statsUpdate }: { opponentStats: GameStats, st
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        initData(paras, setParagraphData, setLuckyIdx, setLoading);
+        initialize_paragraph_data(paras, setParagraphData, setLuckyIdx, setLoading);
     }, [])
 
     useEffect(() => {
-        updateParagraph(paragraphData, setParagraphData, wordIdx, setWordIdx, setLuckyIdx, setGameFinished, inputRef);
+        update_paragraph(paragraphData, setParagraphData, wordIdx, setWordIdx, setLuckyIdx, setGameFinished, inputRef);
     }, [wordIdx])
     
     useEffect(() => {
@@ -47,7 +41,7 @@ function DuelGame({ opponentStats, statsUpdate }: { opponentStats: GameStats, st
     useEffect(() => {
         if (time == 0) {
 
-            setGameOver(setGameFinished, setInput, inputRef)
+            set_game_over(setGameFinished, setInput, inputRef)
             return;
         }
         if (gameFinished || gameFinished || loading) return;
@@ -55,7 +49,7 @@ function DuelGame({ opponentStats, statsUpdate }: { opponentStats: GameStats, st
             setTimePassed((t) => t + 0.016);
             updateWPM();
             setTime((t) => t - 1);
-            statsUpdate(accuracy, wpm);
+            update_stats(accuracy, wpm);
         }, 1000)
         return () => {
             clearInterval(intervalId)
@@ -69,6 +63,23 @@ function DuelGame({ opponentStats, statsUpdate }: { opponentStats: GameStats, st
         setTime((t) => t + bonus)
     }, [bonus])
 
+    useEffect(() => {
+        if (gameFinished) {
+            game_state()
+        }
+    }, [gameFinished])
+
+    useEffect(() => {
+        if (time <= 0)
+            return;
+        const intervalId = setInterval(() => {
+            update_stats(accuracy, wpm);
+        }, 500)
+        return () => {
+            clearInterval(intervalId)
+        }
+    }, [timePassed, time, loading])
+
     return(
         <div className='game-container'>
             <div className='game'>
@@ -76,8 +87,8 @@ function DuelGame({ opponentStats, statsUpdate }: { opponentStats: GameStats, st
                     <div id='game-stats-container'>
                         <Accuracy text={"Accuracy"} accuracy={accuracy}/>
                         <Wpm text={"WPM"} wpm={wpm}/>
-                        <Accuracy text={"Opponent Accuracy"} accuracy={opponentStats.accuracy}/>
-                        <Wpm text={"Opponent WPM"} wpm={opponentStats.wpm}/>
+                        <Accuracy text={"Opponent Accuracy"} accuracy={opponent_stats.accuracy}/>
+                        <Wpm text={"Opponent WPM"} wpm={opponent_stats.wpm}/>
                     </div>
                     <Timer time={time}/>
                 </div>
@@ -102,12 +113,12 @@ function DuelGame({ opponentStats, statsUpdate }: { opponentStats: GameStats, st
                                     <span key={`span 2 ${idx}`}>{"\u00A0"}</span>
                                 </div>))
                         :   
-                            <DuelOver userStats={{ accuracy: accuracy, wpm: wpm }} opponentStats={opponentStats}/>
+                            <DuelOver userStats={{ accuracy: accuracy, wpm: wpm }} opponentStats={opponent_stats}/>
                         }
                     </div>
                 </div>
                 <div className='game-input'>
-                    <input id='input' ref={inputRef} value={input} onChange={(event) => handleChange(event, setInput)} onKeyUp={(event) => handleInput(event, paragraphData, input, setInput, wordIdx, setWordIdx, cooldown, setCooldown, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords)}/>
+                    <input id='input' ref={inputRef} value={input} onChange={(event) => handle_word(event, setInput)} onKeyUp={(event) => handle_input(event, paragraphData, input, setInput, wordIdx, setWordIdx, cooldown, setCooldown, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords)}/>
                 </div>
             </div>
         </div>

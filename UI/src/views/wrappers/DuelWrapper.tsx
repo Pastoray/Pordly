@@ -1,5 +1,5 @@
-import UserContextProvider from '../context/UserContext';
-import Duel from './Duel';
+import UserContextProvider from '../../context/UserContext';
+import Duel from '../pages/Duel';
 
 function DailyQuestsWrapper() {
   return (

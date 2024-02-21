@@ -1,4 +1,4 @@
-import '../styles/pages/NoPage.scss'
+import '../../styles/pages/NoPage.scss'
 
 function NoPage() {
     return(

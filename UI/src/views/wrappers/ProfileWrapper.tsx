@@ -1,5 +1,5 @@
-import UserContextProvider from "../context/UserContext"
-import Profile from "./Profile"
+import UserContextProvider from "../../context/UserContext"
+import Profile from "../pages/Profile"
 
 function ProfileWrapper() {
   return (

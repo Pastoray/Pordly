@@ -1,6 +1,6 @@
-import AchievementsContextProvider from "../context/AchievementsContext"
-import UserContextProvider from "../context/UserContext"
-import Achievements from "./Achievements"
+import AchievementsContextProvider from "../../context/AchievementsContext"
+import UserContextProvider from "../../context/UserContext"
+import Achievements from "../pages/Achievements"
 
 
 function AchievementsWrapper() {

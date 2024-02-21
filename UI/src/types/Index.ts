@@ -10,8 +10,6 @@ export type ParagraphData = {
     paragraphIdx: number
 }
 
-export type Users = User[]
-
 export type User = {
     info: Info,
     stats: Stats,
@@ -37,6 +35,7 @@ export type DailyQuest = {
     title: string,
     difficulty: string,
     isComplete: boolean,
+    paras: number,
     date: Date,
     requirements: QuestRequirements,
     reward: Rewards
@@ -48,6 +47,7 @@ export type StoryQuest = {
     difficulty: string,
     isComplete: boolean,
     completion_date: Date,
+    paras: number,
     requirements: QuestRequirements,
     reward: Rewards
 }
@@ -115,6 +115,11 @@ export type UserBooster = {
     price: number,
     isActive: boolean,
     expiration_date: Date
+}
+
+export type GameStats = {
+  accuracy: number,
+  wpm: number
 }
 
 export type GameProps = {

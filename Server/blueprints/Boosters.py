@@ -16,8 +16,8 @@ def buy_booster():
         user_stats = Stats.query.filter_by(_user_id=user_id).first()
         if booster.price <= user_stats.gems:
             user_stats.gems -= booster.price
-        check_achievement(user_id, 8)
-        UserBoosters(user_id, booster_id, booster.category, booster.multiplier, False, None)
+            check_achievement(user_id, 8)
+            UserBoosters(user_id, booster_id, booster.category, booster.multiplier, False, None)
             
         db.session.commit()
 

@@ -48,6 +48,7 @@ def get_user_daily_quests():
                 "daily_quest_id": daily_quest._daily_quest_id,
                 "title": daily_quest.title,
                 "date": daily_quest.date,
+                "paras": daily_quest.paras,
                 "requirements": daily_quest.requirements,
                 "difficulty": daily_quest.difficulty,
                 "reward": daily_quest.rewards,

@@ -1,6 +1,6 @@
-import StoryQuestsContextProvider from "../context/StoryQuestsContext";
-import UserContextProvider from "../context/UserContext";
-import StoryQuests from "./StoryQuests";
+import StoryQuestsContextProvider from "../../context/StoryQuestsContext";
+import UserContextProvider from "../../context/UserContext";
+import StoryQuests from "../pages/StoryQuests";
 
 
 function StoryQuestsWrapper() {

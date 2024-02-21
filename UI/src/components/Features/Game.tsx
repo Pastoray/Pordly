@@ -1,19 +1,26 @@
-import Wpm from './Wpm';
-import Timer from './Times';
-import { setGameOver, restart, handleInput, initData, updateParagraph, handleChange } from '../../utils/Index';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { ParagraphData, GameProps } from '../../types/Index';
-import Loading from '../UI/Loading';
-import '../../styles/components/Game.scss'
-import Accuracy from './Accuracy';
-import { DailyQuestsContext } from '../../context/DailyQuestsContext';
-import GameOver from '../UI/GameOver';
 import { StoryQuestsContext } from '../../context/StoryQuestsContext';
+import { DailyQuestsContext } from '../../context/DailyQuestsContext';
+import Loading from '../UI/Loading';
+import GameOver from '../UI/GameOver';
+import Timer from './Times';
+import Accuracy from './Accuracy';
+import Wpm from './Wpm';
+import { set_game_over, restart, handle_input, initialize_paragraph_data, update_paragraph, handle_word } from '../../utils/Index';
+import { ParagraphData, GameProps, DailyQuest, StoryQuest } from '../../types/Index';
+import '../../styles/components/Game.scss'
 
 function Game({ quest_type, quest_id }: GameProps) {
     const quests = quest_type == "daily-quests" ? useContext(DailyQuestsContext) : useContext(StoryQuestsContext);
-    const quest = quests!.filter((quest) => quest_id === (quest_type == "daily-quests" ? quest.daily_quest_id : quest.story_quest_id))[0];
-    const paras = 1;
+    const quest: DailyQuest | StoryQuest = quests!.filter((quest) => {
+    if (quest_type === "daily-quests" && "daily_quest_id" in quest) {
+        return quest.daily_quest_id === quest_id;
+    } else if (quest_type === "story-quests" && "story_quest_id" in quest) {
+        return quest.story_quest_id === quest_id;
+    }
+    return false;
+    })[0];
+    const paras = quest.paras;
 
     const [input, setInput] = useState('');
     const [paragraphData, setParagraphData] = useState<ParagraphData | null>(null);
@@ -32,11 +39,11 @@ function Game({ quest_type, quest_id }: GameProps) {
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        initData(paras, setParagraphData, setLuckyIdx, setLoading);
+        initialize_paragraph_data(paras, setParagraphData, setLuckyIdx, setLoading);
     }, [])
 
     useEffect(() => {
-        updateParagraph(paragraphData, setParagraphData, wordIdx, setWordIdx, setLuckyIdx, setGameFinished, inputRef);
+        update_paragraph(paragraphData, setParagraphData, wordIdx, setWordIdx, setLuckyIdx, setGameFinished, inputRef);
     }, [wordIdx])
     
     useEffect(() => {
@@ -44,7 +51,7 @@ function Game({ quest_type, quest_id }: GameProps) {
     }, [loading])
     useEffect(() => {
         if (time == 0) {
-            setGameOver(setGameFinished, setInput, inputRef)
+            set_game_over(setGameFinished, setInput, inputRef)
             return;
         }
         if (gameFinished || gameFinished || loading) return;
@@ -109,7 +116,7 @@ function Game({ quest_type, quest_id }: GameProps) {
                     </div>
                 </div>
                 <div className='game-input'>
-                    <input id='input' ref={inputRef} value={input} onChange={(event) => handleChange(event, setInput)} onKeyUp={(event) => handleInput(event, paragraphData, input, setInput, wordIdx, setWordIdx, cooldown, setCooldown, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords)}/>
+                    <input id='input' ref={inputRef} value={input} onChange={(event) => handle_word(event, setInput)} onKeyUp={(event) => handle_input(event, paragraphData, input, setInput, wordIdx, setWordIdx, cooldown, setCooldown, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords)}/>
                 </div>
             </div>
         </div>

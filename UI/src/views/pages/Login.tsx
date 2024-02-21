@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { checkForAccount } from '../../utils/Index';
+import { fetch_account } from '../../utils/Index';
 import '../../styles/components/Login.scss'
 
 function Login() {
@@ -23,7 +23,8 @@ function Login() {
                             <input type="password" placeholder='Password' value={password} onChange={(event) => setPassword(event.target.value)}/>
                             <p id='password-error' className='login-form-error' ref={passwordErrorRef}></p>
                         </div>
-                        <input type='submit' value='Submit' onClick={(event) => checkForAccount(event, emailErrorRef, passwordErrorRef, email, password)}/>
+                        <a id='login-form-no-account' href='/signup'>Don't have an account ?</a>
+                        <input type='submit' value='Submit' onClick={(event) => fetch_account(event, emailErrorRef, passwordErrorRef, email, password)}/>
                     </form>
                 </div>
             </div>

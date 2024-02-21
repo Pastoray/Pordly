@@ -17,12 +17,17 @@ from utils.All import all_bp
 from utils.Clear import clear_bp
 
 from dotenv import load_dotenv
+import logging
 from flask_cors import CORS
 import os
+
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app, supports_credentials=True, origins="http://localhost:5173")
+
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 secret_key = os.urandom(24)
 

@@ -336,7 +336,7 @@ default_daily_quests = [
     {
         "requirements": {
             "accuracy": 80,
-            "time": 1,
+            "time": 60,
             "wpm": 60
         },
         "difficulty": "Hard",

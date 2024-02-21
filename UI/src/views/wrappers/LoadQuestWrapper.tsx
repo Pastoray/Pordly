@@ -1,7 +1,7 @@
-import DailyQuestsContextProvider from "../context/DailyQuestsContext"
-import StoryQuestsContextProvider from "../context/StoryQuestsContext"
-import UserContextProvider from "../context/UserContext"
-import LoadQuest from "./LoadQuest"
+import DailyQuestsContextProvider from "../../context/DailyQuestsContext"
+import StoryQuestsContextProvider from "../../context/StoryQuestsContext"
+import UserContextProvider from "../../context/UserContext"
+import LoadQuest from "../pages/LoadQuest"
 
 
 function LoadQuestWrapper() {

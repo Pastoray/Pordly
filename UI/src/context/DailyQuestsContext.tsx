@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { DailyQuest, ContextProviderProps } from "../types/Index";
-import { getDailyQuests } from "../utils/Index";
+import { get_daily_quests } from "../utils/Index";
 
 
 export const DailyQuestsContext = createContext<DailyQuest[] | undefined>(undefined);
@@ -11,7 +11,7 @@ function DailyQuestsContextProvider({ children }: ContextProviderProps) {
   useEffect(() => {
     async function fetch_daily_quests() {
       try {
-        const newDailyQuests = await getDailyQuests();
+        const newDailyQuests = await get_daily_quests();
         setDailyQuests(newDailyQuests);
       } catch (error) {
         console.error("Error fetching user:", error);

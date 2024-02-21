@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { getUser, createAccount } from '../../utils/Index';
+import { get_user, create_account } from '../../utils/Index';
 import '../../styles/components/Signup.scss'
 function Signup() {
     const [username, setUsername] = useState('');
@@ -12,11 +12,13 @@ function Signup() {
 
 
     useEffect(() => {
-        getUser().then((data) => {
+        async function redirect_user() {
+            const data = await get_user()
             if (data) {
                 window.location.href = "/"   
             }
-        })
+        }
+        redirect_user()
     }, [])
 
     return(
@@ -37,7 +39,8 @@ function Signup() {
                             <input type="password" placeholder='Password' value={password} onChange={(event) => setPassword(event.target.value)}/>
                             <p id='password-error' className='signup-form-error' ref={passwordErrorRef}></p>
                         </div>
-                        <input id='form-submit' type='submit' value='Submit' onClick={(event) => createAccount(event, emailErrorRef, passwordErrorRef, usernameErrorRef, username, email, password)}/>
+                        <a id='signup-form-have-account' href='/login'>Already have an account ?</a>
+                        <input id='form-submit' type='submit' value='Submit' onClick={(event) => create_account(event, emailErrorRef, passwordErrorRef, usernameErrorRef, username, email, password)}/>
                     </form>
                 </div>
             </div>

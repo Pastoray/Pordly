@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../../styles/components/Calendar.scss'
-import { fetchCalendar } from '../../utils/Index';
+import { fetch_calendar } from '../../utils/Index';
 
 function Calendar() {
     const [calendar, setCalendar] = useState([])
@@ -8,7 +8,7 @@ function Calendar() {
 
     useEffect(() => {
         async function getCalendar() {
-            const { daily_quests, days_this_month } = await fetchCalendar()
+            const { daily_quests, days_this_month } = await fetch_calendar()
 
             setCalendar(daily_quests)
             setDays(days_this_month)
