@@ -29,7 +29,7 @@ function Duel() {
 
   useEffect(() => {
     if (!user || !userValidated) return
-    webSocket.emit('initial_data', { user_id: user.info.id, user_level: user.stats.level.level });
+    webSocket.emit('initial_data', { user_id: user.info.user_id, user_level: user.stats.level.level });
 
     webSocket.on(('match_found'), () => {
       setIsLoading(false)
@@ -46,7 +46,7 @@ function Duel() {
     });
   webSocket.on('match_canceled', () => {
     setIsLoading(true)
-    webSocket.emit('initial_data', { user_id: user.info.id, user_level: user.stats.level.level });
+    webSocket.emit('initial_data', { user_id: user.info.user_id, user_level: user.stats.level.level });
   })
 
   return () => {
@@ -55,8 +55,8 @@ function Duel() {
   }, [user]);
 
   function get_stats(accuracy: number, wpm: number) {
-    webSocket.emit('refresh_user_stats', { user_id: user!.info.id, accuracy: accuracy, wpm: Math.ceil(wpm)});
-    webSocket.emit('fetch_opponent_stats', { user_id: user!.info.id });
+    webSocket.emit('refresh_user_stats', { user_id: user!.info.user_id, accuracy: accuracy, wpm: Math.ceil(wpm)});
+    webSocket.emit('fetch_opponent_stats', { user_id: user!.info.user_id });
   }
 
   function game_finished() {

@@ -139,7 +139,46 @@ def validate_token():
     return jsonify({
         "success": (user_id != None),
         "info": {
-            "id": user_id,
+            "user_id": user_id,
+            "username": user.username,
+            "bio": user.bio
+        },
+        "stats": {              
+            "stats_id": user_stats._stats_id,
+            "user_id": user_stats._user_id,
+            "xp": user_stats.xp,
+            "streak": user_stats.streak,
+            "gems": user_stats.gems,
+            "lives": user_stats.lives,
+            "level": {
+                "level_id": user_level._level_id,
+                "level": user_level.level,
+                "xp_required": user_level.xp_required,
+                "color": user_level.color
+            },
+            "title": {
+                "title_id": user_title._title_id,
+                "title": user_title.title,
+                "level_required": user_title.level_required,
+                "color": user_title.color
+            }
+        }
+    }), 200
+
+@auth_bp.route("/user", methods=["POST"])
+def get_user_by_id():
+    data = request.get_json()
+    user_id = data.get("user_id")
+
+    user = Users.query.filter_by(_user_id=user_id).first()
+    user_stats = Stats.query.filter_by(_user_id=user_id).first()
+    user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).order_by(Levels.xp_required.desc()).first()
+    user_title = Titles.query.filter(Titles.level_required<=user_level.level).order_by(Titles.level_required.desc()).first()
+
+    return jsonify({
+        "success": (user_id != None),
+        "info": {
+            "user_id": user_id,
             "username": user.username,
             "bio": user.bio
         },
@@ -179,7 +218,7 @@ def change_credentials():
 
     if user:
         if check_password_hash(user.hashed_password, password):
-            new_password = generate_password_hash(new_password)
+            new_hashed_password = generate_password_hash(new_password)
 
             user2 = Users.query.filter_by(username=new_username).first()
             if user2:
@@ -193,7 +232,7 @@ def change_credentials():
 
             user.username = new_username
             user.email = new_email
-            user.password = new_password
+            user.hashed_password = new_hashed_password
 
             db.session.commit()
 
@@ -240,4 +279,5 @@ def delete_account():
             return jsonify({"success": False,"error": "Invalid password"}), 401
     else:
         return jsonify({"success": False,"error": "Invalid email"}), 404
+    
 

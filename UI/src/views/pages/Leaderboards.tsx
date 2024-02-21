@@ -41,8 +41,9 @@ function Leaderboards() {
                         <p id='leaderboards-lives' onClick={() => setCategory("xp")}>🌟 XP</p>
                     </div>
                     <div className='leaderboards'>
-                        {participants.map((participant, i) => (
-                            <div className="leaderboards-participant" key={i}>
+                        {
+                        participants.map((participant, i) => (
+                            <div className="leaderboards-participant" key={i} onClick={() => window.location.href = `/profile/${participant.info.user_id}`}>
         
                                 <div className="participant-credentials">
                                     <p id="leaderboards-participant-level" style={{color: `${participant.stats.level.color}`, textShadow: `0px 0px 3px ${participant.stats.level.color}`}}>『 {participant.stats.level.level} 』</p>

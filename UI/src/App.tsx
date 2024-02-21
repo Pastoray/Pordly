@@ -8,6 +8,7 @@ import AchievementsWrapper from './views/wrappers/AchievementsWrapper'
 import ShopWrapper from './views/wrappers/ShopWrapper'
 import ProfileWrapper from './views/wrappers/ProfileWrapper'
 import DuelWrapper from './views/wrappers/DuelWrapper'
+import UserProfileWrapper from './views/wrappers/UserProfileWrapper'
 import Login from './views/pages/Login'
 import Signup from './views/pages/Signup'
 import NoPage from './views/pages/NoPage'
@@ -27,6 +28,7 @@ function App() {
           <Route path='/leaderboards' element={<LeaderboardsWrapper/>}/>
           <Route path='/achievements' element={<AchievementsWrapper/>}/>
           <Route path='/profile' element={<ProfileWrapper/>}/>
+          <Route path='/profile/:user_id' element={<UserProfileWrapper/>}/>
           <Route path='/shop' element={<ShopWrapper/>}/>
           <Route path='/signup' element={<Signup/>}/>
           <Route path='/login' element={<Login/>}/>

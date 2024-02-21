@@ -16,7 +16,7 @@ export type User = {
 }
 
 export type Info = {
-    id: number,
+    user_id: number,
     username: string,
     bio: string
 }

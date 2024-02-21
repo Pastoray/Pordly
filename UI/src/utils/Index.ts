@@ -2,6 +2,7 @@ import fetch_paragraph from "../data/fetch_paragraph";
 import { State, Ref, ParagraphData, LoginError, Achievement, QuestType, User, OldCredentials, NewCredentials } from "../types/Index";
 
 let Words = 0;
+let lastTimeExecuted = 0;
 
 export function set_game_over(setGameFinished: State<boolean>, setInput: State<string>, inputRef: Ref<HTMLInputElement | null>) {
     inputRef.current!.readOnly = true;
@@ -53,15 +54,18 @@ export async function initialize_paragraph_data(sentences: number, setParagraphD
 }
 
 export async function update_paragraph(paragraphData: ParagraphData | null, setParagraphData: State<ParagraphData | null>, wordIdx: number, setWordIdx: State<number>, setLuckyIdx: State<number>, setGameFinished: State<boolean>, inputRef: Ref<HTMLInputElement | null>) {
+    if (Date.now() - lastTimeExecuted < 500) {
+        return;
+    }
+    lastTimeExecuted = Date.now()
+
+    inputRef.current!.readOnly = true;
     if (paragraphData !== null && wordIdx >= paragraphData!.words.length) {
         if (paragraphData.paragraphIdx >= paragraphData.paragraphs.length - 1) {
-            inputRef.current!.readOnly = true;
             setGameFinished(true);
             return;
         }
-        inputRef.current!.readOnly = true;
         await new Promise(resolve => setTimeout(resolve, 500));
-        inputRef.current!.readOnly = false;
         setLuckyIdx(Math.floor(Math.random() * paragraphData!.paragraphs[paragraphData!.paragraphIdx + 1].split(' ').length))
         setWordIdx(0);
         setParagraphData((prev) => ({ ...prev!,
@@ -70,6 +74,7 @@ export async function update_paragraph(paragraphData: ParagraphData | null, setP
             paragraphIdx: prev!.paragraphIdx + 1
         } as ParagraphData))
     }
+    inputRef.current!.readOnly = false;
 }
 
 async function end_loading(setLoading: State<boolean>, setGameFinished: State<boolean>) {
@@ -178,7 +183,6 @@ export async function validate_token(cookieValue: string) {
     })
     const response = await data.json()
     return response
-    
 }
 
 export async function get_user() {
@@ -194,9 +198,24 @@ export async function get_user() {
     return undefined;
 }
 
+export async function get_user_by_id(id: number) {
+    const data = await fetch(`http://127.0.0.1:8080/auth/user`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "user_id": id
+        })
+    })
+    const response = await data.json()
+    return response
+}
+
+
 export async function get_user_id() {
     const user: User | null | undefined = await get_user();
-    const user_id = user?.info.id
+    const user_id = user?.info.user_id
     return user_id
 }
 
