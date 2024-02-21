@@ -1,12 +1,8 @@
-import PropTypes from 'prop-types';
-import '../../styles/components/Card.scss'
 import { useEffect, useState } from 'react';
+import { CardProps } from '../../types/Index';
+import '../../styles/components/Card.scss'
+import PropTypes from 'prop-types';
 
-type CardProps = {
-    title: string,
-    doneCount: number,
-    totalCount: number
-}
 function Card({ title, doneCount, totalCount }: CardProps) {
     const [progressPercentage, setProgressPercentage] = useState(0);
     useEffect(() => {

@@ -127,6 +127,18 @@ export type GameProps = {
     quest_id: number,
 }
 
+export type CardProps = {
+    title: string,
+    doneCount: number,
+    totalCount: number
+}
+
+export type CompletionProgress = {
+    story_quests_complete: number,
+    daily_quest_complete: number,
+    achivements_complete: number
+}
+
 export type LoadQuestProps = {
     questType: QuestType,
 }

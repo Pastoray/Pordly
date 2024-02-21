@@ -209,7 +209,12 @@ export async function get_user_by_id(id: number) {
         })
     })
     const response = await data.json()
-    return response
+    return {
+        user: response.user,
+        story_quests_complete: response.story_quests_complete,
+        daily_quests_complete: response.daily_quests_complete,
+        achievements_complete: response.achievements_complete
+    }
 }
 
 

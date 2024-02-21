@@ -12,6 +12,8 @@
 }
 
 #title {
+    color: white;
+    font-family: monospace;
     font-size: 1.5rem;
     font-weight: 500;
 }
@@ -32,6 +34,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    color: white;
     border: 2px solid white;
     border-radius: 8px;
 
@@ -39,7 +42,7 @@
         width: 10rem;
         position: absolute;
         font-family: monospace;
-        font-size: 2rem;
+        font-size: 1.25rem;
         text-align: center;
     }
 }
@@ -50,5 +53,4 @@
     background-color: hsl(120, 100%, 45%);
     border-radius: 6px;
     transition: width 1.5s ease-out;
-
 }

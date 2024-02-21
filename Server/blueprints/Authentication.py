@@ -175,34 +175,49 @@ def get_user_by_id():
     user_level = Levels.query.filter(Levels.xp_required<=user_stats.xp).order_by(Levels.xp_required.desc()).first()
     user_title = Titles.query.filter(Titles.level_required<=user_level.level).order_by(Titles.level_required.desc()).first()
 
+    user_daily_quests_finished = 0
+    daily_quests = DailyQuests.query.filter_by(date=date.today())
+    for daily_quest in daily_quests:
+        quest = UserDailyQuests.query.filter_by(_user_id=user_id, _daily_quest_id=daily_quest._daily_quest_id ,isComplete=True).first()
+        if quest:
+            user_daily_quests_finished += 1
+    user_story_quests_finished = UserStoryQuests.query.filter_by(_user_id=user_id, isComplete=True).count()
+    user_achievements_finished = UserAchievements.query.filter_by(_user_id=user_id, isComplete=True).count()
+
     return jsonify({
         "success": (user_id != None),
-        "info": {
-            "user_id": user_id,
-            "username": user.username,
-            "bio": user.bio
-        },
-        "stats": {              
-            "stats_id": user_stats._stats_id,
-            "user_id": user_stats._user_id,
-            "xp": user_stats.xp,
-            "streak": user_stats.streak,
-            "gems": user_stats.gems,
-            "lives": user_stats.lives,
-            "level": {
-                "level_id": user_level._level_id,
-                "level": user_level.level,
-                "xp_required": user_level.xp_required,
-                "color": user_level.color
+        "user": {
+            "info": {
+                "user_id": user_id,
+                "username": user.username,
+                "bio": user.bio
             },
-            "title": {
-                "title_id": user_title._title_id,
-                "title": user_title.title,
-                "level_required": user_title.level_required,
-                "color": user_title.color
+            "stats": {              
+                "stats_id": user_stats._stats_id,
+                "user_id": user_stats._user_id,
+                "xp": user_stats.xp,
+                "streak": user_stats.streak,
+                "gems": user_stats.gems,
+                "lives": user_stats.lives,
+                "level": {
+                    "level_id": user_level._level_id,
+                    "level": user_level.level,
+                    "xp_required": user_level.xp_required,
+                    "color": user_level.color
+                },
+                "title": {
+                    "title_id": user_title._title_id,
+                    "title": user_title.title,
+                    "level_required": user_title.level_required,
+                    "color": user_title.color
+                }
             }
-        }
+        },
+        "daily_quests_complete": user_daily_quests_finished,
+        "story_quests_complete": user_story_quests_finished,
+        "achievements_complete": user_achievements_finished
     }), 200
+
 
 @auth_bp.route("/change-credentials", methods=["POST"])
 def change_credentials():
