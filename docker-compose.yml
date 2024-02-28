@@ -1,10 +1,10 @@
 version: "3.8"
 services:
   frontend:
-    build: ./frontend
+    build: ./UI
     ports:
       - 5173:5173
   backend:
-    build: ./backend
+    build: ./Server
     ports:
       - 8080:8080
