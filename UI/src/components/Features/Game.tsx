@@ -116,7 +116,7 @@ function Game({ quest_type, quest_id }: GameProps) {
                     </div>
                 </div>
                 <div className='game-input'>
-                    <input id='input' ref={inputRef} value={input} onChange={(event) => handle_word(event, setInput)} onKeyUp={(event) => handle_input(event, paragraphData, input, setInput, wordIdx, setWordIdx, cooldown, setCooldown, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords)}/>
+                    <input id='input' ref={inputRef} value={input} autoComplete='off' onChange={(event) => handle_word(event, setInput)} onKeyUp={(event) => handle_input(event, paragraphData, input, setInput, wordIdx, setWordIdx, cooldown, setCooldown, luckyIdx, setLuckyIdx, setBonus, setAccuracy, setCorrectWords)}/>
                 </div>
             </div>
         </div>
